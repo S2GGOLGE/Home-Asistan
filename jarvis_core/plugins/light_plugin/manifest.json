@@ -1,0 +1,19 @@
+{
+  "name": "LightPlugin",
+  "version": "1.0.0",
+  "entrypoint": "plugin.LightPlugin",
+  "supported_intents": [
+    "light.turn_on",
+    "light.turn_off",
+    "light.set_brightness",
+    "light.set_color"
+  ],
+  "enabled": true,
+  "permissions": [
+    "device.read",
+    "device.command.light",
+    "state.write",
+    "event.publish"
+  ]
+}
+

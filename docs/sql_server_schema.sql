@@ -1,0 +1,81 @@
+CREATE TABLE Users (
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    Username NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(255) NULL,
+    PasswordHash NVARCHAR(MAX) NOT NULL,
+    Role NVARCHAR(50) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+);
+
+CREATE TABLE Devices (
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    Name NVARCHAR(150) NOT NULL,
+    DeviceType NVARCHAR(50) NOT NULL,
+    Room NVARCHAR(100) NULL,
+    IsOnline BIT NOT NULL DEFAULT 0,
+    Metadata NVARCHAR(MAX) NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT CK_Devices_Metadata_IsJson CHECK (Metadata IS NULL OR ISJSON(Metadata) = 1)
+);
+
+CREATE TABLE DeviceStates (
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    DeviceId UNIQUEIDENTIFIER NOT NULL,
+    StateJson NVARCHAR(MAX) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT FK_DeviceStates_Devices FOREIGN KEY (DeviceId) REFERENCES Devices(Id),
+    CONSTRAINT CK_DeviceStates_StateJson_IsJson CHECK (ISJSON(StateJson) = 1)
+);
+
+CREATE TABLE Events (
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    EventType NVARCHAR(100) NOT NULL,
+    PayloadJson NVARCHAR(MAX) NOT NULL,
+    CorrelationId NVARCHAR(100) NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT CK_Events_PayloadJson_IsJson CHECK (ISJSON(PayloadJson) = 1)
+);
+
+CREATE TABLE PluginLogs (
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    PluginName NVARCHAR(100) NOT NULL,
+    Intent NVARCHAR(100) NOT NULL,
+    Status NVARCHAR(50) NOT NULL,
+    Message NVARCHAR(MAX) NULL,
+    CorrelationId NVARCHAR(100) NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+);
+
+CREATE TABLE CommandLogs (
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    UserId UNIQUEIDENTIFIER NULL,
+    DeviceId UNIQUEIDENTIFIER NULL,
+    Intent NVARCHAR(100) NOT NULL,
+    RequestJson NVARCHAR(MAX) NOT NULL,
+    ResponseJson NVARCHAR(MAX) NULL,
+    Status NVARCHAR(50) NOT NULL,
+    CorrelationId NVARCHAR(100) NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT FK_CommandLogs_Users FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT FK_CommandLogs_Devices FOREIGN KEY (DeviceId) REFERENCES Devices(Id),
+    CONSTRAINT CK_CommandLogs_RequestJson_IsJson CHECK (ISJSON(RequestJson) = 1),
+    CONSTRAINT CK_CommandLogs_ResponseJson_IsJson CHECK (ResponseJson IS NULL OR ISJSON(ResponseJson) = 1)
+);
+
+CREATE TABLE SystemHealthLogs (
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    ServiceName NVARCHAR(100) NOT NULL,
+    Status NVARCHAR(30) NOT NULL,
+    HealthPayloadJson NVARCHAR(MAX) NULL,
+    ErrorMessage NVARCHAR(MAX) NULL,
+    ProcessId INT NULL,
+    RestartCount INT NOT NULL DEFAULT 0,
+    MemoryMb DECIMAL(18,2) NULL,
+    Port INT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT CK_SystemHealthLogs_Status CHECK (Status IN ('Healthy', 'Unhealthy', 'Restarting', 'Restarted', 'Failed')),
+    CONSTRAINT CK_SystemHealthLogs_HealthPayloadJson_IsJson CHECK (HealthPayloadJson IS NULL OR ISJSON(HealthPayloadJson) = 1)
+);
+
+CREATE INDEX IX_SystemHealthLogs_ServiceName_CreatedAt
+ON SystemHealthLogs(ServiceName, CreatedAt DESC);
