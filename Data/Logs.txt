@@ -1,0 +1,7 @@
+CREATE TABLE Logs (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Level NVARCHAR(20),
+    Message NVARCHAR(MAX),
+    Source NVARCHAR(100),
+    CreatedAt DATETIME DEFAULT GETDATE()
+);

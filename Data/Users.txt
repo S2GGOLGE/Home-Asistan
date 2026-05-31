@@ -1,0 +1,8 @@
+CREATE TABLE Users (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(50) NOT NULL,
+    Email NVARCHAR(100),
+    PasswordHash NVARCHAR(255) NOT NULL,
+    Role NVARCHAR(20) DEFAULT 'User',
+    CreatedAt DATETIME DEFAULT GETDATE()
+);

@@ -1,0 +1,119 @@
+# EV ASİSTANI - GELİŞTİRME PLANI
+
+## Mevcut Durum
+
+Proje planlama ve frontend geliştirme aşamasındadır.
+
+---
+
+## Frontend Görevleri
+
+### Sayfaların Tamamlanması
+
+* Gösterge Paneli
+* Cihazlar Sayfası
+* Odalar Sayfası
+* Otomasyonlar Sayfası
+* Jarvis Sayfası
+* Kameralar Sayfası
+* Sensörler Sayfası
+* Bildirimler Sayfası
+* Kullanıcılar Sayfası
+* Sistem İzleme Sayfası
+* Ayarlar Sayfası
+
+### Arayüz Düzenlemeleri
+
+* Siyah tema düzenlemeleri
+* Mobil uyumluluk
+* Menü sistemi
+* Kart bileşenleri
+* Bildirim sistemi
+* Log ekranı
+* Durum göstergeleri
+* Sayfa geçiş animasyonları
+
+---
+
+## Jarvis Entegrasyonu
+
+Frontend tamamlandıktan sonra Jarvis bağlantısı yapılacak.
+
+### Yapılacaklar
+
+* Jarvis durum ekranı oluşturulacak
+* Son komutlar görüntülenecek
+* Canlı log sistemi bağlanacak
+* Sesli komut geçmişi eklenecek
+* Jarvis durum bilgileri alınacak
+* Gerçek zamanlı veri akışı sağlanacak
+
+---
+
+## Backend Aşaması
+
+Frontend tamamlandıktan sonra backend geliştirmesine başlanacak.
+
+### ASP.NET Backend
+
+* API yapısının oluşturulması
+* Kimlik doğrulama sistemi
+* Kullanıcı yönetimi
+* Yetkilendirme sistemi
+* Cihaz yönetimi API'leri
+* Otomasyon API'leri
+
+### SignalR
+
+* Canlı sistem durumu
+* Canlı log aktarımı
+* Anlık cihaz güncellemeleri
+* Bildirim sistemi
+
+### SQL Server
+
+* Veritabanı oluşturulması
+* Kullanıcı tabloları
+* Cihaz tabloları
+* Otomasyon tabloları
+* Log tabloları
+
+---
+
+## Python Core
+
+### Jarvis Core
+
+* Intent Router
+* Plugin Sistemi
+* AI İşleme Katmanı
+* Ses İşleme Katmanı
+
+### Watchdog
+
+* Süreç takibi
+* Otomatik yeniden başlatma
+* Hata izleme sistemi
+
+---
+
+## Tamamlanma Sırası
+
+1. Frontend sayfalarını bitir
+2. Arayüz düzenlemelerini tamamla
+3. Jarvis bağlantısını kur
+4. Backend geliştirmesine başla
+5. SignalR entegrasyonu yap
+6. SQL Server entegrasyonu yap
+7. Python Core entegrasyonu yap
+8. Test sürecine geç
+9. Sistem optimizasyonları
+10. İlk kararlı sürümü yayınla
+
+---
+
+## Kısa Hedef
+
+Öncelikli hedef:
+Frontend tamamen bitirilecek ve ardından Jarvis ile bağlantı kurulacak.
+Frontend stabil hale geldikten sonra backend geliştirme sürecine geçilecek.

@@ -1,0 +1,444 @@
+/* ══════════════════════════════
+   RESET & BASE
+══════════════════════════════ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Segoe UI, sans-serif;
+}
+
+body {
+    background: #080808;
+    color: white;
+}
+
+/* ══════════════════════════════
+   LAYOUT
+══════════════════════════════ */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ══════════════════════════════
+   SIDEBAR
+══════════════════════════════ */
+.sidebar {
+    width: 260px;
+    background: #111;
+    border-right: 1px solid #222;
+    padding: 25px;
+    overflow: hidden;
+    transition: width 0.3s ease, padding 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed {
+    width: 0;
+    padding: 0;
+}
+
+.logo {
+    color: #00ff88;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    white-space: nowrap;
+}
+
+.version {
+    color: #555;
+    font-size: 12px;
+    margin-bottom: 30px;
+    white-space: nowrap;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #ccc;
+    padding: 12px;
+    border-radius: 10px;
+    transition: .3s;
+    white-space: nowrap;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #00ff88;
+    color: black;
+}
+
+/* ══════════════════════════════
+   MAIN
+══════════════════════════════ */
+main {
+    flex: 1;
+    padding: 30px;
+    min-width: 0;
+}
+
+/* ══════════════════════════════
+   TOPBAR
+══════════════════════════════ */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.topbar h1 {
+    font-size: 22px;
+    margin-bottom: 4px;
+}
+
+.topbar p {
+    color: #888;
+    font-size: 14px;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.status.online {
+    color: #00ff88;
+}
+
+/* ══════════════════════════════
+   HAMBURGER
+══════════════════════════════ */
+.menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.menu-toggle:hover {
+    background: #1e1e1e;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #00ff88;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.menu-toggle.open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle.open span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ══════════════════════════════
+   STATS KARTLARI
+══════════════════════════════ */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: #141414;
+    border: 1px solid #252525;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.card h3 {
+    color: #999;
+    margin-bottom: 10px;
+}
+
+.card span {
+    font-size: 32px;
+    color: #00ff88;
+}
+
+/* ══════════════════════════════
+   DASHBOARD GRID
+══════════════════════════════ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.panel {
+    background: #141414;
+    border: 1px solid #252525;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.panel h2 {
+    margin-bottom: 20px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+/* ══════════════════════════════
+   SİSTEM DURUMU
+══════════════════════════════ */
+.service {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge.success {
+    background: #0a2e1a;
+    color: #00ff88;
+}
+
+.badge.warning {
+    background: #2e2200;
+    color: #ffaa00;
+}
+
+.badge.error {
+    background: #2e0a0a;
+    color: #ff4444;
+}
+
+/* ══════════════════════════════
+   KAYNAK KULLANIMI
+══════════════════════════════ */
+.resource {
+    margin-bottom: 25px;
+}
+
+.resource-title {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.bar {
+    width: 100%;
+    height: 12px;
+    background: #222;
+    border-radius: 20px;
+}
+
+.fill {
+    height: 100%;
+    background: #00ff88;
+    border-radius: 20px;
+    transition: width 0.6s ease;
+}
+
+.fill.disk { width: 61%; }
+
+/* ══════════════════════════════
+   JARVIS
+══════════════════════════════ */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #1e1e1e;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.last-command {
+    margin-top: 16px;
+    background: #0d0d0d;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.last-command h3 {
+    color: #555;
+    font-size: 12px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.last-command p {
+    color: #00ff88;
+    font-size: 14px;
+}
+
+/* ══════════════════════════════
+   AKTİVİTELER
+══════════════════════════════ */
+.activity-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.activity-list li {
+    padding: 10px 14px;
+    background: #0d0d0d;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #ccc;
+    border-left: 3px solid #00ff88;
+}
+
+/* ══════════════════════════════
+   LOGLAR
+══════════════════════════════ */
+#logs {
+    height: 250px;
+    overflow: auto;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+}
+
+.log {
+    margin-bottom: 10px;
+    color: #00ff88;
+}
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+footer {
+    margin-top: 30px;
+    padding: 20px 0;
+    color: #444;
+    font-size: 13px;
+}
+
+/* ══════════════════════════════
+   RESPONSIVE — Tablet (≤1024px)
+══════════════════════════════ */
+@media (max-width: 1024px) {
+
+    .sidebar {
+        width: 200px;
+        padding: 20px 15px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+}
+
+/* ══════════════════════════════
+   RESPONSIVE — Mobile (≤768px)
+══════════════════════════════ */
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 220px !important;
+        padding: 20px 15px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        align-self: flex-start;
+    }
+
+    .sidebar.collapsed {
+        width: 0 !important;
+        padding: 0;
+    }
+
+    .sidebar nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sidebar a {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    main {
+        padding: 20px 15px;
+        min-width: 0;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+
+    #logs {
+        height: 180px;
+    }
+}
+
+/* ══════════════════════════════
+   RESPONSIVE — Küçük Mobile (≤480px)
+══════════════════════════════ */
+@media (max-width: 480px) {
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .card span {
+        font-size: 26px;
+    }
+
+    .logo {
+        font-size: 22px;
+    }
+}

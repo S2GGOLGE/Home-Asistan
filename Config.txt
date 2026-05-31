@@ -1,0 +1,2 @@
+SQL Bağlantı Dizesi:Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

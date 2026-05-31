@@ -1,0 +1,8 @@
+CREATE TABLE Commands (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT FOREIGN KEY REFERENCES Users(Id),
+    CommandText NVARCHAR(255),
+    ResponseText NVARCHAR(255),
+    Status NVARCHAR(30),
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
