@@ -1,11 +1,12 @@
+using API.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// --- 1. CORE SERVICES ---
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-// CORS
+// --- 2. CORS POLICY ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -16,9 +17,17 @@ builder.Services.AddCors(options =>
     });
 });
 
+// --- 3. PRODUCTION LEVEL HTTP CLIENT REGISTRATION (JARVIS) ---
+builder.Services.AddHttpClient<IJarvisClient, JarvisClient>(client =>
+{
+    client.BaseAddress = new Uri("http://127.0.0.1:8000/");
+    client.Timeout = TimeSpan.FromSeconds(10); // 10 Saniye Zaman Aşımı
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --- 4. HTTP PIPELINE (MIDDLEWARES) ---
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -26,15 +35,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// CORS
+// Sıralama Önemli: CORS her zaman Authorization'dan önce gelmelidir
 app.UseCors("AllowAll");
 
 app.UseAuthorization();
-
 app.MapControllers();
 
-app.MapGet("/api/test", () =>
-{
-    return Results.Ok(new { message = "Merhaba", status = true });
-});
+// --- 5. MINIMAL API TEST ENDPOINT ---
+app.MapGet("/api/test", () => Results.Ok(new { message = "Home Assistant API Ayakta!", status = true }));
+
 app.Run();
