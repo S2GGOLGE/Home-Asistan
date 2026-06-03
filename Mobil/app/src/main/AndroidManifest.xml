@@ -12,6 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Home">
         <activity
+            android:name=".SensorActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Home" />
+        <activity
+            android:name=".KameraActivity"
+            android:exported="false" />
+        <activity
+            android:name=".JarvisActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OtomasyonlarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OdalarActivity"
+            android:exported="false" />
+        <activity
             android:name=".CihazlarActivity"
             android:exported="false" />
         <activity
