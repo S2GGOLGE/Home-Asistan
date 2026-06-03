@@ -1,20 +1,33 @@
 /* ══════════════════════════════
-   RESET & BASE
+    RESET & BASE OPTIONS
 ══════════════════════════════ */
+:root {
+    --bg-main: #080808;           /* Saf Koyu Arka Plan */
+    --bg-panel: #141414;          /* Orijinal Panel Rengi */
+    --bg-inner: #0d0d0d;          /* İç Element/Log Kutusu Rengi */
+    --accent-green: #00ff88;      /* Senin Canlı Yeşil Tonun */
+    --border-line: #252525;       /* Orijinal Kenarlık Rengi */
+    --text-primary: #ffffff;
+    --text-secondary: #888888;
+    --text-muted: #555555;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Segoe UI, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background: #080808;
-    color: white;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* ══════════════════════════════
-   LAYOUT
+    LAYOUT MIMARISI
 ══════════════════════════════ */
 .layout {
     display: flex;
@@ -22,25 +35,28 @@ body {
 }
 
 /* ══════════════════════════════
-   SIDEBAR
+    SIDEBAR (YAN MENÜ)
 ══════════════════════════════ */
 .sidebar {
     width: 260px;
-    background: #111;
-    border-right: 1px solid #222;
+    background: #111111;
+    border-right: 1px solid var(--border-line);
     padding: 25px;
-    overflow: hidden;
+    overflow-y: auto;
     transition: width 0.3s ease, padding 0.3s ease;
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar.collapsed {
     width: 0;
     padding: 0;
+    border-right: none;
 }
 
 .logo {
-    color: #00ff88;
+    color: var(--accent-green);
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 10px;
@@ -48,7 +64,7 @@ body {
 }
 
 .version {
-    color: #555;
+    color: var(--text-muted);
     font-size: 12px;
     margin-bottom: 30px;
     white-space: nowrap;
@@ -62,30 +78,48 @@ body {
 
 .sidebar a {
     text-decoration: none;
-    color: #ccc;
+    color: #cccccc;
     padding: 12px;
     border-radius: 10px;
-    transition: .3s;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.3s;
     white-space: nowrap;
+}
+
+.sidebar a i {
+    width: 20px;
+    font-size: 16px;
+    transition: color 0.3s;
 }
 
 .sidebar a:hover,
 .sidebar a.active {
-    background: #00ff88;
-    color: black;
+    background: var(--accent-green);
+    color: #000000;
+    font-weight: bold;
+}
+
+.sidebar a:hover i,
+.sidebar a.active i {
+    color: #000000;
 }
 
 /* ══════════════════════════════
-   MAIN
+    MAIN CONTENT AREA
 ══════════════════════════════ */
 main {
     flex: 1;
     padding: 30px;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ══════════════════════════════
-   TOPBAR
+    TOPBAR (ÜST BAR)
 ══════════════════════════════ */
 .topbar {
     display: flex;
@@ -106,7 +140,7 @@ main {
 }
 
 .topbar p {
-    color: #888;
+    color: var(--text-secondary);
     font-size: 14px;
 }
 
@@ -115,11 +149,11 @@ main {
 }
 
 .status.online {
-    color: #00ff88;
+    color: var(--accent-green);
 }
 
 /* ══════════════════════════════
-   HAMBURGER
+    HAMBURGER BUTTON
 ══════════════════════════════ */
 .menu-toggle {
     background: none;
@@ -142,25 +176,17 @@ main {
     display: block;
     width: 22px;
     height: 2px;
-    background: #00ff88;
+    background: var(--accent-green);
     border-radius: 2px;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-.menu-toggle.open span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-}
-
-.menu-toggle.open span:nth-child(2) {
-    opacity: 0;
-}
-
-.menu-toggle.open span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-}
+.menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle.open span:nth-child(2) { opacity: 0; }
+.menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ══════════════════════════════
-   STATS KARTLARI
+    STATS KARTLARI
 ══════════════════════════════ */
 .stats {
     display: grid;
@@ -170,40 +196,43 @@ main {
 }
 
 .card {
-    background: #141414;
-    border: 1px solid #252525;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-line);
     border-radius: 15px;
     padding: 20px;
 }
 
 .card h3 {
-    color: #999;
+    color: #999999;
     margin-bottom: 10px;
+    font-size: 14px;
 }
 
 .card span {
     font-size: 32px;
-    color: #00ff88;
+    font-weight: bold;
+    color: var(--accent-green);
 }
 
 /* ══════════════════════════════
-   DASHBOARD GRID
+    DASHBOARD GRID PANELI
 ══════════════════════════════ */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
 }
 
 .panel {
-    background: #141414;
-    border: 1px solid #252525;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-line);
     border-radius: 15px;
     padding: 20px;
 }
 
 .panel h2 {
     margin-bottom: 20px;
+    font-size: 18px;
 }
 
 .full-width {
@@ -211,13 +240,14 @@ main {
 }
 
 /* ══════════════════════════════
-   SİSTEM DURUMU
+    SERVIS BAĞLANTILARI
 ══════════════════════════════ */
 .service {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
+    font-size: 14px;
 }
 
 .badge {
@@ -229,52 +259,49 @@ main {
 
 .badge.success {
     background: #0a2e1a;
-    color: #00ff88;
-}
-
-.badge.warning {
-    background: #2e2200;
-    color: #ffaa00;
-}
-
-.badge.error {
-    background: #2e0a0a;
-    color: #ff4444;
+    color: var(--accent-green);
 }
 
 /* ══════════════════════════════
-   KAYNAK KULLANIMI
+    KAYNAK BARLARI
 ══════════════════════════════ */
 .resource {
     margin-bottom: 25px;
+}
+
+.resource:last-child {
+    margin-bottom: 0;
 }
 
 .resource-title {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
-    color: #ccc;
+    color: #cccccc;
     font-size: 14px;
 }
 
 .bar {
     width: 100%;
     height: 12px;
-    background: #222;
+    background: #222222;
     border-radius: 20px;
+    overflow: hidden;
 }
 
 .fill {
     height: 100%;
-    background: #00ff88;
+    background: var(--accent-green);
     border-radius: 20px;
     transition: width 0.6s ease;
 }
 
-.fill.disk { width: 61%; }
+.fill.disk {
+    width: 61%;
+}
 
 /* ══════════════════════════════
-   JARVIS
+    JARVIS & ALANLAR
 ══════════════════════════════ */
 .info-row {
     display: flex;
@@ -282,18 +309,18 @@ main {
     padding: 8px 0;
     border-bottom: 1px solid #1e1e1e;
     font-size: 14px;
-    color: #ccc;
+    color: #cccccc;
 }
 
 .last-command {
     margin-top: 16px;
-    background: #0d0d0d;
+    background: var(--bg-inner);
     border-radius: 10px;
     padding: 14px;
 }
 
 .last-command h3 {
-    color: #555;
+    color: var(--text-muted);
     font-size: 12px;
     margin-bottom: 8px;
     text-transform: uppercase;
@@ -301,12 +328,12 @@ main {
 }
 
 .last-command p {
-    color: #00ff88;
+    color: var(--accent-green);
     font-size: 14px;
 }
 
 /* ══════════════════════════════
-   AKTİVİTELER
+    AKTİVİTE LİSTESİ
 ══════════════════════════════ */
 .activity-list {
     list-style: none;
@@ -317,62 +344,128 @@ main {
 
 .activity-list li {
     padding: 10px 14px;
-    background: #0d0d0d;
+    background: var(--bg-inner);
     border-radius: 8px;
     font-size: 14px;
-    color: #ccc;
-    border-left: 3px solid #00ff88;
+    color: #cccccc;
+    border-left: 3px solid var(--accent-green);
 }
 
 /* ══════════════════════════════
-   LOGLAR
+    CANLI LOG AKIŞI
 ══════════════════════════════ */
 #logs {
     height: 250px;
-    overflow: auto;
+    overflow-y: auto;
     font-family: Consolas, monospace;
     font-size: 13px;
+    background: var(--bg-main);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-line);
 }
 
 .log {
     margin-bottom: 10px;
-    color: #00ff88;
+    color: var(--accent-green);
 }
 
 /* ══════════════════════════════
-   FOOTER
+    FOOTER
 ══════════════════════════════ */
 footer {
-    margin-top: 30px;
-    padding: 20px 0;
-    color: #444;
+    margin-top: auto;
+    padding: 20px 0 0 0;
+    color: #444444;
     font-size: 13px;
+    text-align: center;
 }
 
 /* ══════════════════════════════
-   RESPONSIVE — Tablet (≤1024px)
+    LOADER OVERLAY (Senin Temanla)
+══════════════════════════════ */
+#loader-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    gap: 20px;
+    transition: opacity 0.6s ease, visibility 0.6s;
+}
+
+#loader-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-ring {
+    width: 64px;
+    height: 64px;
+    border: 3px solid #1e1e1e;
+    border-top: 3px solid var(--accent-green);
+    border-right: 3px solid var(--accent-green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loader-title {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.loader-title span {
+    color: var(--accent-green);
+}
+
+.loader-subtitle {
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.loader-percentage {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--accent-green);
+}
+
+.loader-bar-wrap {
+    width: 220px;
+    height: 3px;
+    background-color: #1e1e1e;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.loader-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-green), #00ccff);
+    border-radius: 99px;
+    transition: width 0.08s linear;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ══════════════════════════════
+    RESPONSIVE MEDYA SORGULARI
 ══════════════════════════════ */
 @media (max-width: 1024px) {
-
-    .sidebar {
-        width: 200px;
-        padding: 20px 15px;
-    }
-
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .full-width {
-        grid-column: span 1;
-    }
+    .sidebar { width: 200px; padding: 20px 15px; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .full-width { grid-column: span 1; }
 }
 
-/* ══════════════════════════════
-   RESPONSIVE — Mobile (≤768px)
-══════════════════════════════ */
 @media (max-width: 768px) {
-
     .sidebar {
         width: 220px !important;
         padding: 20px 15px;
@@ -381,64 +474,15 @@ footer {
         top: 0;
         align-self: flex-start;
     }
-
-    .sidebar.collapsed {
-        width: 0 !important;
-        padding: 0;
-    }
-
-    .sidebar nav {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .sidebar a {
-        padding: 12px;
-        font-size: 14px;
-    }
-
-    main {
-        padding: 20px 15px;
-        min-width: 0;
-    }
-
-    .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-
-    .stats {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .full-width {
-        grid-column: span 1;
-    }
-
-    #logs {
-        height: 180px;
-    }
+    .sidebar.collapsed { width: 0 !important; padding: 0; }
+    main { padding: 20px 15px; }
+    .topbar { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    #logs { height: 180px; }
 }
 
-/* ══════════════════════════════
-   RESPONSIVE — Küçük Mobile (≤480px)
-══════════════════════════════ */
 @media (max-width: 480px) {
-
-    .stats {
-        grid-template-columns: 1fr;
-    }
-
-    .card span {
-        font-size: 26px;
-    }
-
-    .logo {
-        font-size: 22px;
-    }
+    .stats { grid-template-columns: 1fr; }
+    .card span { font-size: 26px; }
+    .logo { font-size: 22px; }
 }

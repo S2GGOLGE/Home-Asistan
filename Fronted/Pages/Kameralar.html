@@ -1,14 +1,126 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Asistan | Kameralar</title>
+    <title>Kamera Akışları - 3x3 Slot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/Camera.css">
 </head>
 
 <body>
-    <h1>Kameralar Sayfası</h1>
+
+    <!-- Sayfa Yüklenme Animasyonu -->
+    <div id="loader-overlay">
+        <div class="loader-ring"></div>
+        <div class="loader-title">Home <span>Asistan</span></div>
+        <div class="loader-subtitle">Sistem Başlatılıyor...</div>
+        <div class="loader-bar-wrap">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <div class="header-bar">
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Geri Dön
+        </a>
+        <div class="page-title">Kamera Kontrol Merkezi (3x3)</div>
+    </div>
+
+    <div class="camera-grid">
+
+        <div class="camera-card">
+            <div class="camera-view">
+                <div class="live-badge">CANLI</div>
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="camera-info">
+                <span class="camera-name">Cam 1 - Salon</span>
+                <span class="camera-status offline">Bağlantı Yok</span>
+            </div>
+        </div>
+
+        <div class="camera-card">
+            <div class="camera-view">
+                <div class="live-badge">CANLI</div>
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="camera-info">
+                <span class="camera-name">Cam 2 - Mutfak</span>
+                <span class="camera-status offline">Bağlantı Yok</span>
+            </div>
+        </div>
+
+        <div class="camera-card">
+            <div class="camera-view">
+                <div class="live-badge">CANLI</div>
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="camera-info">
+                <span class="camera-name">Cam 3 - Koridor</span>
+                <span class="camera-status offline">Bağlantı Yok</span>
+            </div>
+        </div>
+
+        <div class="camera-card">
+            <div class="camera-view">
+                <div class="live-badge">CANLI</div>
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="camera-info">
+                <span class="camera-name">Cam 4 - Koridor 2</span>
+                <span class="camera-status offline">Bağlantı Yok</span>
+            </div>
+        </div>
+
+        <div class="camera-card">
+            <div class="camera-view">
+                <div class="live-badge">CANLI</div>
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="camera-info">
+                <span class="camera-name">Cam 5 - Büyük Oda</span>
+                <span class="camera-status offline">Bağlantı Yok</span>
+            </div>
+        </div>
+
+        <div class="camera-card">
+            <div class="camera-view">
+                <div class="live-badge">CANLI</div>
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="camera-info">
+                <span class="camera-name">Cam 6 - Yatak Odası</span>
+                <span class="camera-status offline">Bağlantı Yok</span>
+            </div>
+        </div>
+
+        <div class="camera-card">
+            <div class="camera-view">
+                <div class="live-badge">CANLI</div>
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="camera-info">
+                <span class="camera-name">Cam 7 - Balkon</span>
+                <span class="camera-status offline">Bağlantı Yok</span>
+            </div>
+        </div>
+
+        <div class="camera-card">
+            <div class="camera-view">
+                <i class="fas fa-video-slash" style="color: #444;"></i>
+            </div>
+            <div class="camera-info">
+                <span class="camera-name">Cam 8 - Kiler</span>
+                <span class="camera-status offline">Bağlantı Yok</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/Fronted/Js/Camera.js"></script>
+
 </body>
 
 </html>

@@ -42,8 +42,7 @@
               "RelativeToolTip": "API\\DTOs\\JarvisRequestDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T19:09:29.806Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-01T19:09:29.806Z"
             },
             {
               "$type": "Document",
@@ -55,8 +54,7 @@
               "RelativeToolTip": "API\\DTOs\\JarvisRequestsDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T19:07:16.459Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-01T19:07:16.459Z"
             },
             {
               "$type": "Document",
@@ -68,8 +66,7 @@
               "RelativeToolTip": "API\\Services\\IJarvisClient.cs",
               "ViewState": "AgIAABcAAAAAAAAAAAAwwAsAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T18:54:20.124Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-01T18:54:20.124Z"
             },
             {
               "$type": "Document",
@@ -81,8 +78,7 @@
               "RelativeToolTip": "API\\Controllers\\JarvisControllers.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T18:54:04.283Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-01T18:54:04.283Z"
             },
             {
               "$type": "Document",
@@ -92,7 +88,7 @@
               "RelativeDocumentMoniker": "API\\Program.cs",
               "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Program.cs",
               "RelativeToolTip": "API\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAABFAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAA0AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-31T16:20:28.875Z",
               "EditorCaption": ""

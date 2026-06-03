@@ -1,136 +1,115 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ev Kontrol Merkezi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/Fronted/Css/style.css">
     <link rel="icon" href="/Fronted/İmages/logo.png">
 </head>
-
 <body>
+
+    <div id="loader-overlay">
+        <div class="loader-ring"></div>
+        <div class="loader-title">Home <span>Asistan</span></div>
+        <div class="loader-subtitle" id="loader-text">Sistem Başlatılıyor...</div>
+        <div class="loader-percentage" id="loader-percentage">0%</div>
+        <div class="loader-bar-wrap">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+    </div>
 
     <div class="layout">
 
-        <!-- SIDEBAR -->
         <aside class="sidebar collapsed" id="sidebar">
-
             <div class="logo">EV ASİSTANI</div>
             <div class="version">Sürüm 1.0.0</div>
 
             <nav>
-                <a href="#" class="active">📊 Gösterge Paneli</a>
-                <a href="/Fronted/Pages/Cihazlar.html">💡 Cihazlar</a>
-                <a href="#">🏠 Odalar</a>
-                <a href="#">⚙️ Otomasyonlar</a>
-                <a href="#">🤖 Jarvis</a>
-                <a href="#">📷 Kameralar</a>
-                <a href="#">🌡️ Sensörler</a>
-                <a href="#">🔔 Bildirimler</a>
-                <a href="#">👥 Kullanıcılar</a>
-                <a href="#">🖥️ Sistem İzleme</a>
-                <a href="#">⚙️ Ayarlar</a>
-                <a href="#">🧾 Loglar</a>
+                <a href="#" class="active"><i class="fas fa-chart-pie"></i> Gösterge Paneli</a>
+                <a href="/Fronted/Pages/Cihazlar.html"><i class="fas fa-lightbulb"></i> Cihazlar</a>
+                <a href="#"><i class="fas fa-door-open"></i> Odalar</a>
+                <a href="#"><i class="fas fa-bolt"></i> Otomasyonlar</a>
+                <a href="#"><i class="fas fa-robot"></i> Jarvis</a>
+                <a href="/Fronted/Pages/Kameralar.html"><i class="fas fa-video"></i> Kameralar</a>
+                <a href="#"><i class="fas fa-microchip"></i> Sensörler</a>
+                <a href="#"><i class="fas fa-bell"></i> Bildirimler</a>
+                <a href="#"><i class="fas fa-users"></i> Kullanıcılar</a>
+                <a href="#"><i class="fas fa-desktop"></i> Sistem İzleme</a>
+                <a href="#"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="#"><i class="fas fa-terminal"></i> Loglar</a>
             </nav>
-
         </aside>
 
-        <!-- ANA İÇERİK -->
         <main class="content">
 
-            <!-- ÜST BAR -->
             <header class="topbar">
-
                 <div class="topbar-left">
-
                     <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
                         <span></span>
                         <span></span>
                         <span></span>
                     </button>
-
                     <div>
                         <h1>Ev Asistanı Kontrol Merkezi</h1>
                         <p>Sistemin genel durumunu buradan takip edebilirsiniz.</p>
                     </div>
-
                 </div>
-
-                <div class="status online">● Sistem Aktif Değil</div>
-
+                <div class="status online">● Sistem Aktif</div>
             </header>
 
-            <!-- İSTATİSTİKLER -->
             <section class="stats">
-
                 <div class="card">
                     <h3>Toplam Cihaz</h3>
                     <span id="devices">46</span>
                 </div>
-
                 <div class="card">
                     <h3>Oda Sayısı</h3>
                     <span id="rooms">5</span>
                 </div>
-
                 <div class="card">
                     <h3>Aktif Otomasyon</h3>
-                    <span id="automations">0</span>
+                    <span id="automations">12</span>
                 </div>
-
                 <div class="card">
                     <h3>Kullanıcı Sayısı</h3>
                     <span id="users">3</span>
                 </div>
-
             </section>
 
-            <!-- ANA GRID -->
             <section class="dashboard-grid">
 
-                <!-- SİSTEM DURUMU -->
                 <div class="panel">
-
-                    <h2>Sistem Durumu(Hazır Değil)</h2>
-
+                    <h2>Sistem Durumu</h2>
                     <div class="service">
                         <span>Backend Servisi</span>
                         <span class="badge success">Çalışıyor</span>
                     </div>
-
                     <div class="service">
                         <span>Jarvis Çekirdeği</span>
                         <span class="badge success">Çalışıyor</span>
                     </div>
-
                     <div class="service">
                         <span>Watchdog</span>
                         <span class="badge success">Çalışıyor</span>
                     </div>
-
                     <div class="service">
                         <span>SignalR</span>
                         <span class="badge success">Bağlı</span>
                     </div>
-
                     <div class="service">
                         <span>Veritabanı</span>
                         <span class="badge success">Bağlı</span>
                     </div>
-
                     <div class="service">
                         <span>MQTT</span>
                         <span class="badge success">Bağlı</span>
                     </div>
-
                 </div>
 
-                <!-- KAYNAK KULLANIMI -->
                 <div class="panel">
-
-                    <h2>Kaynak Kullanımı (Hazır Değil)</h2>
-
+                    <h2>Kaynak Kullanımı</h2>
                     <div class="resource">
                         <div class="resource-title">
                             İşlemci Kullanımı
@@ -154,52 +133,40 @@
                     <div class="resource">
                         <div class="resource-title">
                             Disk Kullanımı
-                            <span>61%</span>
+                            <span id="diskText">61%</span>
                         </div>
                         <div class="bar">
                             <div class="fill disk"></div>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- JARVIS -->
                 <div class="panel">
-
-                    <h2>Jarvis Durumu (Hazır Değil)</h2>
-
+                    <h2>Jarvis Durumu</h2>
                     <div class="info-row">
                         <strong>Durum:</strong>
                         <span>Çevrimiçi</span>
                     </div>
-
                     <div class="info-row">
                         <strong>Uyandırma Kelimesi:</strong>
                         <span>Aktif</span>
                     </div>
-
                     <div class="info-row">
                         <strong>Mikrofon:</strong>
                         <span>Bağlı</span>
                     </div>
-
                     <div class="info-row">
                         <strong>Yanıt Süresi:</strong>
                         <span>128 ms</span>
                     </div>
-
                     <div class="last-command">
                         <h3>Son Komut</h3>
                         <p>"Salon ışıklarını aç"</p>
                     </div>
-
                 </div>
 
-                <!-- SON AKTİVİTELER -->
                 <div class="panel">
-
-                    <h2>Son Aktiviteler (Hazır Değil)</h2>
-
+                    <h2>Son Aktiviteler</h2>
                     <ul class="activity-list">
                         <li>Salon ışıkları açıldı</li>
                         <li>Klima 22°C olarak ayarlandı</li>
@@ -207,41 +174,22 @@
                         <li>Yeni sensör eklendi</li>
                         <li>Kamera bağlantısı doğrulandı</li>
                     </ul>
-
                 </div>
 
-                <!-- CANLI LOG -->
                 <div class="panel full-width">
-
-                    <h2>Canlı Sistem Kayıtları (Hazır Değil)</h2>
+                    <h2>Canlı Sistem Kayıtları</h2>
                     <div id="logs"></div>
-
                 </div>
 
             </section>
 
-            <!-- ALT BİLGİ -->
             <footer>
-                <p style="text-align:center;">Ev Asistanı © 2026</p>
+                <p>Ev Asistanı © 2026</p>
             </footer>
 
         </main>
-
     </div>
 
     <script src="/Fronted/Js/index.js"></script>
-
-    <script>
-        // Sidebar toggle
-        const sidebar = document.getElementById('sidebar');
-        const toggle  = document.getElementById('menuToggle');
-
-        toggle.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-            toggle.classList.toggle('open');
-        });
-    </script>
-
 </body>
-
 </html>

@@ -1,228 +1,256 @@
-// --- 1. Kategori Filtreleme Mekanizması ---
-const chips = document.querySelectorAll('.chip');
-const cards = document.querySelectorAll('.device-card');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('HomeOS: Çekirdek Sistem, Animasyonlar ve Buton Kontrolleri Aktif.');
 
-chips.forEach(chip => {
-    chip.addEventListener('click', () => {
-        chips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
+    // ══════════════════════════════
+    //  DOM SEÇİCİLERİ
+    // ══════════════════════════════
+    const loaderOverlay = document.getElementById('loader-overlay');
+    const loaderBar = document.getElementById('loader-bar');
+    const loaderText = document.getElementById('loader-text');
+    const loaderPercentage = document.getElementById('loader-percentage');
 
-        const filterValue = chip.getAttribute('data-filter');
-        filterData(filterValue, 'type');
-    });
-});
+    const searchInput = document.querySelector('.search-box input');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const deviceCards = document.querySelectorAll('.device-card');
+    
+    // Sağ Detay Paneli Elementleri
+    const detailsTitle = document.querySelector('.details-panel .details-header h2');
+    const infoItems = document.querySelectorAll('.details-panel .info-item strong');
+    const cpuBar = document.querySelectorAll('.res-fill')[0];
+    const cpuText = document.querySelectorAll('.res-labels span:last-child')[0];
+    const ramBar = document.querySelectorAll('.res-fill')[1];
+    const ramText = document.querySelectorAll('.res-labels span:last-child')[1];
+    const terminalBox = document.querySelector('.terminal-box');
 
-// --- 2. Üst İstatistiklere Tıklayınca Duruma Göre Filtreleme ---
-function filterByStatus(status) {
-    filterData(status, 'status');
-}
+    // Yeni Cihaz Ekle Modal Elementleri
+    const openModalBtn = document.querySelector('.add-btn');
+    const deviceModal = document.getElementById('device-modal');
+    const closeModalX = document.getElementById('close-modal');
+    const closeModalCancel = document.getElementById('cancel-modal');
+    const addDeviceForm = document.getElementById('add-device-form');
 
-function filterData(value, filterType) {
-    cards.forEach(card => {
-        const typeMatch = (filterType === 'type' && (value === 'Tümü' || card.getAttribute('data-type') === value));
-        const statusMatch = (filterType === 'status' && (value === 'all' || card.getAttribute('data-status') === value));
+    // Arama ve Filtre Hafızası
+    let activeFilter = 'all';
+    let searchQuery = '';
 
-        if (typeMatch || statusMatch) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
+    // ══════════════════════════════
+    //  1. BAŞLANGIÇ ANİMASYONU (LOADER MOTORU)
+    // ══════════════════════════════
+    const loadingStates = [
+        { limit: 30, text: "HomeOS çekirdeği taranıyor..." },
+        { limit: 65, text: "Ağ geçitleri ve IP adresleri doğrulanıyor..." },
+        { limit: 85, text: "Cihaz durumları senkronize ediliyor..." },
+        { limit: 100, text: "Sistem bileşenleri hazır." }
+    ];
 
-// --- 3. Arama Kutusu Filtrelemesi ---
-const searchInput = document.getElementById('search-input');
-searchInput.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-    cards.forEach(card => {
-        const name = card.querySelector('.device-name').innerText.toLowerCase();
-        const room = card.querySelector('.device-room').innerText.toLowerCase();
-        if (name.includes(query) || room.includes(query)) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-});
+    let progress = 0;
 
-// --- 4. Kart Tıklanınca Sağ Paneli Güncelleme ---
-function selectDevice(cardElement, name, room, status, iconName, ip, mac) {
-    document.querySelectorAll('.device-card').forEach(c => c.classList.remove('active-card'));
-    cardElement.classList.add('active-card');
+    const runInitialLoader = () => {
+        const interval = setInterval(() => {
+            // Animasyon hızı ve rastgele yüklenme adımları
+            const step = Math.floor(Math.random() * 6) + 4;
+            progress += step;
 
-    document.getElementById('panel-title').innerText = name;
-    document.getElementById('panel-room').innerText = room;
-    document.getElementById('panel-device-icon').innerText = iconName;
-    document.getElementById('panel-ip').innerText = ip;
-    document.getElementById('panel-mac').innerText = mac;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                hideLoader();
+            }
 
-    let cpuVal = 0;
-    let ramVal = 0;
+            if (loaderBar) loaderBar.style.width = `${progress}%`;
+            if (loaderPercentage) loaderPercentage.textContent = `${progress}%`;
 
-    if (status === 'Online') {
-        cpuVal = Math.floor(Math.random() * 40 + 10);
-        ramVal = Math.floor(Math.random() * 60 + 20);
-        document.getElementById('panel-cpu').innerText = "%" + cpuVal;
-        document.getElementById('panel-ram').innerText = ramVal + " MB";
-    } else {
-        document.getElementById('panel-cpu').innerText = "%0";
-        document.getElementById('panel-ram').innerText = "0 MB";
-    }
-
-    // Progress barları haraket ettir
-    document.getElementById('cpu-fill').style.width = cpuVal + "%";
-    document.getElementById('ram-fill').style.width = (ramVal * 100 / 128) + "%"; // Maks 128mb varsayımıyla
-
-    const logBox = document.getElementById('logs');
-    logBox.innerHTML = `<div class="log">• [Cihaz Değişti] ${name} verileri senkronize edildi.</div>`;
-}
-
-// --- 5. Switch (Aç/Kapat) ---
-function toggleDeviceState(checkbox, deviceName) {
-    const state = checkbox.checked ? "AÇIK (ON)" : "KAPALI (OFF)";
-    addLog(`[Kontrol] ${deviceName} durumu değiştirildi: ${state}`);
-}
-
-// --- 6. Yeniden Başlat Butonu ---
-function restartDevice(event, deviceName) {
-    event.stopPropagation();
-    addLog(`[Sistem] ${deviceName} için reboot sinyali gönderildi...`);
-    alert(`${deviceName} yeniden başlatılıyor.`);
-}
-
-// --- 7. Ayarlar Butonu ---
-function openSettings(event, deviceName) {
-    event.stopPropagation();
-    alert(`${deviceName} donanım ayar modülü terminale bağlandı.`);
-}
-
-// --- 8. Ham Komut Gönderme ---
-function sendConsoleCommand() {
-    const cmd = prompt("Gönderilecek Terminal Komutu (Örn: RESET_WIFI):");
-    if (cmd) {
-        addLog(`[Terminal Command] ${cmd}`);
-    }
-}
-
-// --- 9. Yeni Cihaz Ekle ---
-function addNewDevice() {
-    alert("Yeni cihaz ekleme sihirbazı başlatıldı.");
-}
-
-function addLog(message) {
-    const logBox = document.getElementById('logs');
-    const time = new Date().toLocaleTimeString();
-    logBox.innerHTML += `<div class="log">• [${time}] ${message}</div>`;
-    logBox.scrollTop = logBox.scrollHeight;
-}
-// --- 10. MODAL KONTROL SİSTEMİ ---
-function openModal() {
-    const modal = document.getElementById('device-modal');
-    modal.classList.add('open');
-
-    // İnputları temizle
-    document.getElementById('modal-dev-name').value = '';
-    document.getElementById('modal-dev-room').value = '';
-    document.getElementById('modal-dev-ip').value = '';
-    document.getElementById('modal-dev-mac').value = '';
-}
-
-function closeModal() {
-    const modal = document.getElementById('device-modal');
-    modal.classList.remove('open');
-}
-
-// --- 11. YENİ CİHAZI DOKÜMANA KAYDETME VE EKLEME ---
-function saveNewDevice() {
-    const name = document.getElementById('modal-dev-name').value.trim();
-    const room = document.getElementById('modal-dev-room').value.trim();
-    const type = document.getElementById('modal-dev-type').value;
-    const status = document.getElementById('modal-dev-status').value;
-    const ip = document.getElementById('modal-dev-ip').value.trim() || '192.168.1.200';
-    const mac = document.getElementById('modal-dev-mac').value.trim() || 'AA:BB:CC:DD:EE:FF';
-
-    if (!name || !room) {
-        alert("Lütfen en azından Cihaz Adı ve Konum alanlarını doldurun!");
-        return;
-    }
-
-    // İkon Belirleyici Esnek Yapı
-    let icon = "router";
-    if (type === "Işıklar") icon = "lightbulb";
-    else if (type === "Kameralar") icon = "videocam";
-    else if (type === "Prizler") icon = "power";
-    else if (type === "Klima") icon = "ac_unit";
-    else if (type === "Sensörler") icon = "sensors";
-
-    // Durum Badge Sınıfı Belirleyici
-    let badgeClass = "success";
-    let badgeText = "Online";
-    if (status === "Offline") { badgeClass = "error"; badgeText = "Offline"; }
-    if (status === "Maintenance") { badgeClass = "warning"; badgeText = "Bakımda"; }
-
-    // HTML Kart Şablonunu Oluşturma
-    const container = document.getElementById('device-container');
-    const newCard = document.createElement('div');
-    newCard.className = 'device-card';
-    newCard.setAttribute('data-type', type);
-    newCard.setAttribute('data-status', status);
-
-    // Karta tıklama olayını ata
-    newCard.onclick = function () {
-        selectDevice(this, name, room, status, icon, ip, mac);
+            const currentState = loadingStates.find(state => progress <= state.limit);
+            if (currentState && loaderText) {
+                loaderText.textContent = currentState.text;
+            }
+        }, 35);
     };
 
-    newCard.innerHTML = `
-        <div class="card-upper">
-            <div class="device-icon-wrapper"><span class="material-icons-round">${icon}</span></div>
-            <span class="badge ${badgeClass}">${badgeText}</span>
-        </div>
-        <div class="card-middle">
-            <h3 class="device-name">${name}</h3>
-            <p class="device-room">${room} • Şimdi eklendi</p>
-        </div>
-        <div class="card-lower">
-            <div class="quick-actions">
-                <button class="circle-btn" title="Yeniden Başlat" onclick="restartDevice(event, '${name}')"><span class="material-icons-round">refresh</span></button>
-                <button class="circle-btn" title="Ayarlar" onclick="openSettings(event, '${name}')"><span class="material-icons-round">settings</span></button>
-            </div>
-            <label class="switch" onclick="event.stopPropagation()">
-                <input type="checkbox" checked onchange="toggleDeviceState(this, '${name}')">
-                <span class="slider"></span>
-            </label>
-        </div>
-    `;
+    const hideLoader = () => {
+        setTimeout(() => {
+            if (loaderOverlay) {
+                loaderOverlay.classList.add('fade-out');
+                // Performans için animasyon bitince DOM'dan kaldırır
+                loaderOverlay.addEventListener('transitionend', () => {
+                    loaderOverlay.remove();
+                });
+            }
+            logToTerminal("[Sistem] Bütün servisler stabil şekilde başlatıldı.");
+        }, 400);
+    };
 
-    // Yeni kartı mevcut listeye ekle ve modali kapat
-    container.appendChild(newCard);
-    closeModal();
+    // Animasyon motorunu hemen ateşle
+    runInitialLoader();
 
-    // Sol taraftaki istatistik sayaç sayılarını güncelle
-    updateStatsCounter();
+    // ══════════════════════════════
+    //  2. YENİ CİHAZ EKLE MODAL POPUP
+    // ══════════════════════════════
+    if (openModalBtn && deviceModal) {
+        openModalBtn.addEventListener('click', () => {
+            deviceModal.classList.add('show');
+            logToTerminal("[Sistem] Yeni cihaz ekleme penceresi açıldı.");
+        });
+    }
 
-    // Sağ terminal paneline log bas
-    addLog(`[Sistem] Yeni ağ aygıtı entegre edildi: ${name} (${ip})`);
-}
+    const closeModal = () => {
+        if (deviceModal) {
+            deviceModal.classList.remove('show');
+            if (addDeviceForm) addDeviceForm.reset();
+        }
+    };
 
-// Sayaçları Dinamik Hesaplama Fonksiyonu
-function updateStatsCounter() {
-    const totalCards = document.querySelectorAll('.device-card');
-    let onlineCount = 0;
-    let offlineCount = 0;
-    let maintCount = 0;
+    if (closeModalX) closeModalX.addEventListener('click', closeModal);
+    if (closeModalCancel) closeModalCancel.addEventListener('click', closeModal);
 
-    totalCards.forEach(card => {
-        const s = card.getAttribute('data-status');
-        if (s === 'Online') onlineCount++;
-        else if (s === 'Offline') offlineCount++;
-        else if (s === 'Maintenance') maintCount++;
+    window.addEventListener('click', (e) => {
+        if (e.target === deviceModal) closeModal();
     });
 
-    document.getElementById('stat-total').innerText = totalCards.length;
-    document.getElementById('stat-online').innerText = onlineCount;
-    document.getElementById('stat-offline').innerText = offlineCount;
-    document.getElementById('stat-maintenance').innerText = maintCount;
+    if (addDeviceForm) {
+        addDeviceForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('device-name').value;
+            const room = document.getElementById('device-room').value;
+            logToTerminal(`[Sistem] Yeni donanım kuyruğa eklendi: ${name} (${room})`);
+            closeModal();
+        });
+    }
 
-    // Yeni eklenen kartların filtreleme mekanizmasına dahil olması için global referansı tazele
-    window.cards = document.querySelectorAll('.device-card');
-}
+    // ══════════════════════════════
+    //  3. ARAMA VE FİLTRELEME SİSTEMİ
+    // ══════════════════════════════
+    function filterDevices() {
+        deviceCards.forEach(card => {
+            const deviceType = card.getAttribute('data-type');
+            const deviceName = card.querySelector('.card-body h3').textContent.toLowerCase();
+            const deviceRoom = card.querySelector('.card-body p').textContent.toLowerCase();
+            
+            const matchesFilter = (activeFilter === 'all' || deviceType === activeFilter);
+            const matchesSearch = deviceName.includes(searchQuery) || deviceRoom.includes(searchQuery);
+
+            if (matchesFilter && matchesSearch) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Tıklanan buton ismini küçük harfe çevirip eşle
+            const btnText = button.textContent.trim().toLowerCase();
+            
+            if (btnText === 'ışıklar') activeFilter = 'light';
+            else if (btnText === 'kameralar') activeFilter = 'camera';
+            else if (btnText === 'sensörler') activeFilter = 'sensor';
+            else if (btnText === 'prizler') activeFilter = 'plug';
+            else if (btnText === 'klima') activeFilter = 'climate';
+            else activeFilter = 'all';
+
+            filterDevices();
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            filterDevices();
+        });
+    }
+
+    // ══════════════════════════════
+    //  4. SWITCH (AÇMA / KAPAMA) KONTROLLERİ
+    // ══════════════════════════════
+    deviceCards.forEach(card => {
+        const toggleSwitch = card.querySelector('.switch input');
+        const badge = card.querySelector('.badge');
+        const deviceName = card.querySelector('.card-body h3').textContent;
+
+        if (toggleSwitch) {
+            toggleSwitch.addEventListener('change', (e) => {
+                const isChecked = e.target.checked;
+                
+                if (badge && badge.textContent !== 'Bakımda') {
+                    if (isChecked) {
+                        badge.textContent = 'Online';
+                        badge.className = 'badge online';
+                        logToTerminal(`[${deviceName}] Güç durumu: ON (Açık)`);
+                    } else {
+                        badge.textContent = 'Offline';
+                        badge.className = 'badge offline';
+                        logToTerminal(`[${deviceName}] Güç durumu: OFF (Kapalı)`);
+                    }
+                }
+            });
+        }
+    });
+
+    // ══════════════════════════════
+    //  5. YENİLEME (REFRESH) VE SAĞ DETAY PANELİ
+    // ══════════════════════════════
+    deviceCards.forEach(card => {
+        const refreshBtn = card.querySelector('.action-btn:nth-child(1)');
+        const deviceName = card.querySelector('.card-body h3').textContent;
+
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Karta tıklama olayını tetiklemesin
+                refreshBtn.style.transform = 'rotate(360deg)';
+                refreshBtn.style.transition = 'transform 0.5s ease';
+                logToTerminal(`[${deviceName}] Donanım ping talebi gönderildi...`);
+                
+                setTimeout(() => {
+                    refreshBtn.style.transform = 'none';
+                    refreshBtn.style.transition = 'none';
+                    logToTerminal(`[${deviceName}] Sinyal stabil. Ping: ${Math.floor(Math.random() * 30) + 10}ms`);
+                }, 500);
+            });
+        }
+
+        // Kart Seçimi
+        card.addEventListener('click', () => {
+            deviceCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+
+            const name = card.querySelector('.card-body h3').textContent;
+            const type = card.getAttribute('data-type');
+
+            if (detailsTitle) {
+                let icon = 'fa-lightbulb';
+                if (type === 'camera') icon = 'fa-video';
+                if (type === 'plug') icon = 'fa-plug';
+                if (type === 'climate') icon = 'fa-snowflake';
+                detailsTitle.innerHTML = `<i class="fas ${icon}"></i> ${name}`;
+            }
+
+            if (infoItems.length >= 2) {
+                infoItems[0].textContent = card.querySelector('.card-body p').textContent.split('•')[0].trim();
+                infoItems[1].textContent = `192.168.1.${Math.floor(Math.random() * 80) + 110}`;
+            }
+
+            const cpu = Math.floor(Math.random() * 35) + 5;
+            const ram = Math.floor(Math.random() * 45) + 15;
+            if (cpuBar) { cpuBar.style.width = `${cpu}%`; cpuText.textContent = `%${cpu}`; }
+            if (ramBar) { ramBar.style.width = `${ram}%`; ramText.textContent = `${ram} MB`; }
+
+            logToTerminal(`[Arayüz] ${name} detay matrisi yüklendi.`);
+        });
+    });
+
+    // Yardımcı Terminal Log Fonksiyonu
+    function logToTerminal(message) {
+        if (!terminalBox) return;
+        const now = new Date();
+        const timeStr = now.toTimeString().split(' ')[0];
+        const p = document.createElement('p');
+        p.className = 'log-line';
+        p.innerHTML = `<span class="time">[${timeStr}]</span> ${message}`;
+        terminalBox.appendChild(p);
+        terminalBox.scrollTop = terminalBox.scrollHeight;
+    }
+});

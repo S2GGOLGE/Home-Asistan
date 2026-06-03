@@ -1,0 +1,297 @@
+/* --- GENEL AYARLAR VE HOMEOS DOĞAL RENK SKALASI --- */
+:root {
+    --bg-main: #080808;
+    /* HomeOS Ana Koyu Tema */
+    --bg-panel: #111111;
+    /* Panel Üstü Kart Rengi */
+    --bg-inner: #161616;
+    /* İç Eleman Arka Planı */
+    --accent-green: #00ff88;
+    /* Canlı Neon Yeşil */
+    --border-line: #1c1c1c;
+    /* Standart İnce Çizgi Rengi */
+    --text-primary: #ffffff;
+    /* Birincil Metin */
+    --text-secondary: #888888;
+    /* İkincil Metin */
+
+    /* Durum Renkleri */
+    --color-red: #ff4444;
+    --color-orange: #ff9900;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: var(--bg-main);
+    color: var(--text-primary);
+    padding: 25px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* --- ÜST KONTROL BARU (Header) --- */
+.header-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-line);
+}
+
+.back-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--accent-green);
+    transform: translateX(-3px);
+}
+
+.back-link:active {
+    transform: scale(0.95);
+}
+
+.page-title {
+    margin-left: 24px;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+}
+
+/* --- 3x3 KAMERA GRID MATRİSİ --- */
+.camera-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    flex-grow: 1;
+}
+
+/* --- KAMERA KARTLARI --- */
+.camera-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-line);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.camera-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-green);
+}
+
+/* Kamera Ekran Paneli */
+.camera-view {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #050505;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 1px solid var(--border-line);
+}
+
+.camera-view i {
+    font-size: 32px;
+    color: #222222;
+    transition: color 0.3s ease;
+}
+
+.camera-card:hover .camera-view i:not(.fa-video-slash) {
+    color: var(--accent-green);
+}
+
+/* Canlı Yayın Rozeti */
+.live-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 64, 64, 0.9);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.live-badge::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    animation: pulseGlow 1.5s infinite alternate;
+}
+
+/* Kamera Bilgi Bandı */
+.camera-info {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #0c0c0c;
+}
+
+.camera-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.camera-status {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-green);
+}
+
+.camera-status.offline {
+    color: var(--color-red);
+}
+
+/* --- RE-DESIGNED LOADER OVERLAY (HomeOS Entegre) --- */
+#loader-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    gap: 16px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+#loader-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Döner Halka */
+.loader-ring {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #161616;
+    border-top: 2px solid var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* Logolar ve Yazılar */
+.loader-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+.loader-title span {
+    color: var(--accent-green);
+}
+
+.loader-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Yüzde Sayacı */
+.loader-percentage {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-green);
+}
+
+/* İlerleme Çubuğu Yuvası */
+.loader-bar-wrap {
+    width: 180px;
+    height: 2px;
+    background-color: #161616;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* İlerleme Çubuğu */
+.loader-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-green);
+    transition: width 0.05s linear;
+}
+
+/* --- ANİMASYON TANIMLARI --- */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulseGlow {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
+
+/* --- RESPONSIVE TASARIM --- */
+@media (max-width: 1024px) {
+    .camera-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 16px;
+    }
+
+    .camera-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .header-bar {
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+    }
+
+    .page-title {
+        font-size: 20px;
+        margin-left: 16px;
+    }
+}

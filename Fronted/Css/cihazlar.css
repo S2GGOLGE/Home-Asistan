@@ -1,337 +1,327 @@
 /* ══════════════════════════════
-   RESET & BASE (Senin Kodların)
+    HOMEOS DOĞAL RENK SKALASI
 ══════════════════════════════ */
+:root {
+    --bg-main: #080808;
+    --bg-panel: #111111;
+    --bg-inner: #161616;
+    --accent-green: #00ff88;
+    --border-line: #1c1c1c;
+    --text-primary: #ffffff;
+    --text-secondary: #888888;
+
+    /* Durum Renkleri */
+    --color-red: #ff4444;
+    --color-orange: #ff9900;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Segoe UI, sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 body {
-    background: #080808;
-    color: white;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
     overflow: hidden;
 }
 
-/* Masaüstü 3 Sütun Yerleşimi */
-.desktop-layout {
-    display: grid;
-    grid-template-columns: 260px 1fr 380px;
-    height: 100vh;
+/* LAYOUT STRUCTURE */
+.layout {
+    display: flex;
     width: 100vw;
+    height: 100vh;
 }
 
-/* ══════════════════════════════
-   SIDEBAR (Senin Renklerinle Modifiye)
-══════════════════════════════ */
+/* SOL MENU (SIDEBAR) */
 .sidebar {
-    width: 260px;
-    background: #111;
-    border-right: 1px solid #222;
-    padding: 25px;
-    overflow: hidden;
-    flex-shrink: 0;
+    width: 180px;
+    background: #050505;
+    border-right: 1px solid var(--border-line);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-area {
+    margin-bottom: 40px;
 }
 
 .logo {
-    color: #00ff88;
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    white-space: nowrap;
+    color: var(--accent-green);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .version {
-    color: #555;
-    font-size: 12px;
-    margin-bottom: 30px;
-    white-space: nowrap;
+    color: #444;
+    font-size: 11px;
+    margin-top: 2px;
 }
 
-.sidebar nav {
+.back-btn {
+    text-decoration: none;
+    color: #aaa;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    color: var(--accent-green);
+}
+
+/* ORTA PANEL (ANA İÇERİK) */
+main.content {
+    flex: 1;
+    padding: 25px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-
-.sidebar a {
-    text-decoration: none;
-    color: #ccc;
-    padding: 12px;
-    border-radius: 10px;
-    transition: .3s;
-    white-space: nowrap;
-}
-
-.sidebar a:hover,
-.sidebar a.active {
-    background: #00ff88;
-    color: black;
-    font-weight: bold;
-}
-
-/* ══════════════════════════════
-   MAIN CONTENT ALANI
-══════════════════════════════ */
-main {
-    flex: 1;
-    padding: 30px;
-    min-width: 0;
-    overflow-y: auto;
+    gap: 24px;
 }
 
 .topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
 }
 
 .topbar h1 {
     font-size: 24px;
-    margin-bottom: 4px;
+    font-weight: 600;
 }
 
 .topbar p {
-    color: #888;
-    font-size: 14px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 4px;
 }
 
 .status.online {
-    color: #00ff88;
+    color: var(--accent-green);
     font-weight: bold;
 }
 
-/* Üst Sağ Arama ve Aksiyonlar */
-.app-bar-actions {
+.topbar-right {
     display: flex;
-    gap: 16px;
+    gap: 12px;
 }
 
 .search-box {
-    background: #141414;
-    border: 1px solid #252525;
-    border-radius: 10px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-line);
+    border-radius: 8px;
     display: flex;
     align-items: center;
-    padding: 0 14px;
-    gap: 10px;
-}
-
-.search-box span {
-    color: #00ff88;
-}
-
-.search-box input {
-    background: transparent;
-    border: none;
-    color: #fff;
-    outline: none;
-    width: 180px;
-    height: 40px;
-}
-
-.primary-btn {
-    background: #00ff88;
-    color: black;
-    border: none;
-    padding: 0 20px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+    padding: 0 12px;
     gap: 8px;
-    transition: opacity 0.2s;
+    width: 240px;
 }
 
-.primary-btn:hover {
-    opacity: 0.9;
-}
-
-/* ══════════════════════════════
-   STATS KARTLARI (Senin Kodların)
-══════════════════════════════ */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.card {
-    background: #141414;
-    border: 1px solid #252525;
-    border-radius: 15px;
-    padding: 20px;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    border-color: #333;
-}
-
-.card h3 {
-    color: #999;
-    margin-bottom: 10px;
+.search-box i {
+    color: #555;
     font-size: 14px;
 }
 
-.card span {
-    font-size: 32px;
-    color: #00ff88;
-    font-weight: bold;
-}
-
-/* Filtre Çipleri */
-.filter-chips {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.chip {
-    background: #141414;
-    color: #888;
-    border: 1px solid #252525;
-    padding: 8px 18px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.chip.active,
-.chip:hover {
-    background: #00ff88;
-    color: black;
-    font-weight: bold;
-    border-color: #00ff88;
-}
-
-/* ══════════════════════════════
-   CIHAZ GRID & PANEL YAPISI
-══════════════════════════════ */
-.device-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.device-card {
-    background: #141414;
-    border: 1px solid #252525;
-    border-radius: 15px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.device-card:hover {
-    border-color: #00ff88;
-    transform: translateY(-2px);
-}
-
-.device-card.active-card {
-    border-color: #00ff88;
-    background: #181818;
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
-}
-
-.card-upper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.device-icon-wrapper {
-    background: #0d0d0d;
-    color: #00ff88;
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Badges (Senin Kodların) */
-.badge {
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.badge.success {
-    background: #0a2e1a;
-    color: #00ff88;
-}
-
-.badge.warning {
-    background: #2e2200;
-    color: #ffaa00;
-}
-
-.badge.error {
-    background: #2e0a0a;
-    color: #ff4444;
-}
-
-.device-name {
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-}
-
-.device-room {
-    color: #666;
+.search-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: white;
     font-size: 13px;
-    margin-top: 2px;
+    width: 100%;
 }
 
-.card-lower {
+.add-btn {
+    background: var(--accent-green);
+    color: #000;
+    border: none;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 6px;
 }
 
-.quick-actions {
+/* İSTATİSTİK KARTLARI */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.stat-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-line);
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+.stat-card h3 {
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.stat-card .num {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.stat-card .num.green {
+    color: var(--accent-green);
+}
+
+.stat-card .num.red {
+    color: var(--color-red);
+}
+
+.stat-card .num.orange {
+    color: var(--color-orange);
+}
+
+/* FİLTRELEME BUTONLARI */
+.filter-bar {
     display: flex;
     gap: 8px;
 }
 
-.circle-btn {
-    background: #0d0d0d;
-    border: 1px solid #222;
-    color: #888;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+.filter-btn {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-line);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+.filter-btn:hover {
+    color: #fff;
+    border-color: #333;
+}
+
+.filter-btn.active {
+    background: var(--accent-green);
+    color: #000;
+    font-weight: 600;
+    border-color: var(--accent-green);
+}
+
+/* CİHAZ KARTLARI GRIDI */
+.devices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.device-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-line);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: border-color 0.2s;
+}
+
+.device-card.active {
+    border-color: var(--accent-green);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon-wrap {
+    width: 36px;
+    height: 36px;
+    background: var(--bg-inner);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
 }
 
-.circle-btn:hover {
-    background: #00ff88;
-    color: black;
-    border-color: #00ff88;
+.device-card.active .icon-wrap i {
+    color: var(--accent-green);
 }
 
-/* Switch Toggle (Koyu Tema) */
+.badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.badge.online {
+    color: var(--accent-green);
+}
+
+.badge.offline {
+    color: var(--color-red);
+}
+
+.badge.warning {
+    color: var(--color-orange);
+}
+
+.card-body h3 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.card-body p {
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.action-btn:hover {
+    color: #fff;
+}
+
+/* AKILLI TOGGLE SWITCH */
 .switch {
     position: relative;
-    width: 40px;
-    height: 22px;
+    display: inline-block;
+    width: 34px;
+    height: 18px;
 }
 
 .switch input {
@@ -342,236 +332,301 @@ main {
 
 .slider {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #222;
-    border-radius: 20px;
-    transition: .2s;
     cursor: pointer;
+    inset: 0;
+    background-color: #222;
+    border-radius: 34px;
+    transition: .3s;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 14px;
-    width: 14px;
-    left: 4px;
-    bottom: 4px;
-    background: #666;
-    transition: .2s;
+    height: 12px;
+    width: 12px;
+    left: 3px;
+    bottom: 3px;
+    background-color: #555;
     border-radius: 50%;
+    transition: .3s;
 }
 
 input:checked+.slider {
-    background: #0a2e1a;
+    background-color: var(--accent-green);
 }
 
 input:checked+.slider:before {
-    transform: translateX(18px);
-    background: #00ff88;
+    transform: translateX(16px);
+    background-color: #000;
 }
 
-/* ══════════════════════════════
-   SAĞ PANEL & LOGLAR (Senin Kodların)
-══════════════════════════════ */
-.detail-sidebar {
-    background: #111;
-    border-left: 1px solid #222;
-    padding: 30px 25px;
-    overflow-y: auto;
+/* SAĞ PANEL (DETAY ALANI) */
+.details-panel {
+    width: 280px;
+    background: #0c0c0c;
+    border-left: 1px solid var(--border-line);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
-.panel-header {
+.details-header h2 {
+    font-size: 18px;
     display: flex;
     align-items: center;
+    gap: 10px;
+}
+
+.details-header h2 i {
+    color: var(--accent-green);
+}
+
+.info-list {
+    display: flex;
+    flex-direction: column;
     gap: 12px;
 }
 
-.panel-icon {
-    font-size: 32px;
-    color: #00ff88;
-}
-
-.divider {
-    height: 1px;
-    background: #222;
-    margin: 20px 0;
-}
-
-/* Senin .info-row Yapın */
-.info-row {
+.info-item {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #1e1e1e;
-    font-size: 14px;
-    color: #ccc;
-}
-
-.info-row strong {
-    color: #fff;
-}
-
-.sec-title {
     font-size: 12px;
+    border-bottom: 1px solid #141414;
+    padding-bottom: 8px;
+}
+
+.info-item span {
+    color: var(--text-secondary);
+}
+
+.resource-section h3,
+.log-section h3 {
     color: #555;
-    font-weight: bold;
-    margin: 25px 0 12px 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
 }
 
-/* Senin .resource Yapın */
-.resource {
-    margin-bottom: 18px;
+.resource-item {
+    margin-bottom: 12px;
 }
 
-.resource-title {
+.res-labels {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
-    color: #ccc;
-    font-size: 13px;
-}
-
-.bar {
-    width: 100%;
-    height: 8px;
-    background: #222;
-    border-radius: 20px;
-}
-
-.fill {
-    height: 100%;
-    background: #00ff88;
-    border-radius: 20px;
-    transition: width 0.4s ease;
-}
-
-/* Senin .last-command & #logs Yapın */
-.last-command {
-    background: #0d0d0d;
-    border-radius: 10px;
-    padding: 14px;
-    margin-top: 20px;
-    border: 1px solid #1e1e1e;
-}
-
-.last-command h3 {
-    color: #555;
     font-size: 12px;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-}
-
-#logs {
-    height: 140px;
-    overflow: auto;
-    font-family: Consolas, monospace;
-    font-size: 13px;
-}
-
-.log {
     margin-bottom: 6px;
-    color: #00ff88;
+}
+
+.res-bar {
+    width: 100%;
+    height: 4px;
+    background: #222;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.res-fill {
+    height: 100%;
+    background: var(--accent-green);
+    border-radius: 2px;
+}
+
+.terminal-box {
+    background: #050505;
+    border: 1px solid var(--border-line);
+    border-radius: 6px;
+    padding: 12px;
+    height: 120px;
+    font-family: monospace;
+    font-size: 11px;
+}
+
+.log-line {
+    margin-bottom: 6px;
+    color: var(--accent-green);
+}
+
+.log-line .time {
+    color: #444;
+    margin-right: 4px;
 }
 
 .cmd-btn {
-    width: 100%;
-    height: 42px;
-    background: transparent;
-    border: 1px solid #00ff88;
-    border-radius: 10px;
-    color: #00ff88;
-    font-weight: bold;
+    background: none;
+    border: 1px solid var(--accent-green);
+    color: var(--accent-green);
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: 20px;
-    cursor: pointer;
-    transition: all 0.2s;
+    margin-top: auto;
+    transition: 0.2s;
 }
 
 .cmd-btn:hover {
-    background: #00ff88;
-    color: black;
+    background: var(--accent-green);
+    color: #000;
 }
 
 /* ══════════════════════════════
-   MODAL (AÇILIR PENCERE) TASARIMI
+    DİNAMİK LOAD OVERLAY STİLİ
 ══════════════════════════════ */
-.modal-overlay {
+#loader-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(6px);
+    inset: 0;
+    background-color: var(--bg-main);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    gap: 16px;
+    transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+#loader-overlay.fade-out {
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.3s ease;
 }
 
-.modal-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
+.loader-ring {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #161616;
+    border-top: 2px solid var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
 }
 
-.modal-content {
-    background: #111;
-    border: 1px solid #252525;
-    border-radius: 16px;
-    width: 100%;
-    max-width: 520px;
-    box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
-    display: flex;
-    flex-direction: column;
+.loader-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+}
+
+.loader-title span {
+    color: var(--accent-green);
+}
+
+.loader-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.loader-percentage {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-green);
+}
+
+.loader-bar-wrap {
+    width: 180px;
+    height: 2px;
+    background-color: #161616;
+    border-radius: 4px;
     overflow: hidden;
-    transform: translateY(-20px);
-    transition: transform 0.3s ease;
 }
 
-.modal-overlay.open .modal-content {
-    transform: translateY(0);
+.loader-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent-green);
+    transition: width 0.05s linear;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ══════════════════════════════
+    MODAL POPUP (YENİ CİHAZ EKLE)
+══════════════════════════════ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    /* Arkadaki içeriği karartır */
+    backdrop-filter: blur(4px);
+    /* Hafif fluluk efekti */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Modal Aktif Olduğunda Tetiklenecek Sınıf */
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-window {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-line);
+    width: 100%;
+    max-width: 450px;
+    border-radius: 14px;
+    padding: 24px;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-overlay.show .modal-window {
+    transform: scale(1);
 }
 
 .modal-header {
-    padding: 20px;
-    border-bottom: 1px solid #222;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid var(--border-line);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
 }
 
 .modal-header h2 {
     font-size: 18px;
-    font-weight: bold;
-    color: #fff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.modal-close {
+.modal-header h2 i {
+    color: var(--accent-green);
+}
+
+.close-btn {
     background: none;
     border: none;
-    color: #666;
+    color: var(--text-secondary);
     font-size: 24px;
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.modal-close:hover {
-    color: #ff4444;
+.close-btn:hover {
+    color: #fff;
 }
 
-.modal-body {
-    padding: 20px;
+/* FORM ELEMENTLERİ */
+.modal-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -581,78 +636,72 @@ input:checked+.slider:before {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    flex: 1;
 }
 
 .form-group label {
     font-size: 12px;
-    color: #888;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .form-group input,
 .form-group select {
-    background: #141414;
-    border: 1px solid #252525;
-    border-radius: 8px;
-    height: 40px;
-    padding: 0 12px;
+    background: var(--bg-inner);
+    border: 1px solid var(--border-line);
     color: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
     outline: none;
-    font-size: 14px;
     transition: border-color 0.2s;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-    border-color: #00ff88;
+    border-color: var(--accent-green);
 }
 
-.form-row {
-    display: flex;
-    gap: 16px;
+/* Seçim kutusunun ok simgesini koyu temaya uydurmak için */
+.form-group select {
+    cursor: pointer;
 }
 
-.modal-footer {
-    padding: 16px 20px;
-    background: #0d0d0d;
-    border-top: 1px solid #222;
+/* BUTONLAR */
+.modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 12px;
+    margin-top: 10px;
 }
 
-.btn-cancel {
-    background: transparent;
-    border: 1px solid #333;
-    color: #888;
-    border-radius: 8px;
-    padding: 0 16px;
-    height: 38px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-cancel:hover {
-    background: #222;
-    color: #fff;
-}
-
-.btn-save {
-    background: #00ff88;
+.btn-primary {
+    background: var(--accent-green);
+    color: #000;
     border: none;
-    color: black;
+    padding: 10px 18px;
     border-radius: 8px;
-    padding: 0 20px;
-    height: 38px;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 13px;
     cursor: pointer;
     transition: opacity 0.2s;
 }
 
-.btn-save:hover {
+.btn-primary:hover {
     opacity: 0.9;
+}
+
+.btn-secondary {
+    background: none;
+    border: 1px solid var(--border-line);
+    color: var(--text-secondary);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #161616;
+    color: #fff;
 }
