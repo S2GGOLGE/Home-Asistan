@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Assistant - PC Dashboard</title>
+    <link rel="stylesheet" href="/Fronted/Css/cihazlar.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="desktop-layout">
+
+        <aside class="sidebar">
+            <div class="logo">HomeOS</div>
+            <div class="version">v1.4.2-stable</div>
+
+            <nav>
+                <a href="/Fronted/Pages/index.html" class="back-link">
+                    <span class="material-icons-round"
+                        style="vertical-align: middle; margin-right: 8px;">arrow_back</span>
+                    Geri Dön
+                </a>
+            </nav>
+        </aside>
+
+        <main>
+
+            <header class="topbar">
+                <div class="topbar-left">
+                    <div>
+                        <h1>Cihaz Yönetimi</h1>
+                        <p>Evindeki tüm akıllı donanımları buradan kontrol et. Durum: <span
+                                class="status online">ONLINE</span></p>
+                    </div>
+                </div>
+                <div class="app-bar-actions">
+                    <div class="search-box">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" id="search-input" placeholder="Cihaz veya oda ara...">
+                    </div>
+                    <button class="primary-btn" onclick="openModal()">
+                        <span class="material-icons-round">add</span>
+                        Yeni Cihaz Ekle
+                    </button>
+                </div>
+            </header>
+
+            <section class="stats">
+                <div class="card" onclick="filterByStatus('all')">
+                    <h3>Toplam Cihaz</h3>
+                    <span id="stat-total">4</span>
+                </div>
+                <div class="card" onclick="filterByStatus('Online')">
+                    <h3>Online Donanım</h3>
+                    <span id="stat-online" style="color: #00ff88;">2</span>
+                </div>
+                <div class="card" onclick="filterByStatus('Offline')">
+                    <h3>Bağlantı Yok</h3>
+                    <span id="stat-offline" style="color: #ff4444;">1</span>
+                </div>
+                <div class="card" onclick="filterByStatus('Maintenance')">
+                    <h3>Bakım / Arıza</h3>
+                    <span id="stat-maintenance" style="color: #ffaa00;">1</span>
+                </div>
+            </section>
+
+            <section class="filter-chips">
+                <button class="chip active" data-filter="Tümü">Tümü</button>
+                <button class="chip" data-filter="Işıklar">Işıklar</button>
+                <button class="chip" data-filter="Kameralar">Kameralar</button>
+                <button class="chip" data-filter="Sensörler">Sensörler</button>
+                <button class="chip" data-filter="Prizler">Prizler</button>
+                <button class="chip" data-filter="Klima">Klima</button>
+            </section>
+
+            <section class="device-grid" id="device-container">
+
+                <div class="device-card active-card" data-type="Işıklar" data-status="Online"
+                    onclick="selectDevice(this, 'Salon Lambası', 'Salon', 'Online', 'lightbulb', '192.168.1.145', 'AA:BB:CC:11:22:33')">
+                    <div class="card-upper">
+                        <div class="device-icon-wrapper"><span class="material-icons-round">lightbulb</span></div>
+                        <span class="badge success">Online</span>
+                    </div>
+                    <div class="card-middle">
+                        <h3 class="device-name">Salon Lambası</h3>
+                        <p class="device-room">Salon • Şimdi aktif</p>
+                    </div>
+                    <div class="card-lower">
+                        <div class="quick-actions">
+                            <button class="circle-btn" title="Yeniden Başlat"
+                                onclick="restartDevice(event, 'Salon Lambası')"><span
+                                    class="material-icons-round">refresh</span></button>
+                            <button class="circle-btn" title="Ayarlar"
+                                onclick="openSettings(event, 'Salon Lambası')"><span
+                                    class="material-icons-round">settings</span></button>
+                        </div>
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" checked onchange="toggleDeviceState(this, 'Salon Lambası')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="device-card" data-type="Kameralar" data-status="Online"
+                    onclick="selectDevice(this, 'Bahçe Kamerası', 'Dış Mekan', 'Online', 'videocam', '192.168.1.146', 'AA:BB:CC:44:55:66')">
+                    <div class="card-upper">
+                        <div class="device-icon-wrapper"><span class="material-icons-round">videocam</span></div>
+                        <span class="badge success">Online</span>
+                    </div>
+                    <div class="card-middle">
+                        <h3 class="device-name">Bahçe Kamerası</h3>
+                        <p class="device-room">Dış Mekan • 2 dk önce</p>
+                    </div>
+                    <div class="card-lower">
+                        <div class="quick-actions">
+                            <button class="circle-btn" title="Yeniden Başlat"
+                                onclick="restartDevice(event, 'Bahçe Kamerası')"><span
+                                    class="material-icons-round">refresh</span></button>
+                            <button class="circle-btn" title="Ayarlar"
+                                onclick="openSettings(event, 'Bahçe Kamerası')"><span
+                                    class="material-icons-round">settings</span></button>
+                        </div>
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" checked onchange="toggleDeviceState(this, 'Bahçe Kamerası')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="device-card" data-type="Prizler" data-status="Offline"
+                    onclick="selectDevice(this, 'Akıllı Priz', 'Mutfak', 'Offline', 'power', '192.168.1.147', 'AA:BB:CC:77:88:99')">
+                    <div class="card-upper">
+                        <div class="device-icon-wrapper"><span class="material-icons-round">power</span></div>
+                        <span class="badge error">Offline</span>
+                    </div>
+                    <div class="card-middle">
+                        <h3 class="device-name">Akıllı Priz</h3>
+                        <p class="device-room">Mutfak • Çevrimdışı</p>
+                    </div>
+                    <div class="card-lower">
+                        <div class="quick-actions">
+                            <button class="circle-btn" title="Yeniden Başlat"
+                                onclick="restartDevice(event, 'Akıllı Priz')"><span
+                                    class="material-icons-round">refresh</span></button>
+                            <button class="circle-btn" title="Ayarlar"
+                                onclick="openSettings(event, 'Akıllı Priz')"><span
+                                    class="material-icons-round">settings</span></button>
+                        </div>
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" onchange="toggleDeviceState(this, 'Akıllı Priz')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="device-card" data-type="Klima" data-status="Maintenance"
+                    onclick="selectDevice(this, 'Klima Kontrol', 'Yatak Odası', 'Maintenance', 'ac_unit', '192.168.1.148', 'AA:BB:CC:00:11:22')">
+                    <div class="card-upper">
+                        <div class="device-icon-wrapper"><span class="material-icons-round">ac_unit</span></div>
+                        <span class="badge warning">Bakımda</span>
+                    </div>
+                    <div class="card-middle">
+                        <h3 class="device-name">Klima Kontrol</h3>
+                        <p class="device-room">Yatak Odası • Bakımda</p>
+                    </div>
+                    <div class="card-lower">
+                        <div class="quick-actions">
+                            <button class="circle-btn" title="Yeniden Başlat"
+                                onclick="restartDevice(event, 'Klima Kontrol')"><span
+                                    class="material-icons-round">refresh</span></button>
+                            <button class="circle-btn" title="Ayarlar"
+                                onclick="openSettings(event, 'Klima Kontrol')"><span
+                                    class="material-icons-round">settings</span></button>
+                        </div>
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" onchange="toggleDeviceState(this, 'Klima Kontrol')">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <aside class="detail-sidebar">
+            <div class="panel-header">
+                <span class="material-icons-round panel-icon" id="panel-device-icon">lightbulb</span>
+                <h2 id="panel-title" style="font-size: 20px;">Salon Lambası</h2>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="meta-list">
+                <div class="info-row"><span>Konum</span><strong id="panel-room">Salon</strong></div>
+                <div class="info-row"><span>IP Adresi</span><strong id="panel-ip">192.168.1.145</strong></div>
+                <div class="info-row"><span>MAC Adresi</span><strong id="panel-mac">AA:BB:CC:11:22:33</strong></div>
+                <div class="info-row"><span>Firmware</span><strong>v2.4.1</strong></div>
+            </div>
+
+            <div class="sec-title">KAYNAK KULLANIMI</div>
+            <div class="resource">
+                <div class="resource-title"><span>CPU Yükü</span><span id="panel-cpu">%12</span></div>
+                <div class="bar">
+                    <div class="fill" id="cpu-fill" style="width: 12%;"></div>
+                </div>
+            </div>
+            <div class="resource">
+                <div class="resource-title"><span>RAM Bellek</span><span id="panel-ram">45 MB</span></div>
+                <div class="bar">
+                    <div class="fill" id="ram-fill" style="width: 35%; background: #00ff88;"></div>
+                </div>
+            </div>
+
+            <div class="last-command">
+                <h3>Canlı Terminal Logları</h3>
+                <div id="logs">
+                    <div class="log">• [12:34:11] Mqtt bağlandı.</div>
+                    <div class="log">• [12:35:00] Durum: ON</div>
+                </div>
+            </div>
+
+            <button class="cmd-btn" onclick="sendConsoleCommand()">
+                <span class="material-icons-round">terminal</span>
+                Komut Gönder
+            </button>
+        </aside>
+
+    </div>
+
+    <div id="device-modal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2><span class="material-icons-round"
+                        style="color: #00ff88; vertical-align: middle; margin-right: 8px;">vibration</span>Yeni IoT
+                    Cihazı Kaydet</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Cihaz Adı</label>
+                    <input type="text" id="modal-dev-name" placeholder="Örn: Akıllı Vantilatör">
+                </div>
+                <div class="form-group">
+                    <label>Bulunduğu Oda / Konum</label>
+                    <input type="text" id="modal-dev-room" placeholder="Örn: Oturma Odası">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cihaz Tipi</label>
+                        <select id="modal-dev-type">
+                            <option value="Işıklar">Işıklar</option>
+                            <option value="Kameralar">Kameralar</option>
+                            <option value="Sensörler">Sensörler</option>
+                            <option value="Prizler">Prizler</option>
+                            <option value="Klima">Klima</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ağ Durumu</label>
+                        <select id="modal-dev-status">
+                            <option value="Online">Online</option>
+                            <option value="Offline">Offline</option>
+                            <option value="Maintenance">Bakımda</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>IP Adresi</label>
+                        <input type="text" id="modal-dev-ip" placeholder="192.168.1.X">
+                    </div>
+                    <div class="form-group">
+                        <label>MAC Adresi</label>
+                        <input type="text" id="modal-dev-mac" placeholder="AA:BB:CC:XX:XX:XX">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">İptal Et</button>
+                <button class="btn-save" onclick="saveNewDevice()">Cihazı Ağaçlandır</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Fronted/Js/cihazlar.js"></script>
+</body>
+
+</html>
