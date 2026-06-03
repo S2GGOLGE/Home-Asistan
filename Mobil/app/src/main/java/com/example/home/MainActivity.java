@@ -1,5 +1,6 @@
 package com.example.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -27,73 +28,128 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        // 1. Görünümleri Başlat (Initialization)
+        initViews();
+
+        // 2. Kenardan Kenara (EdgeToEdge) Durum Çubuğu Boşluk Ayarı
+        setupEdgeToEdge();
+
+        // 3. Tıklama ve Dinleyici Olayları (Listeners)
+        setupListeners();
+
+        // 4. Yeni Nesil Geri Tuşu Yönetimi
+        setupBackPressedDispatcher();
+    }
+
+    /**
+     * XML bileşenlerini Java nesnelerine bağlar.
+     */
+    private void initViews() {
         drawerLayout = findViewById(R.id.drawerLayout);
         btnMenu = findViewById(R.id.btnMenu);
         navigationView = findViewById(R.id.navigationView);
+    }
 
-        // Kenardan Kenara (EdgeToEdge) Durum Çubuğu Boşluk Ayarı
-        ViewCompat.setOnApplyWindowInsetsListener(drawerLayout, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+    /**
+     * Sistem çubuklarının (Status/Navigation bar) içeriği kapatmasını engeller.
+     */
+    private void setupEdgeToEdge() {
+        if (drawerLayout != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(drawerLayout, (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+                return insets;
+            });
+        }
+    }
 
-        // Hamburger Butonu Tıklama Olayı
-        btnMenu.setOnClickListener(v -> {
-            if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            } else {
-                drawerLayout.closeDrawer(GravityCompat.START);
-            }
-        });
+    /**
+     * Buton ve menü elemanlarının tıklama olaylarını yönetir.
+     */
+    private void setupListeners() {
+        // Hamburger Menü Buton Tetikleyicisi
+        if (btnMenu != null) {
+            btnMenu.setOnClickListener(v -> toggleDrawer());
+        }
 
-        // Menü Öğeleri Tıklama Olayları (Mevcut XML ile tam uyumlu)
+        // Yan Menü Ögeleri Seçim Yönetimi
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(item -> {
                 int id = item.getItemId();
 
                 if (id == R.id.nav_dashboard) {
-                    Toast.makeText(MainActivity.this, "Gösterge Paneli açılıyor...", Toast.LENGTH_SHORT).show();
+                    navigasyonYap("Gösterge Paneli açılıyor...", null);
                 } else if (id == R.id.nav_devices) {
-                    Toast.makeText(MainActivity.this, "Cihazlar listeleniyor...", Toast.LENGTH_SHORT).show();
+                    // Cihazlar menüsüne tıklandığında WebView barındıran CihazlarActivity'e gider
+                    navigasyonYap("Cihazlar listeleniyor...", CihazlarActivity.class);
                 } else if (id == R.id.nav_rooms) {
-                    Toast.makeText(MainActivity.this, "Odalar yükleniyor...", Toast.LENGTH_SHORT).show();
+                    navigasyonYap("Odalar yükleniyor...", null);
                 } else if (id == R.id.nav_automations) {
-                    Toast.makeText(MainActivity.this, "Otomasyonlar listeleniyor...", Toast.LENGTH_SHORT).show();
+                    navigasyonYap("Otomasyonlar listeleniyor...", null);
                 } else if (id == R.id.nav_jarvis) {
-                    Toast.makeText(MainActivity.this, "Jarvis Kontrolü aktif...", Toast.LENGTH_SHORT).show();
+                    navigasyonYap("Jarvis Kontrolü aktif...", null);
                 } else if (id == R.id.nav_cameras) {
-                    Toast.makeText(MainActivity.this, "Kamera akışları yükleniyor...", Toast.LENGTH_SHORT).show();
+                    navigasyonYap("Kamera akışları yükleniyor...", null);
                 } else if (id == R.id.nav_sensors) {
-                    Toast.makeText(MainActivity.this, "Sensör verileri okunuyor...", Toast.LENGTH_SHORT).show();
+                    navigasyonYap("Sensör verileri okunuyor...", null);
                 } else if (id == R.id.nav_notifications) {
-                    Toast.makeText(MainActivity.this, "Bildirimler açılıyor...", Toast.LENGTH_SHORT).show();
+                    navigasyonYap("Bildirimler açılıyor...", null);
+                } else if (id == R.id.nav_settings) {
+                    navigasyonYap("Ayarlar Açılıyor...", null); // Gelecekte SettingsActivity.class eklenebilir
+                } else if (id == R.id.nav_users) {
+                    navigasyonYap("Kullanıcılar Sayfası Açılıyor...", null);
+                } else if (id == R.id.nav_system_monitor) {
+                    navigasyonYap("Sistem Durum Ekranı Açılıyor...", null);
                 }
-                else if (id==R.id.nav_settings){
-                    Toast.makeText(this, "Ayarlar Açılıyor", Toast.LENGTH_SHORT).show();
-                }
-                else if(id==R.id.nav_users){
-                    Toast.makeText(this, "Kullanıcılar Sayfası Açılıyor", Toast.LENGTH_SHORT).show();
-                }
-                else if(id==R.id.nav_system_monitor){
-                    Toast.makeText(this, "Sistem Durum Ekranı Açılıyor", Toast.LENGTH_SHORT).show();
-                }
-                // Seçim yapıldıktan sonra çekmeceyi kapat
-                drawerLayout.closeDrawer(GravityCompat.START);
+
                 return true;
             });
         }
+    }
 
-        // Yeni Nesil AndroidX Geri Tuşu Entegrasyonu
+    /**
+     * Menü tıklandığında hem bildirim mesajı gösterir hem de hedef sayfaya yönlendirir.
+     */
+    private void navigasyonYap(String mesaj, Class<?> hedefAktivite) {
+        Toast.makeText(this, mesaj, Toast.LENGTH_SHORT).show();
+
+        if (drawerLayout != null) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+
+        if (hedefAktivite != null) {
+            Intent intent = new Intent(MainActivity.this, hedefAktivite);
+            startActivity(intent);
+        }
+    }
+
+    /**
+     * Yan menüyü (Drawer) durumuna göre açar ya da kapatır.
+     */
+    private void toggleDrawer() {
+        if (drawerLayout != null) {
+            if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            } else {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        }
+    }
+
+    /**
+     * AndroidX OnBackPressed kütüphanesini kullanarak donanımsal/yazılımsal
+     * geri tuşuna basıldığında öncelikle menünün kapanmasını sağlar.
+     */
+    private void setupBackPressedDispatcher() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
-                    setEnabled(false);
-                    getOnBackPressedDispatcher().onBackPressed();
-                    setEnabled(true);
+                    setEnabled(false); // Callback'i geçici olarak devredışı bırak
+                    getOnBackPressedDispatcher().onBackPressed(); // Varsayılan geri eylemini yürüt (Uygulamadan çıkış/Geri gitme)
+                    setEnabled(true);  // Yeniden aktif et
                 }
             }
         });
