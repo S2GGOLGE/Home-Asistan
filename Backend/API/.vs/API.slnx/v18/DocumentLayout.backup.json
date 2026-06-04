@@ -3,24 +3,28 @@
   "WorkspaceRootPath": "Y:\\Home Asistan\\Backend\\API\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\models\\commandentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\models\\commandentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\services\\ijarvisclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\services\\ijarvisclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\models\\a\u0131models.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\models\\a\u0131models.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\dtos\\jarvisrequestsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\dtos\\jarvisrequestsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\controllers\\a\u0131controllers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\controllers\\a\u0131controllers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\dtos\\jarvisrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\dtos\\jarvisrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\controllers\\jarviscontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\controllers\\jarviscontrollers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|y:\\home asistan\\backend\\api\\api\\data\\dataconnections.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\data\\dataconnections.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,71 +34,85 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "JarvisRequestDto.cs",
-              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\DTOs\\JarvisRequestDto.cs",
-              "RelativeDocumentMoniker": "API\\DTOs\\JarvisRequestDto.cs",
-              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\DTOs\\JarvisRequestDto.cs",
-              "RelativeToolTip": "API\\DTOs\\JarvisRequestDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T19:09:29.806Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "JarvisRequestsDto.cs",
-              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\DTOs\\JarvisRequestsDto.cs",
-              "RelativeDocumentMoniker": "API\\DTOs\\JarvisRequestsDto.cs",
-              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\DTOs\\JarvisRequestsDto.cs",
-              "RelativeToolTip": "API\\DTOs\\JarvisRequestsDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA8AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T19:07:16.459Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "IJarvisClient.cs",
-              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\Services\\IJarvisClient.cs",
-              "RelativeDocumentMoniker": "API\\Services\\IJarvisClient.cs",
-              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Services\\IJarvisClient.cs",
-              "RelativeToolTip": "API\\Services\\IJarvisClient.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAArAAAAAAAAAA==",
+              "Title": "CommandEntity.cs",
+              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\Models\\CommandEntity.cs",
+              "RelativeDocumentMoniker": "API\\Models\\CommandEntity.cs",
+              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Models\\CommandEntity.cs",
+              "RelativeToolTip": "API\\Models\\CommandEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T18:54:20.124Z",
+              "WhenOpened": "2026-06-04T14:16:25.652Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "API\\Data\\AppDbContext.cs",
+              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "API\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T14:12:30.397Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\Program.cs",
               "RelativeDocumentMoniker": "API\\Program.cs",
               "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Program.cs",
               "RelativeToolTip": "API\\Program.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACcAAAAAAAAAAAAswEMAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-31T16:20:28.875Z",
+              "WhenOpened": "2026-06-04T14:11:25.742Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "JarvisControllers.cs",
-              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\Controllers\\JarvisControllers.cs",
-              "RelativeDocumentMoniker": "API\\Controllers\\JarvisControllers.cs",
-              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Controllers\\JarvisControllers.cs",
-              "RelativeToolTip": "API\\Controllers\\JarvisControllers.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAABAAAAAAAAAA==",
+              "Title": "A\u0131Controllers.cs",
+              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\Controllers\\A\u0131Controllers.cs",
+              "RelativeDocumentMoniker": "API\\Controllers\\A\u0131Controllers.cs",
+              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Controllers\\A\u0131Controllers.cs",
+              "RelativeToolTip": "API\\Controllers\\A\u0131Controllers.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-01T18:54:04.283Z"
+              "WhenOpened": "2026-06-04T13:58:16.014Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "A\u0131Models.cs",
+              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\Models\\A\u0131Models.cs",
+              "RelativeDocumentMoniker": "API\\Models\\A\u0131Models.cs",
+              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Models\\A\u0131Models.cs",
+              "RelativeToolTip": "API\\Models\\A\u0131Models.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T13:57:54.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DataConnections.cs",
+              "DocumentMoniker": "Y:\\Home Asistan\\Backend\\API\\API\\Data\\DataConnections.cs",
+              "RelativeDocumentMoniker": "API\\Data\\DataConnections.cs",
+              "ToolTip": "Y:\\Home Asistan\\Backend\\API\\API\\Data\\DataConnections.cs",
+              "RelativeToolTip": "API\\Data\\DataConnections.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-04T13:57:09.166Z",
+              "EditorCaption": ""
             }
           ]
         }

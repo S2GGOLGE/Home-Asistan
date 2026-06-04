@@ -1,12 +1,28 @@
-using API.Services;
+using Microsoft.EntityFrameworkCore;
+using API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. CORE SERVICES ---
+// SERVICES
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// --- 2. CORS POLICY ---
+// DB CONTEXT
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
+
+// HTTP CLIENT (PYTHON)
+builder.Services.AddHttpClient("PythonService", client =>
+{
+    client.BaseAddress = new Uri("http://127.0.0.1:8000/");
+    client.Timeout = TimeSpan.FromSeconds(10);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -17,31 +33,44 @@ builder.Services.AddCors(options =>
     });
 });
 
-// --- 3. PRODUCTION LEVEL HTTP CLIENT REGISTRATION (JARVIS) ---
-builder.Services.AddHttpClient<IJarvisClient, JarvisClient>(client =>
-{
-    client.BaseAddress = new Uri("http://127.0.0.1:8000/");
-    client.Timeout = TimeSpan.FromSeconds(10); // 10 Saniye Zaman Aşımı
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-});
-
 var app = builder.Build();
 
-// --- 4. HTTP PIPELINE (MIDDLEWARES) ---
+// PIPELINE
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
-
-// Sıralama Önemli: CORS her zaman Authorization'dan önce gelmelidir
 app.UseCors("AllowAll");
-
 app.UseAuthorization();
+
 app.MapControllers();
 
-// --- 5. MINIMAL API TEST ENDPOINT ---
-app.MapGet("/api/test", () => Results.Ok(new { message = "Home Assistant API Ayakta!", status = true }));
+// TEST ENDPOINT
+app.MapGet("/api/test", () =>
+    Results.Ok(new { message = "API Ayakta!", status = true })
+);
+
+// PYTHON TEST
+app.MapGet("/api/python/test", async (IHttpClientFactory factory) =>
+{
+    var client = factory.CreateClient("PythonService");
+
+    try
+    {
+        var response = await client.GetAsync("/api/status");
+
+        return Results.Ok(new
+        {
+            python = response.IsSuccessStatusCode,
+            statusCode = response.StatusCode
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(ex.Message);
+    }
+});
 
 app.Run();
