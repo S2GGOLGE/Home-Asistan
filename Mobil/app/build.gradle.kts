@@ -4,11 +4,7 @@ plugins {
 
 android {
     namespace = "com.example.home"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.home"
@@ -45,6 +41,11 @@ dependencies {
     implementation(libs.material)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+
+    // 🚀 RETROFIT & GSON ENTEGRASYONU
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)

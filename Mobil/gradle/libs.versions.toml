@@ -9,6 +9,8 @@ activityKtx = "1.13.0"
 constraintlayout = "2.2.1"
 navigationFragment = "2.9.8"
 navigationUi = "2.9.8"
+# 🚀 RETROFIT SÜRÜMÜ: Sektör standardı en güncel kararlı sürüm eklendi
+retrofit = "2.11.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -21,6 +23,9 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 
+# 🚀 RETROFIT & GSON KÜTÜPHANELERİ: build.gradle.kts dosyasından çağrılmak üzere tanımlandı
+retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-
