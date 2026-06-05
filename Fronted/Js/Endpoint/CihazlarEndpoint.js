@@ -1,0 +1,4 @@
+function ekle()
+{
+    document.getElementById()
+}
