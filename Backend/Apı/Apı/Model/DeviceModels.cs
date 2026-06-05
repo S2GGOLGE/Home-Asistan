@@ -2,16 +2,12 @@
 {
     public class DeviceModels
     {
-        public int ıd { get; set; }
+        public int Id { get; set; }
         public string DeviceName { get; set; }
         public string DeviceVersion { get; set; }
-        public string Device_Status { get; set; }
-        public DeviceModels (int ıd, string deviceName, string deviceVersion, string device_Status)
-        {
-            this.ıd = ıd;
-            DeviceName = deviceName;
-            DeviceVersion = deviceVersion;
-            Device_Status = device_Status;
-        }
+
+        // 🚀 KESİN ÇÖZÜM: String yerine bool yapıyoruz. 
+        // Böylece hem SQL'deki bit alanına tam oturur hem de JS'den gelen true/false değerini doğrudan kabul eder.
+        public bool Device_Status { get; set; }
     }
 }

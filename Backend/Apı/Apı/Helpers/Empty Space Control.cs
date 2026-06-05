@@ -4,30 +4,36 @@
 
     public class Empty_Space_Control
     {
-        // Metodu static yapıyoruz ki başka yerde "new" demeden direkt çağırabilelim.
-        // Parametre olarak senin DeviceModel sınıfını alıyor.
         public static string BoşKontrol(DeviceModels model)
         {
-            // Modelin kendisi boş (null) gönderildiyse
+            // 1. Modelin kendisinin null olup olmadığının kontrolü
             if (model == null)
             {
                 return "Gönderilen veriler boş";
             }
 
-            // Modelin içindeki DeviceName alanı boş mu kontrolü
+            // 2. Cihaz Adı kontrolü
             if (string.IsNullOrWhiteSpace(model.DeviceName))
             {
                 return "Lütfen cihaz adını girin.";
             }
+
+            // 3. Cihaz Versiyon kontrolü
             if (string.IsNullOrWhiteSpace(model.DeviceVersion))
             {
                 return "Lütfen Cihaz Versiyon Giriniz";
             }
-            if(string.IsNullOrWhiteSpace(model.Device_Status))
+
+            // 4. Durum Kontrolü (Sistem için Önemli Kısım)
+            // bool tipi null olamaz ama sistem kuralı olarak yeni eklenen cihazların 
+            // başlangıçta zorunlu olarak 'false' (offline) gelmesini isteyebilirsin.
+            // Eğer kazara 'true' gelirse sisteme alınmasın diyorsan bu kontrolü aktif edebilirsin:
+            if (model.Device_Status == true)
             {
-                return "Lutfen Cihaz Durumunu girin";
+                return "Yeni eklenen cihazların başlangıç durumu 'true' (Online) olamaz!";
             }
-            return null; // Hiçbir alan boş değilse (hata yoksa) null döner.
+
+            return null; // Her şey nizami ise hata yok demektir.
         }
     }
 }

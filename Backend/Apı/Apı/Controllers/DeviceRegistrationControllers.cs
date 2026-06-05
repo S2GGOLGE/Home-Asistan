@@ -7,45 +7,51 @@ using Microsoft.Data.SqlClient;
 namespace Api.Controllers.DeviceRegistration
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class DeviceRegistrationControllers : ControllerBase
+    [Route("api/DeviceRegistration")]
+    public class DeviceRegistrationController : ControllerBase
     {
         [HttpPost]
-        public IActionResult AddDevice(DeviceModels model)
+        public IActionResult AddDevice([FromBody] DeviceModels model)
         {
+            if (model == null)
+                return BadRequest("Model boş");
+
             var hata = Empty_Space_Control.BoşKontrol(model);
 
             if (hata != null)
-            {
                 return BadRequest(hata);
-            }
 
-            var defultconnection = new Connection(
-                "Server=localhost;Database=HomeAsistanDB;" +
-                "Trusted_Connection=True;TrustServerCertificate=True;");
+            var connection = new Connection(
+                "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False\r\n;"
+            );
 
-            using var baglanti = new SqlConnection(defultconnection.Connect);
+            using var baglanti = new SqlConnection(connection.Connect);
             baglanti.Open();
 
-            string kontrol = "SELECT COUNT(*) FROM Devices WHERE Name=@N";
+            // kontrol
+            string kontrol = "SELECT COUNT(*) FROM Devices WHERE Name=@Name";
 
-            using var cmdkontrol = new SqlCommand(kontrol, baglanti);
-            cmdkontrol.Parameters.AddWithValue("@N", model.DeviceName);
+            using var cmdKontrol = new SqlCommand(kontrol, baglanti);
+            cmdKontrol.Parameters.AddWithValue("@Name", model.DeviceName);
 
-            int varMi = (int)cmdkontrol.ExecuteScalar();
+            int varMi = (int)cmdKontrol.ExecuteScalar();
 
             if (varMi > 0)
-            {
-                return BadRequest("Bu cihaz zaten kayıtlı");
-            }
-            string query = "@ INSERT INTO Devices (Name,Type,Status)VALUES (@Name,@Type,@Status)";
-            using var cmdEkle = new SqlCommand(query, baglanti);
-            cmdEkle.Parameters.AddWithValue("@Name", model.DeviceName);
-            cmdEkle.Parameters.AddWithValue("@Type", (object?)model.DeviceVersion ?? DBNull.Value);
-            cmdEkle.Parameters.AddWithValue("@Status", model.Device_Status);
-            cmdEkle.ExecuteNonQuery();
+                return Conflict("Bu cihaz zaten kayıtlı");
 
-            return Ok("Cihaz başarıyla eklendi");
+            // insert
+            string query = @"
+                INSERT INTO Devices (Name, Type, Status)
+                VALUES (@Name, @Type, @Status)";
+
+            using var cmd = new SqlCommand(query, baglanti);
+            cmd.Parameters.AddWithValue("@Name", model.DeviceName);
+            cmd.Parameters.AddWithValue("@Type", (object?)model.DeviceVersion ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Status", model.Device_Status);
+
+            cmd.ExecuteNonQuery();
+
+            return Ok(new { message = "Cihaz başarıyla eklendi" });
         }
     }
 }

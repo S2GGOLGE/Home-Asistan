@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const runInitialLoader = () => {
         const interval = setInterval(() => {
-            // Animasyon hızı ve rastgele yüklenme adımları
             const step = Math.floor(Math.random() * 6) + 4;
             progress += step;
 
@@ -71,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             if (loaderOverlay) {
                 loaderOverlay.classList.add('fade-out');
-                // Performans için animasyon bitince DOM'dan kaldırır
                 loaderOverlay.addEventListener('transitionend', () => {
                     loaderOverlay.remove();
                 });
@@ -80,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 400);
     };
 
-    // Animasyon motorunu hemen ateşle
     runInitialLoader();
 
     // ══════════════════════════════
@@ -89,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (openModalBtn && deviceModal) {
         openModalBtn.addEventListener('click', () => {
             deviceModal.classList.add('show');
+            deviceModal.classList.add('active');
             logToTerminal("[Sistem] Yeni cihaz ekleme penceresi açıldı.");
         });
     }
@@ -96,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = () => {
         if (deviceModal) {
             deviceModal.classList.remove('show');
+            deviceModal.classList.remove('active');
             if (addDeviceForm) addDeviceForm.reset();
         }
     };
@@ -107,12 +106,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === deviceModal) closeModal();
     });
 
+    // 🚀 FORM SUBMIT KONTROLÜ (Birleştirilmiş & Çakışmasız Tek Tetikleyici)
     if (addDeviceForm) {
-        addDeviceForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+        addDeviceForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Sayfanın refresh olmasını kesin olarak engeller.
+            
             const name = document.getElementById('device-name').value;
             const room = document.getElementById('device-room').value;
+            
             logToTerminal(`[Sistem] Yeni donanım kuyruğa eklendi: ${name} (${room})`);
+            
+            // CihazlarEndpoint.js içerisindeki fonksiyonu güvenli bir şekilde çağırır
+            if (typeof ekle === "function") {
+                await ekle();
+            } else {
+                console.error("HATA: CihazlarEndpoint.js yüklenemedi veya ekle() fonksiyonu bulunamadı!");
+            }
+            
             closeModal();
         });
     }
@@ -142,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             
-            // Tıklanan buton ismini küçük harfe çevirip eşle
             const btnText = button.textContent.trim().toLowerCase();
             
             if (btnText === 'ışıklar') activeFilter = 'light';
@@ -199,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (refreshBtn) {
             refreshBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Karta tıklama olayını tetiklemesin
+                e.stopPropagation();
                 refreshBtn.style.transform = 'rotate(360deg)';
                 refreshBtn.style.transition = 'transform 0.5s ease';
                 logToTerminal(`[${deviceName}] Donanım ping talebi gönderildi...`);
@@ -212,7 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Kart Seçimi
         card.addEventListener('click', () => {
             deviceCards.forEach(c => c.classList.remove('active'));
             card.classList.add('active');
@@ -242,7 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Yardımcı Terminal Log Fonksiyonu
     function logToTerminal(message) {
         if (!terminalBox) return;
         const now = new Date();
