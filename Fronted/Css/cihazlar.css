@@ -705,3 +705,123 @@ input:checked+.slider:before {
     background: #161616;
     color: #fff;
 }
+/* ══════════════════════════════════════════════
+    SADECE MOBİL VE TABLET TASARIMI (MEDIA QUERY)
+   ══════════════════════════════════════════════ */
+@media (max-width: 992px) {
+    body {
+        overflow-y: auto; /* Mobilde dikey kaydırmaya izin ver */
+    }
+
+    /* Ana layout yapısını alt alta kart düzenine geçiriyoruz */
+    .layout {
+        flex-direction: column;
+        height: auto;
+        width: 100%;
+        padding: 12px;
+        gap: 16px;
+    }
+
+    /* SOL MENÜ (KART 1) */
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border: 1px solid var(--border-line);
+        border-radius: 12px;
+        padding: 16px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo-area {
+        margin-bottom: 0; /* Masaüstü boşluğunu sıfırla */
+    }
+
+    /* ORTA PANEL (KART 2) */
+    main.content {
+        padding: 0; /* Dış boşluğu layout yönetiyor */
+        overflow-y: visible;
+        gap: 20px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        width: 100%;
+    }
+
+    .topbar-right {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+        height: 40px;
+    }
+
+    .add-btn {
+        width: 100%;
+        justify-content: center;
+        height: 40px;
+    }
+
+    /* İstatistikleri mobil ekrana göre 2'li sıra yapıyoruz */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .filter-bar {
+        overflow-x: auto; /* Çok fazla filtre butonu varsa kaydırılabilir olsun */
+        padding-bottom: 6px;
+        white-space: nowrap;
+    }
+
+    .filter-btn {
+        flex-shrink: 0;
+    }
+
+    /* SAĞ PANEL - DETAY ALANI (KART 3) */
+    .details-panel {
+        width: 100%;
+        background: var(--bg-panel);
+        border-left: none;
+        border: 1px solid var(--border-line);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 10px;
+    }
+
+    /* Detay paneli içindeki bölümleri belirgin alt kartlara çeviriyoruz */
+    .info-list, 
+    .resource-section, 
+    .log-section {
+        background: var(--bg-inner);
+        border: 1px solid var(--border-line);
+        padding: 14px;
+        border-radius: 8px;
+    }
+
+    .cmd-btn {
+        margin-top: 10px;
+        width: 100%;
+        height: 42px;
+    }
+}
+
+/* Küçük Ekran Telefonlar İçin İnce Ayar */
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr; /* Mini telefonlarda istatistikler tek sıra */
+    }
+    
+    .sidebar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
