@@ -25,7 +25,6 @@ async function cihazlariGetir() {
         const devices = await response.json();
 
         kartlariOlustur(devices);
-        istatistikleriGuncelle(devices);
 
     } catch (error) {
         console.error("[Cihaz Yükleme Hatası]", error);
