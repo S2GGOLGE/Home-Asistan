@@ -5,4 +5,5 @@ CREATE TABLE Devices (
     Status BIT DEFAULT 0,
     UserId INT FOREIGN KEY REFERENCES Users(Id),
     CreatedAt DATETIME DEFAULT GETDATE()
+    Feature NVARCHAR(255);
 );
