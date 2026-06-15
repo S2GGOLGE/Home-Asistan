@@ -2,7 +2,7 @@
 //  app.js — Cihaz Yönetim Paneli
 // ============================================================
 
-const API_URL = "https://localhost:7201/api/Listing";
+const API_URL = "http://localhost:5000/api/Listing";
 
 // ------------------------------------------------------------
 // Sayfa yüklenince başlat

@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const searchInput = document.querySelector('.search-box input');
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const deviceCards = document.querySelectorAll('.device-card');
     
     // Sağ Detay Paneli Elementleri
     const detailsTitle = document.querySelector('.details-panel .details-header h2');
@@ -131,36 +130,51 @@ document.addEventListener('DOMContentLoaded', () => {
     //  3. ARAMA VE FİLTRELEME SİSTEMİ
     // ══════════════════════════════
     function filterDevices() {
+        const deviceCards = document.querySelectorAll('.device-card');
+        let visibleCount = 0;
+
         deviceCards.forEach(card => {
-            const deviceType = card.getAttribute('data-type');
-            const deviceName = card.querySelector('.card-body h3').textContent.toLowerCase();
-            const deviceRoom = card.querySelector('.card-body p').textContent.toLowerCase();
-            
-            const matchesFilter = (activeFilter === 'all' || deviceType === activeFilter);
-            const matchesSearch = deviceName.includes(searchQuery) || deviceRoom.includes(searchQuery);
+            const deviceType = card.getAttribute('data-type') || 'other';
+            const titleEl = card.querySelector('.card-body h3');
+            const descEl = card.querySelector('.card-body p');
+            const deviceName = (titleEl?.textContent || '').toLowerCase();
+            const deviceRoom = (descEl?.textContent || '').toLowerCase();
+
+            const matchesFilter = activeFilter === 'all' || deviceType === activeFilter;
+            const matchesSearch = !searchQuery || deviceName.includes(searchQuery) || deviceRoom.includes(searchQuery);
 
             if (matchesFilter && matchesSearch) {
                 card.style.display = 'flex';
+                visibleCount++;
             } else {
                 card.style.display = 'none';
             }
         });
+
+        const grid = document.querySelector('.devices-grid');
+        const emptyMsg = document.getElementById('filter-empty-msg');
+
+        if (visibleCount === 0 && deviceCards.length > 0) {
+            if (!emptyMsg && grid) {
+                const msg = document.createElement('p');
+                msg.id = 'filter-empty-msg';
+                msg.className = 'bos-mesaj';
+                msg.textContent = 'Bu filtreye uygun cihaz bulunamadı.';
+                grid.appendChild(msg);
+            }
+        } else if (emptyMsg) {
+            emptyMsg.remove();
+        }
     }
+
+    window.HomeOS = window.HomeOS || {};
+    window.HomeOS.applyDeviceFilters = filterDevices;
 
     filterButtons.forEach(button => {
         button.addEventListener('click', () => {
             filterButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            
-            const btnText = button.textContent.trim().toLowerCase();
-            
-            if (btnText === 'ışıklar') activeFilter = 'light';
-            else if (btnText === 'kameralar') activeFilter = 'camera';
-            else if (btnText === 'sensörler') activeFilter = 'sensor';
-            else if (btnText === 'prizler') activeFilter = 'plug';
-            else if (btnText === 'klima') activeFilter = 'climate';
-            else activeFilter = 'all';
-
+            activeFilter = button.dataset.filter || 'all';
             filterDevices();
         });
     });
@@ -174,8 +188,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ══════════════════════════════
     //  4. SWITCH (AÇMA / KAPAMA) KONTROLLERİ
+    // Not: API kartları cihazdurumguncelleme.js tarafından yönetilir.
     // ══════════════════════════════
-    deviceCards.forEach(card => {
+    document.querySelectorAll('.device-card').forEach(card => {
         const toggleSwitch = card.querySelector('.switch input');
         const badge = card.querySelector('.badge');
         const deviceName = card.querySelector('.card-body h3').textContent;
@@ -202,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ══════════════════════════════
     //  5. YENİLEME (REFRESH) VE SAĞ DETAY PANELİ
     // ══════════════════════════════
-    deviceCards.forEach(card => {
+    document.querySelectorAll('.device-card').forEach(card => {
         const refreshBtn = card.querySelector('.action-btn:nth-child(1)');
         const deviceName = card.querySelector('.card-body h3').textContent;
 
@@ -222,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         card.addEventListener('click', () => {
-            deviceCards.forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.device-card').forEach(c => c.classList.remove('active'));
             card.classList.add('active');
 
             const name = card.querySelector('.card-body h3').textContent;

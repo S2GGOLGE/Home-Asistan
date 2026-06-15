@@ -3,22 +3,33 @@ package com.example.home;
 import com.google.gson.annotations.SerializedName;
 
 public class DeviceModels {
-    @SerializedName("DeviceName")
-    private String deviceName;
 
-    @SerializedName("DeviceVersion")
-    private String deviceVersion;
+    @SerializedName("Name")
+    private String name;
 
-    @SerializedName("Device_Status")
-    private boolean deviceStatus;
+    @SerializedName("Type")
+    private String type;
 
-    public DeviceModels(String deviceName, String deviceVersion, boolean deviceStatus) {
-        this.deviceName = deviceName;
-        this.deviceVersion = deviceVersion;
-        this.deviceStatus = deviceStatus;
+    @SerializedName("Status")
+    private boolean status;
+
+    @SerializedName("UserId")
+    private int userId;
+
+    @SerializedName("Feature")
+    private String feature;
+
+    public DeviceModels(String name, String type, boolean status, int userId, String feature) {
+        this.name = name;
+        this.type = type;
+        this.status = status;
+        this.userId = userId;
+        this.feature = feature;
     }
 
-    public String getDeviceName() { return deviceName; }
-    public String getDeviceVersion() { return deviceVersion; }
-    public boolean isDeviceStatus() { return deviceStatus; }
+    public String getName() { return name; }
+    public String getType() { return type; }
+    public boolean isStatus() { return status; }
+    public int getUserId() { return userId; }
+    public String getFeature() { return feature; }
 }

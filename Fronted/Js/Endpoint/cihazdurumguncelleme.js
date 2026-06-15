@@ -1,9 +1,8 @@
 // ============================================================
 // app.js — Cihaz Yönetim Paneli
 // ============================================================
-
-const API_LIST_URL = "https://localhost:7201/api/Listing";
-const API_UPDATE_URL = "https://localhost:7201/api/devicestatusupdate"; 
+const API_LIST_URL = "http://localhost:5000/api/Listing";
+const API_UPDATE_URL = "http://localhost:5000/api/devicestatusupdate";
 
 // ------------------------------------------------------------
 // Yardımcı: hem PascalCase hem camelCase field'ları destekle
@@ -14,6 +13,23 @@ function alan(obj, ...keys) {
         if (obj[key] !== undefined && obj[key] !== null) return obj[key];
     }
     return undefined;
+}
+
+// Filtre çipleriyle eşleşen kategori (light, camera, sensor, plug, climate)
+function cihazTipiniBelirle(name, type) {
+    const t = String(type || "").toLowerCase().trim();
+    const n = String(name || "").toLowerCase();
+
+    const bilinen = ["light", "camera", "sensor", "plug", "climate"];
+    if (bilinen.includes(t)) return t;
+
+    if (/kamera|camera|cctv/.test(n) || /kamera|camera/.test(t)) return "camera";
+    if (/lamba|ışık|isik|aydinlatma|aydınlatma|light/.test(n) || /ışık|isik|light|aydınlatma/.test(t)) return "light";
+    if (/priz|plug|röle|role|switch/.test(n) || /priz|plug/.test(t)) return "plug";
+    if (/klima|climate|termostat|ısıtıcı|isitici/.test(n) || /klima|climate/.test(t)) return "climate";
+    if (/sensör|sensor/.test(n) || /sensör|sensor/.test(t)) return "sensor";
+
+    return "other";
 }
 
 // ------------------------------------------------------------
@@ -70,19 +86,20 @@ function kartlariOlustur(devices) {
 
     devices.forEach(device => {
         // FIX: alan() hem "Status" hem "status" hem "device_Status" dener
-        const id         = alan(device, "Id", "id");
-        const name       = alan(device, "Name", "name", "DeviceName", "deviceName") || "İsimsiz Cihaz";
-        const type       = alan(device, "Type", "type") || "Cihaz";
-        const status     = alan(device, "Status", "status", "Device_Status", "device_Status");
-        const isOnline   = status === true;
+        const id = alan(device, "Id", "id");
+        const name = alan(device, "Name", "name", "DeviceName", "deviceName") || "İsimsiz Cihaz";
+        const type = alan(device, "Type", "type") || "Cihaz";
+        const filterType = cihazTipiniBelirle(name, type);
+        const status = alan(device, "Status", "status", "Device_Status", "device_Status");
+        const isOnline = status === true;
 
-        const durumText  = isOnline ? "Online"  : "Offline";
-        const durumClass = isOnline ? "online"  : "offline";
-        const checked    = isOnline ? "checked" : "";
-        const icon       = getIcon(type);
+        const durumText = isOnline ? "Online" : "Offline";
+        const durumClass = isOnline ? "online" : "offline";
+        const checked = isOnline ? "checked" : "";
+        const icon = getIcon(filterType);
 
         devicesGrid.innerHTML += `
-            <div class="device-card ${isOnline ? "active" : ""}" data-id="${id}" data-name="${name}">
+            <div class="device-card ${isOnline ? "active" : ""}" data-id="${id}" data-name="${name}" data-type="${filterType}">
                 <div class="card-header">
                     <div class="icon-wrap">
                         <i class="${icon}"></i>
@@ -116,6 +133,11 @@ function kartlariOlustur(devices) {
 
     // Kartlar basıldıktan sonra olay dinleyicilerini bağla
     switchOlaylariniBagla();
+
+    // Aktif filtre/arama varsa uygula
+    if (typeof window.HomeOS?.applyDeviceFilters === "function") {
+        window.HomeOS.applyDeviceFilters();
+    }
 }
 
 // ------------------------------------------------------------
@@ -130,7 +152,7 @@ function switchOlaylariniBagla() {
             const card = input.closest(".device-card");
 
             // FIX: Id ve Name'i DOM attribute'undan okuyoruz — DOM text'e güvenmiyoruz
-            const deviceId   = parseInt(card.getAttribute("data-id"), 10);
+            const deviceId = parseInt(card.getAttribute("data-id"), 10);
             const deviceName = card.getAttribute("data-name");
             const targetStatus = input.checked;
 
@@ -214,10 +236,10 @@ function cihazlariYenidenHesapla() {
 // ------------------------------------------------------------
 function getIcon(type) {
     const ikonlar = {
-        light:   "fas fa-lightbulb",
-        camera:  "fas fa-video",
-        plug:    "fas fa-plug",
-        sensor:  "fas fa-microchip",
+        light: "fas fa-lightbulb",
+        camera: "fas fa-video",
+        plug: "fas fa-plug",
+        sensor: "fas fa-microchip",
         climate: "fas fa-snowflake",
     };
 
@@ -228,8 +250,8 @@ function getIcon(type) {
 // Üst istatistik kartlarını güncelle
 // ------------------------------------------------------------
 function istatistikleriGuncelle(devices) {
-    const toplam  = devices.length;
-    const online  = devices.filter(d => alan(d, "Status", "status") === true).length;
+    const toplam = devices.length;
+    const online = devices.filter(d => alan(d, "Status", "status") === true).length;
     const offline = toplam - online;
 
     const statCards = document.querySelectorAll(".stat-card .num");

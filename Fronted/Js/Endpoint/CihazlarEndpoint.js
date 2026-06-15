@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://localhost:7201/api/DeviceRegistration";
+const BACKEND_URL = "http://localhost:5000/api/DeviceRegistration";
 
 async function ekle() {
   const nameInput = document.getElementById("device-name");
@@ -9,12 +9,15 @@ async function ekle() {
   }
 
   const cihazAdi = nameInput.value.trim();
+  const typeSelect = document.getElementById("device-type");
+  const cihazTuru = typeSelect?.value || "light";
 
   // C# tarafındaki DeviceModels ile harfi harfine uyumlu payload
+  // Not: Backend Type kolonuna DeviceVersion değerini yazar — filtre için türü buraya gönderiyoruz
   const payload = {
     DeviceName: cihazAdi,
-    DeviceVersion: "1.0.0", 
-    Device_Status: false // 🚀 Artık API bool beklediği için doğrudan false gönderebiliriz. SQL'e 0 olarak yazılacaktır.
+    DeviceVersion: cihazTuru,
+    Device_Status: false
   };
 
   if (!payload.DeviceName) {

@@ -2,12 +2,12 @@
 {
     public class DeviceDto
     {
-        public record DeviceRequest
-         (
-            int id,
-            string DeviceName,
-            string DeviceVersion,
-            string Device_Status
-         );
+        public record DeviceRequest(
+            string Name,
+            string Type,
+            bool Status,
+            int UserId,
+            string Feature
+        );
     }
 }

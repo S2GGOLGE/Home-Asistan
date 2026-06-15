@@ -31,8 +31,7 @@ public class CihazlarActivity extends AppCompatActivity {
     private RecyclerView deviceRecyclerView;
 
     private ApiService apiService;
-    // 💡 NOT: Android emülatörün bilgisayarındaki localhost'a erişebilmesi için 10.0.2.2 IP'si kullanıldı.
-    private final String BASE_URL = "https://10.0.2.2:7201/";
+    private final String BASE_URL = "http://192.168.1.115:5174/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +77,7 @@ public class CihazlarActivity extends AppCompatActivity {
             chipGroupFilters.setOnCheckedStateChangeListener((group, checkedIds) -> {
                 if (!checkedIds.isEmpty()) {
                     int checkedId = checkedIds.get(0);
+                    // TODO: chip seçimine göre filtreleme eklenecek
                 }
             });
         }
@@ -86,32 +86,48 @@ public class CihazlarActivity extends AppCompatActivity {
     private void showAddDeviceDialog() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setTitle("Yeni Cihaz Ekle");
-        builder.setMessage("Lütfen eklemek istediğiniz akıllı cihazın adını giriniz:");
 
-        final EditText input = new EditText(this);
-        input.setHint("Örn: Salon Lambası, Mutfak Prizi");
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(48, 16, 48, 16);
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setLayoutParams(lp);
-        builder.setView(input);
+        final EditText inputName = new EditText(this);
+        inputName.setHint("Cihaz Adı (Örn: Salon Lambası)");
+        layout.addView(inputName);
+
+        final EditText inputType = new EditText(this);
+        inputType.setHint("Tür (Örn: Işık, Priz, Kamera)");
+        layout.addView(inputType);
+
+        final EditText inputFeature = new EditText(this);
+        inputFeature.setHint("Özellik (opsiyonel)");
+        layout.addView(inputFeature);
+
+        builder.setView(layout);
 
         builder.setPositiveButton("Ekle", (dialog, which) -> {
-            String cihazAdi = input.getText().toString().trim();
+            String cihazAdi = inputName.getText().toString().trim();
+            String cihazTuru = inputType.getText().toString().trim();
+            String cihazFeature = inputFeature.getText().toString().trim();
+
             if (!cihazAdi.isEmpty()) {
-                // Backend validasyon katmanıyla uyumlu paket (Adı, Sürümü, Durumu)
-                DeviceModels yeniCihaz = new DeviceModels(cihazAdi, "1.0.0", false);
+                DeviceModels yeniCihaz = new DeviceModels(
+                        cihazAdi,
+                        cihazTuru.isEmpty() ? "Genel" : cihazTuru,
+                        false,
+                        1, // TODO: oturum açan kullanıcının ID'si buraya gelecek
+                        cihazFeature
+                );
                 sendDeviceToBackend(yeniCihaz);
             } else {
-                Toast.makeText(CihazlarActivity.this, "Cihaz adı boş bırakılamaz!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CihazlarActivity.this,
+                        "Cihaz adı boş bırakılamaz!",
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
         builder.setNegativeButton("İptal", (dialog, which) -> dialog.cancel());
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        builder.create().show();
     }
 
     private void sendDeviceToBackend(DeviceModels device) {
@@ -121,17 +137,23 @@ public class CihazlarActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<DeviceModels> call, Response<DeviceModels> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(CihazlarActivity.this, device.getDeviceName() + " veritabanına kaydedildi!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(CihazlarActivity.this,
+                            device.getName() + " veritabanına kaydedildi!",
+                            Toast.LENGTH_LONG).show();
                 } else {
                     Log.e("API_HATA", "Hata Kodu: " + response.code());
-                    Toast.makeText(CihazlarActivity.this, "Sistem Hatası: Validasyon geçilemedi.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CihazlarActivity.this,
+                            "Sistem Hatası: Validasyon geçilemedi. Kod: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<DeviceModels> call, Throwable t) {
-                Log.e("API_FAILURE", "Bağlantı Kurulamadı: ", t);
-                Toast.makeText(CihazlarActivity.this, "Sunucuya bağlanılamadı!", Toast.LENGTH_LONG).show();
+                Log.e("API_FAILURE", "Bağlantı Kurulamadı: " + t.getMessage(), t);
+                Toast.makeText(CihazlarActivity.this,
+                        "Sunucuya bağlanılamadı: " + t.getMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
