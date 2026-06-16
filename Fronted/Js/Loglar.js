@@ -50,6 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
         commands: []
     };
 
+    // Sayfalama (Pagination) Durumları
+    let logPage = 1;
+    const logsPerPage = 100;
+    const logsPaginationContainer = document.getElementById('logs-pagination');
+
     // SQL Server'dan Az Önce Çektiğimiz Gerçek Verilerin Simülasyon Fallback'i
     // (Arka planda C# backend kapalıyken bile arayüzün boş kalmaması için harika bir yedek mekanizma)
     const fallbackData = {
@@ -133,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ══════════════════════════════
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
+            logPage = 1;
             const targetTab = button.getAttribute('data-tab');
             
             // Aktif butonu değiştir
@@ -267,10 +273,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (filtered.length === 0) {
             logsTableBody.innerHTML = `<tr><td colspan="5" class="empty-state"><i class="fas fa-search"></i><p>Arama kriterine uygun günlük kaydı bulunamadı.</p></td></tr>`;
+            if (logsPaginationContainer) logsPaginationContainer.innerHTML = '';
             return;
         }
 
-        filtered.forEach(log => {
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / logsPerPage);
+
+        if (logPage > totalPages) logPage = totalPages;
+        if (logPage < 1) logPage = 1;
+
+        const startIndex = (logPage - 1) * logsPerPage;
+        const endIndex = Math.min(startIndex + logsPerPage, totalItems);
+        const paginatedLogs = filtered.slice(startIndex, endIndex);
+
+        paginatedLogs.forEach(log => {
             const id = getVal(log, 'id', 'Id');
             const level = getVal(log, 'level', 'Level');
             const message = getVal(log, 'message', 'Message');
@@ -289,6 +306,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
         });
+
+        renderLogsPagination(totalItems, totalPages);
+    }
+
+    function renderLogsPagination(totalItems, totalPages) {
+        if (!logsPaginationContainer) return;
+        logsPaginationContainer.innerHTML = '';
+
+        if (totalPages <= 1) {
+            return;
+        }
+
+        const startIndex = (logPage - 1) * logsPerPage + 1;
+        const endIndex = Math.min(startIndex + logsPerPage, totalItems);
+        
+        const infoSpan = document.createElement('span');
+        infoSpan.className = 'pagination-info';
+        infoSpan.textContent = `${startIndex}-${endIndex} / ${totalItems} gösteriliyor`;
+        logsPaginationContainer.appendChild(infoSpan);
+
+        // Önceki Sayfa butonu
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'pagination-btn';
+        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Geri';
+        prevBtn.disabled = logPage === 1;
+        prevBtn.addEventListener('click', () => {
+            logPage--;
+            renderLogs();
+        });
+        logsPaginationContainer.appendChild(prevBtn);
+
+        // Sayfa Numaraları
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.className = `pagination-btn ${logPage === i ? 'active' : ''}`;
+            pageBtn.textContent = i;
+            pageBtn.addEventListener('click', () => {
+                logPage = i;
+                renderLogs();
+            });
+            logsPaginationContainer.appendChild(pageBtn);
+        }
+
+        // Sonraki Sayfa butonu
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'pagination-btn';
+        nextBtn.innerHTML = 'İleri <i class="fas fa-chevron-right"></i>';
+        nextBtn.disabled = logPage === totalPages;
+        nextBtn.addEventListener('click', () => {
+            logPage++;
+            renderLogs();
+        });
+        logsPaginationContainer.appendChild(nextBtn);
     }
 
     // 2. Devices Tablosu
@@ -434,9 +504,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // ══════════════════════════════
     //  OLAY DİNLEYİCİLERİ
     // ══════════════════════════════
-    searchInput.addEventListener('input', renderAll);
-    if (filterLogLevel) filterLogLevel.addEventListener('change', renderAll);
-    if (filterDeviceType) filterDeviceType.addEventListener('change', renderAll);
+    searchInput.addEventListener('input', () => {
+        logPage = 1;
+        renderAll();
+    });
+    if (filterLogLevel) {
+        filterLogLevel.addEventListener('change', () => {
+            logPage = 1;
+            renderAll();
+        });
+    }
+    if (filterDeviceType) {
+        filterDeviceType.addEventListener('change', () => {
+            logPage = 1;
+            renderAll();
+        });
+    }
     
     refreshBtn.addEventListener('click', () => {
         refreshBtn.classList.add('fa-spin');

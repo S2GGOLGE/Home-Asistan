@@ -19,7 +19,7 @@ namespace Api.Controllers
             {
                 using var conn = new SqlConnection(_connectionString);
                 conn.Open();
-                string query = "SELECT TOP 100 Id, Level, Message, Source, CreatedAt FROM Logs ORDER BY Id DESC";
+                string query = "SELECT Id, Level, Message, Source, CreatedAt FROM Logs ORDER BY Id DESC";
                 using var cmd = new SqlCommand(query, conn);
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
