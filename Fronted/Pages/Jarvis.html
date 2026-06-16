@@ -1,12 +1,193 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Asistan | Jarvis</title>
+    <title>HomeOS - Jarvis Ses Kontrol Merkezi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/Jarvis.css">
     <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
 </head>
+
 <body>
-    <h1>Jarvis Sayfası</h1>
+
+    <!-- Dinamik Arayüz Başlangıç Yükleyicisi -->
+    <div id="loader-overlay">
+        <div class="loader-ring"></div>
+        <div class="loader-title">Jarvis <span>Engine</span></div>
+        <div class="loader-subtitle" id="loader-text">Ses Sinyalleri Senkronize Ediliyor...</div>
+        <div class="loader-percentage" id="loader-percentage">0%</div>
+        <div class="loader-bar-wrap">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+    </div>
+
+    <div class="layout">
+
+        <!-- Sol Menü (Sidebar) -->
+        <aside class="sidebar collapsed" id="sidebar">
+            <div class="logo-area">
+                <div class="logo">EV ASİSTANI</div>
+                <div class="version">Sürüm 1.0.0</div>
+            </div>
+
+            <nav>
+                <a href="/Fronted/Pages/index.html"><i class="fas fa-chart-pie"></i> Gösterge Paneli</a>
+                <a href="/Fronted/Pages/Cihazlar.html"><i class="fas fa-lightbulb"></i> Cihazlar</a>
+                <a href="/Fronted/Pages/Odalar.html"><i class="fas fa-door-open"></i> Odalar</a>
+                <a href="/Fronted/Pages/Otomasyonlar.html"><i class="fas fa-bolt"></i> Otomasyonlar</a>
+                <a href="#" class="active"><i class="fas fa-robot"></i> Jarvis</a>
+                <a href="/Fronted/Pages/Kameralar.html"><i class="fas fa-video"></i> Kameralar</a>
+                <a href="/Fronted/Pages/Sensörler.html"><i class="fas fa-microchip"></i> Sensörler</a>
+                <a href="/Fronted/Pages/Bildirimler.html"><i class="fas fa-bell"></i> Bildirimler</a>
+                <a href="/Fronted/Pages/Kullanıcılar.html"><i class="fas fa-users"></i> Kullanıcılar</a>
+                <a href="/Fronted/Pages/Sistem İzleme.html"><i class="fas fa-desktop"></i> Sistem İzleme</a>
+                <a href="/Fronted/Pages/Ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="/Fronted/Pages/Loglar.html"><i class="fas fa-terminal"></i> Loglar</a>
+            </nav>
+
+            <div class="back-btn-container">
+                <a href="/Fronted/Pages/index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Ana Sayfa</a>
+            </div>
+        </aside>
+
+        <!-- Sağ Taraf: Ana İçerik -->
+        <main class="content">
+
+            <!-- Üst Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div>
+                        <h1>Jarvis Ses Kontrol Merkezi</h1>
+                        <p>Evinizi sesli komutlarla kontrol edin, durum sorgulayın ve otomasyonları tetikleyin.</p>
+                    </div>
+                </div>
+                <div class="status online">Sistem Çevrimiçi</div>
+            </header>
+
+            <!-- Jarvis Grid Yapısı -->
+            <div class="jarvis-grid">
+
+                <!-- Sol Panel: Ses Arayüzü ve Konsol -->
+                <div class="panel">
+                    <h2><i class="fas fa-keyboard"></i> Jarvis Konsol</h2>
+
+                    <!-- Ses Algılama Durum Kartı -->
+                    <div class="assistant-status-card">
+                        <div class="assistant-info">
+                            <span class="title">Jarvis Engine</span>
+                            <span class="state-desc" id="jarvis-state-desc">Bağlantı kuruluyor...</span>
+                        </div>
+                        
+                        <!-- Ses Dalgaları Animasyonu -->
+                        <div class="sound-waves" id="sound-waves">
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                            <div class="wave-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Chat / Sohbet Konuşma Akışı -->
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <!-- JS ile dinamik olarak doldurulacaktır -->
+                        </div>
+
+                        <!-- Giriş Alanı -->
+                        <div class="chat-input-area">
+                            <button class="mic-btn" id="mic-btn" title="Sesli Komut Ver">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <div class="text-input-wrap">
+                                <input type="text" id="cmd-input" placeholder="Jarvis'e bir komut yazın (örn: 'salon ışığını aç')..." autocomplete="off">
+                            </div>
+                            <button class="send-btn" id="send-btn" title="Gönder">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ Panel: İstatistikler ve Geçmiş -->
+                <div class="jarvis-info-panel">
+
+                    <!-- Durum & İstatistik Paneli -->
+                    <div class="panel">
+                        <h2><i class="fas fa-chart-bar"></i> Jarvis Durumu</h2>
+                        
+                        <div class="stats-mini-grid">
+                            <div class="mini-card">
+                                <span class="label">Toplam Komut</span>
+                                <span class="value" id="command-count-val">0</span>
+                            </div>
+                            <div class="mini-card">
+                                <span class="label">Yanıt Süresi</span>
+                                <span class="value" id="response-time-val">0 ms</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 15px;">
+                            <div class="info-row">
+                                <span>Jarvis Engine</span>
+                                <span class="badge warning" id="jarvis-status-badge">Bağlanıyor</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Wake Word ("Hey Jarvis")</span>
+                                <span class="badge success">Aktif</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Mikrofon Durumu</span>
+                                <span class="badge success">Hazır</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Home Assistant Entegrasyonu</span>
+                                <span class="badge warning" id="ha-status-badge">Bekleniyor</span>
+                            </div>
+                            <div class="info-row" style="border-bottom: none;">
+                                <span>Son Algılanan Komut</span>
+                                <strong id="last-cmd-text" style="color: var(--accent-green);">"Yok"</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Son Komutlar Geçmişi -->
+                    <div class="panel">
+                        <h2><i class="fas fa-history"></i> Son Komutlar</h2>
+                        <ul class="command-history-list" id="command-history-list">
+                            <!-- JS ile doldurulacak -->
+                        </ul>
+                    </div>
+
+                    <!-- Canlı Sistem Log Terminali -->
+                    <div class="panel" style="flex: 1;">
+                        <h2><i class="fas fa-terminal"></i> Çekirdek Log Akışı</h2>
+                        <div class="log-terminal" id="log-terminal">
+                            <!-- Canlı log akışı buraya eklenecektir -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <footer>
+                <p>Ev Asistanı © 2026 | Jarvis Intelligence System</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <script src="/Fronted/Js/Jarvis.js"></script>
 </body>
+
 </html>

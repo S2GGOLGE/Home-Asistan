@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeOS - Sistem Günlükleri & Veritabanı İzleyici</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/Loglar.css">
+    <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
+</head>
+
+<body>
+
+    <!-- Dinamik Arayüz Başlangıç Yükleyicisi -->
+    <div id="loader-overlay">
+        <div class="loader-ring"></div>
+        <div class="loader-title">Database <span>Engine</span></div>
+        <div class="loader-subtitle" id="loader-text">SQL Server Bağlantısı Kuruluyor...</div>
+        <div class="loader-percentage" id="loader-percentage">0%</div>
+        <div class="loader-bar-wrap">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+    </div>
+
+    <div class="layout">
+
+        <!-- Sol Menü (Sidebar) -->
+        <aside class="sidebar collapsed" id="sidebar">
+            <div class="logo-area">
+                <div class="logo">EV ASİSTANI</div>
+                <div class="version">Sürüm 1.0.0</div>
+            </div>
+
+            <nav>
+                <a href="/Fronted/Pages/index.html"><i class="fas fa-chart-pie"></i> Gösterge Paneli</a>
+                <a href="/Fronted/Pages/Cihazlar.html"><i class="fas fa-lightbulb"></i> Cihazlar</a>
+                <a href="/Fronted/Pages/Odalar.html"><i class="fas fa-door-open"></i> Odalar</a>
+                <a href="/Fronted/Pages/Otomasyonlar.html"><i class="fas fa-bolt"></i> Otomasyonlar</a>
+                <a href="/Fronted/Pages/Jarvis.html"><i class="fas fa-robot"></i> Jarvis</a>
+                <a href="/Fronted/Pages/Kameralar.html"><i class="fas fa-video"></i> Kameralar</a>
+                <a href="/Fronted/Pages/Sensörler.html"><i class="fas fa-microchip"></i> Sensörler</a>
+                <a href="/Fronted/Pages/Bildirimler.html"><i class="fas fa-bell"></i> Bildirimler</a>
+                <a href="/Fronted/Pages/Kullanıcılar.html"><i class="fas fa-users"></i> Kullanıcılar</a>
+                <a href="/Fronted/Pages/Sistem İzleme.html"><i class="fas fa-desktop"></i> Sistem İzleme</a>
+                <a href="/Fronted/Pages/Ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="#" class="active"><i class="fas fa-terminal"></i> Loglar</a>
+            </nav>
+
+            <div class="back-btn-container">
+                <a href="/Fronted/Pages/index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Ana Sayfa</a>
+            </div>
+        </aside>
+
+        <!-- Sağ Taraf: Ana İçerik -->
+        <main class="content">
+
+            <!-- Üst Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div>
+                        <h1>Sistem Günlükleri & Veritabanı İzleyici</h1>
+                        <p>SQL Server veritabanındaki tabloları ve sistem kayıtlarını gerçek zamanlı görüntüleyin.</p>
+                    </div>
+                </div>
+                <div class="status">Veritabanı Bağlı</div>
+            </header>
+
+            <!-- Sayaç Panelleri -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>Toplam Kayıt (Log)</h3>
+                    <span class="num" id="count-total-logs">0</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Hata/Kritik Hata</h3>
+                    <span class="num red" id="count-error-logs">0</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Kayıtlı Cihaz</h3>
+                    <span class="num" id="count-total-devices">0</span>
+                </div>
+                <div class="stat-card">
+                    <h3>Kullanıcı Sayısı</h3>
+                    <span class="num" id="count-total-users">0</span>
+                </div>
+            </section>
+
+            <!-- Tab ve Veri Listeleme Alanı -->
+            <div class="tab-container">
+                
+                <!-- Tab Başlıkları -->
+                <div class="tab-headers">
+                    <button class="tab-btn active" data-tab="logs"><i class="fas fa-terminal"></i> Sistem Günlükleri (Logs)</button>
+                    <button class="tab-btn" data-tab="devices"><i class="fas fa-lightbulb"></i> Cihazlar (Devices)</button>
+                    <button class="tab-btn" data-tab="users"><i class="fas fa-users"></i> Kullanıcılar (Users)</button>
+                    <button class="tab-btn" data-tab="commands"><i class="fas fa-history"></i> Jarvis Komut Geçmişi</button>
+                </div>
+
+                <!-- Araç Çubuğu (Arama & Filtreleme) -->
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="search-input" placeholder="Veri ara...">
+                        </div>
+                        
+                        <!-- Log Seviyesi Filtresi (Sadece Log sekmesinde gösterilir) -->
+                        <select class="select-filter" id="filter-log-level">
+                            <option value="all">Tüm Seviyeler</option>
+                            <option value="info">INFO (Bilgi)</option>
+                            <option value="warn">WARN (Uyarı)</option>
+                            <option value="error">ERROR (Hata)</option>
+                            <option value="fatal">FATAL (Kritik)</option>
+                        </select>
+
+                        <!-- Cihaz Tipi Filtresi (Sadece Cihaz sekmesinde gösterilir) -->
+                        <select class="select-filter" id="filter-device-type" style="display: none;">
+                            <option value="all">Tüm Cihaz Tipleri</option>
+                            <option value="light">Işıklar (Light)</option>
+                            <option value="camera">Kameralar (Camera)</option>
+                            <option value="sensor">Sensörler (Sensor)</option>
+                            <option value="plug">Prizler (Plug)</option>
+                            <option value="climate">Klima (Climate)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="refresh-btn" id="refresh-btn" title="Yenile">
+                        <i class="fas fa-sync-alt"></i> Verileri Yenile
+                    </button>
+                </div>
+
+                <!-- Tab İçerikleri -->
+                
+                <!-- 1. Sistem Günlükleri Tabı -->
+                <div class="tab-content active" id="logs-tab">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">ID</th>
+                                    <th style="width: 120px;">Seviye</th>
+                                    <th>Mesaj</th>
+                                    <th style="width: 180px;">Kaynak / Modül</th>
+                                    <th style="width: 200px;">Kayıt Tarihi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-table-body">
+                                <!-- JS ile dinamik doldurulur -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. Cihazlar Tabı -->
+                <div class="tab-content" id="devices-tab">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">ID</th>
+                                    <th>Cihaz Adı</th>
+                                    <th>Cihaz Tipi / Sürümü</th>
+                                    <th style="width: 150px;">Bağlantı Durumu</th>
+                                    <th style="width: 200px;">Son Güncelleme</th>
+                                </tr>
+                            </thead>
+                            <tbody id="devices-table-body">
+                                <!-- JS ile dinamik doldurulur -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. Kullanıcılar Tabı -->
+                <div class="tab-content" id="users-tab">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">ID</th>
+                                    <th>Kullanıcı Adı</th>
+                                    <th>E-Posta Adresi</th>
+                                    <th style="width: 150px;">Sistem Rolü</th>
+                                    <th style="width: 200px;">Kayıt Tarihi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-table-body">
+                                <!-- JS ile dinamik doldurulur -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. Komutlar Tabı -->
+                <div class="tab-content" id="commands-tab">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">ID</th>
+                                    <th style="width: 100px;">U. ID</th>
+                                    <th>Söylenen Komut</th>
+                                    <th>Jarvis Yanıtı</th>
+                                    <th style="width: 120px;">Durum</th>
+                                    <th style="width: 200px;">Tarih</th>
+                                </tr>
+                            </thead>
+                            <tbody id="commands-table-body">
+                                <!-- JS ile dinamik doldurulur -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <footer>
+                <p>Ev Asistanı © 2026 | Database Management System</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <script src="/Fronted/Js/Loglar.js"></script>
+</body>
+
+</html>
