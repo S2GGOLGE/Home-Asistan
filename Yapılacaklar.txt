@@ -1,119 +1,83 @@
-# EV ASİSTANI - GELİŞTİRME PLANI
+# EV ASİSTANI - GÜNCEL GELİŞTİRME PLANI
 
 ## Mevcut Durum
-
-Proje planlama ve frontend geliştirme aşamasındadır.
+Frontend ve backend’in bazı temel parçaları tamamlanmıştır.
 
 ---
 
-## Frontend Görevleri
+## Frontend Görevleri (KALANLAR)
 
 ### Sayfaların Tamamlanması
-
-* Gösterge Paneli
-* Cihazlar Sayfası
-* Odalar Sayfası
-* Otomasyonlar Sayfası
-* Jarvis Sayfası
-* Kameralar Sayfası
-* Sensörler Sayfası
-* Bildirimler Sayfası
-* Kullanıcılar Sayfası
-* Sistem İzleme Sayfası
-* Ayarlar Sayfası
+- Odalar Sayfası
+- Otomasyonlar Sayfası
+- Jarvis Sayfası
+- Kameralar Sayfası
+- Sensörler Sayfası
+- Bildirimler Sayfası
+- Kullanıcılar Sayfası
+- Sistem İzleme Sayfası
+- Ayarlar Sayfası
 
 ### Arayüz Düzenlemeleri
-
-* Siyah tema düzenlemeleri
-* Mobil uyumluluk
-* Menü sistemi
-* Kart bileşenleri
-* Bildirim sistemi
-* Log ekranı
-* Durum göstergeleri
-* Sayfa geçiş animasyonları
-
----
-
-## Jarvis Entegrasyonu
-
-Frontend tamamlandıktan sonra Jarvis bağlantısı yapılacak.
-
-### Yapılacaklar
-
-* Jarvis durum ekranı oluşturulacak
-* Son komutlar görüntülenecek
-* Canlı log sistemi bağlanacak
-* Sesli komut geçmişi eklenecek
-* Jarvis durum bilgileri alınacak
-* Gerçek zamanlı veri akışı sağlanacak
+- Siyah tema iyileştirmeleri
+- Mobil uyumluluk optimizasyonu
+- Menü sistemi geliştirme
+- Kart bileşen standartlaştırma
+- Bildirim sistemi UI
+- Log ekranı UI iyileştirme
+- Durum göstergeleri (live UI)
+- Sayfa geçiş animasyonları
 
 ---
 
-## Backend Aşaması
+## Jarvis Entegrasyonu (Henüz Başlanmadı)
+- Jarvis durum ekranı
+- Son komutlar listesi
+- Canlı log görüntüleme
+- Sesli komut geçmişi
+- Gerçek zamanlı veri akışı
 
-Frontend tamamlandıktan sonra backend geliştirmesine başlanacak.
+---
+
+## Backend Aşaması (KALANLAR)
 
 ### ASP.NET Backend
-
-* API yapısının oluşturulması
-* Kimlik doğrulama sistemi
-* Kullanıcı yönetimi
-* Yetkilendirme sistemi
-* Cihaz yönetimi API'leri
-* Otomasyon API'leri
+- Authentication (login/register sistemi)
+- Authorization (rol sistemi)
+- Kullanıcı yönetimi API
+- Otomasyon API geliştirme
+- Tam sistem API standardizasyonu
 
 ### SignalR
-
-* Canlı sistem durumu
-* Canlı log aktarımı
-* Anlık cihaz güncellemeleri
-* Bildirim sistemi
+- Gerçek zamanlı bildirim sistemi
+- Canlı sistem event akışı
+- Anlık kullanıcı/cihaz update sistemi
 
 ### SQL Server
-
-* Veritabanı oluşturulması
-* Kullanıcı tabloları
-* Cihaz tabloları
-* Otomasyon tabloları
-* Log tabloları
+- Kullanıcı tablosu
+- Otomasyon tablosu
+- Gelişmiş log yapısı (filtrelenebilir)
+- Sistem ilişkisel yapı optimizasyonu
 
 ---
 
-## Python Core
-
-### Jarvis Core
-
-* Intent Router
-* Plugin Sistemi
-* AI İşleme Katmanı
-* Ses İşleme Katmanı
-
-### Watchdog
-
-* Süreç takibi
-* Otomatik yeniden başlatma
-* Hata izleme sistemi
+## Python Core (Jarvis Engine)
+- Intent Router geliştirme
+- Plugin sistemi
+- AI işlem katmanı
+- Ses işleme sistemi
+- Watchdog (süreç izleme & restart)
 
 ---
 
 ## Tamamlanma Sırası
-
-1. Frontend sayfalarını bitir
-2. Arayüz düzenlemelerini tamamla
-3. Jarvis bağlantısını kur
-4. Backend geliştirmesine başla
-5. SignalR entegrasyonu yap
-6. SQL Server entegrasyonu yap
-7. Python Core entegrasyonu yap
-8. Test sürecine geç
-9. Sistem optimizasyonları
-10. İlk kararlı sürümü yayınla
-
----
-
-## Kısa Hedef
-
-Öncelikli hedef:
-Frontend tamamen bitirilecek ve ardından Jarvis ile bağlantı kurulacak.
-Frontend stabil hale geldikten sonra backend geliştirme sürecine geçilecek.
+1. Kalan frontend sayfaları
+2. UI/UX düzenlemeleri
+3. Jarvis arayüz bağlantısı
+4. Backend API geliştirme
+5. SignalR entegrasyonu
+6. SQL Server genişletme
+7. Python Core entegrasyonu
+8. Test süreci
+9. Optimizasyon
+10. Release

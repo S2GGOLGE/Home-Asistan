@@ -25,16 +25,20 @@ android {
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        // 🛠️ Android Studio JVM ayarıyla uyumlu olması için Java 17'ye yükseltildi
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
     buildFeatures {
         viewBinding = true
     }
 }
 
 dependencies {
+    // 📦 TEMEL ANDROID KÜTÜPHANELERİ
     implementation(libs.activity.ktx)
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)
@@ -46,6 +50,10 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.gson)
 
+    // 🛠️ EKSİK OLAN GRIDLAYOUT KÜTÜPHANESİ (Hatanın ana sebebi)
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
+
+    // 🧪 TEST KÜTÜPHANELERİ
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
