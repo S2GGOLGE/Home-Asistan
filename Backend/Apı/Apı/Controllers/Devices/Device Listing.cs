@@ -1,30 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Api.Model.DevisListing;
-using Api.Data.Sql;
+using Api.Services.LogServices;
+
 [ApiController]
 [Route("api/Listing")]
 public class DeviceListingController : ControllerBase
 {
+    private readonly LogService _logService;
+
+    public DeviceListingController(LogService logService)
+    {
+        _logService = logService;
+    }
+
     [HttpGet]
     public IActionResult GetDevices()
     {
-        // Yazım hatası düzeltildi: DevisListingModel -> DeviceListingModel
         List<DevisListingModel> devices = new();
 
         string connectionString = "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
 
+        _logService.AddLog("INFO", "Cihaz listesi isteği alındı.", "DeviceListing");
+
         try
         {
-            // Bağlantı ve komut nesneleri 'using' ile güvenli şekilde yönetiliyor
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                string query = "SELECT Id, Name, Type, Status FROM Devices"; // '*' yerine kolonları açıkça yazmak performansı artırır
+                string query = "SELECT Id, Name, Type, Status FROM Devices";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -32,7 +39,6 @@ public class DeviceListingController : ControllerBase
                     {
                         while (reader.Read())
                         {
-                            // DBNull (Boş veri) kontrolleri eklenerek olası çökmeler engellendi
                             devices.Add(new DevisListingModel
                             {
                                 Id = reader["Id"] != DBNull.Value ? Convert.ToInt32(reader["Id"]) : 0,
@@ -45,11 +51,12 @@ public class DeviceListingController : ControllerBase
                 }
             }
 
+            _logService.AddLog("INFO", $"Cihaz listesi başarıyla getirildi. Toplam {devices.Count} cihaz döndü.", "DeviceListing");
             return Ok(devices);
         }
         catch (Exception ex)
         {
-            // Veri tabanı bağlantısında bir hata oluşursa uygulamanın çökmesini engeller
+            _logService.AddLog("ERROR", $"Cihaz listesi alınırken hata oluştu. Hata: {ex.Message}", "DeviceListing");
             return StatusCode(500, $"Veri tabanı hatası: {ex.Message}");
         }
     }

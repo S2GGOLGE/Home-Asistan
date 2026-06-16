@@ -1,10 +1,14 @@
 using Api.Data.Sql;
 using Api.Model.Device;
-using Api.Controllers.DeviceRegistration;
+using Api.Services.LogServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Port zorunlu kontrolü — erken kes, geç acı çekme
+// ── LogService kaydı (connection string buradan alınıyor) ──────────────────
+var logConnStr = "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
+builder.Services.AddSingleton<LogService>(new LogService(logConnStr));
+
+// ── Port kontrolü ──────────────────────────────────────────────────────────
 var configuredPort = builder.Configuration["App:Port"];
 if (string.IsNullOrWhiteSpace(configuredPort) || !int.TryParse(configuredPort, out var port))
 {
@@ -13,16 +17,18 @@ if (string.IsNullOrWhiteSpace(configuredPort) || !int.TryParse(configuredPort, o
     Console.Error.WriteLine("        appsettings.json içine ekle: { \"App\": { \"Port\": 5000 } }");
     Console.Error.WriteLine("        Ya da ortam değişkeni ile: App__Port=5000");
     Console.ResetColor();
+
+    // LogService henüz DI'dan çekilemiyor, doğrudan new'leyip logla
+    new LogService(logConnStr).AddLog("FATAL", "App:Port yapılandırması eksik veya geçersiz. Uygulama başlatılamadı.", "Program");
     return;
 }
 
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
-// 1. Servisleri Tanımla (Build Öncesi)
+// ── Servisler ──────────────────────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// CORS Ayarını Tam Esnek ve Güvenli Hale Getiriyoruz
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("HomeAsistan", policy =>
@@ -33,13 +39,18 @@ builder.Services.AddCors(options =>
     });
 });
 
-// 2. Uygulamayı İnşa Et
+// ── Build ──────────────────────────────────────────────────────────────────
 var app = builder.Build();
 
-// 3. Middleware Sıralaması (Build Sonrası - SIRA ÇOK ÖNEMLİ)
+// Build sonrası LogService'i resolve et — startup logları için
+var logger = app.Services.GetRequiredService<LogService>();
+logger.AddLog("INFO", $"Uygulama başlatılıyor. Port: {port}", "Program");
+
+// ── Middleware ─────────────────────────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    logger.AddLog("INFO", "Development ortamı algılandı. OpenAPI aktif.", "Program");
 }
 
 app.UseHttpsRedirection();
@@ -48,4 +59,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 Console.WriteLine($"[INFO] Uygulama port {port} üzerinde başlatılıyor...");
+logger.AddLog("INFO", $"Uygulama başarıyla ayağa kalktı. http://0.0.0.0:{port}", "Program");
+
 app.Run();
