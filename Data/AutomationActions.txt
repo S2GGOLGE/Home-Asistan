@@ -1,0 +1,12 @@
+CREATE TABLE AutomationActions
+(
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    AutomationId INT NOT NULL,
+
+    ActionType NVARCHAR(50) NOT NULL,
+    ActionValue NVARCHAR(MAX) NULL,
+
+    FOREIGN KEY (AutomationId)
+    REFERENCES Automations(Id)
+    ON DELETE CASCADE
+);

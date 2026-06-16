@@ -1,0 +1,12 @@
+CREATE TABLE AutomationTriggers
+(
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    AutomationId INT NOT NULL,
+
+    TriggerType NVARCHAR(50) NOT NULL,
+    TriggerValue NVARCHAR(MAX) NULL,
+
+    FOREIGN KEY (AutomationId)
+    REFERENCES Automations(Id)
+    ON DELETE CASCADE
+);

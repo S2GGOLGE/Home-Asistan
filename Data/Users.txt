@@ -4,5 +4,6 @@ CREATE TABLE Users (
     Email NVARCHAR(100),
     PasswordHash NVARCHAR(255) NOT NULL,
     Role NVARCHAR(20) DEFAULT 'User',
-    CreatedAt DATETIME DEFAULT GETDATE()
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    Salt NVARCHAR(500) NULL;
 );

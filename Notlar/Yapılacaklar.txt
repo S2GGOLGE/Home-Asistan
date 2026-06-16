@@ -1,0 +1,210 @@
+# EV ASİSTANI - GÜNCEL GELİŞTİRME PLANI
+
+## Mevcut Durum
+
+Frontend ve backend'in bazı temel parçaları tamamlanmıştır.
+
+---
+
+# Frontend Görevleri (KALANLAR)
+
+## Sayfaların Tamamlanması
+
+* Odalar Sayfası
+* Otomasyonlar Sayfası
+* Jarvis Sayfası
+* Kameralar Sayfası
+* Sensörler Sayfası
+* Bildirimler Sayfası
+* Kullanıcılar Sayfası
+* Sistem İzleme Sayfası
+* Ayarlar Sayfası
+
+## Arayüz Düzenlemeleri
+
+* Siyah tema iyileştirmeleri
+* Mobil uyumluluk optimizasyonu
+* Menü sistemi geliştirme
+* Kart bileşen standartlaştırma
+* Bildirim sistemi UI
+* Log ekranı UI iyileştirme
+* Durum göstergeleri (live UI)
+* Sayfa geçiş animasyonları
+
+---
+
+# Jarvis Entegrasyonu (Henüz Başlanmadı)
+
+* Jarvis durum ekranı
+* Son komutlar listesi
+* Canlı log görüntüleme
+* Sesli komut geçmişi
+* Gerçek zamanlı veri akışı
+
+---
+
+# Backend Aşaması (KALANLAR)
+
+## ASP.NET Backend
+
+* Authentication (Login/Register)
+* Authorization (Rol Sistemi)
+* Kullanıcı Yönetimi API
+* Otomasyon API Geliştirme
+* API Standardizasyonu
+* Rate Limiting
+* Global Exception Handling
+* API Versioning
+
+## SignalR
+
+* Gerçek zamanlı bildirim sistemi
+* Canlı sistem event akışı
+* Anlık kullanıcı güncellemeleri
+* Anlık cihaz güncellemeleri
+* Live Dashboard veri akışı
+
+## SQL Server
+
+* Kullanıcı tablosu
+* Otomasyon tablosu
+* Gelişmiş log yapısı
+* Filtrelenebilir log sistemi
+* İlişkisel yapı optimizasyonu
+* Index optimizasyonları
+* Backup stratejisi
+
+---
+
+# Python Core (Jarvis Engine)
+
+## Temel Bileşenler
+
+* Intent Router
+* Plugin Sistemi
+* AI İşlem Katmanı
+* Ses İşleme Sistemi
+* Watchdog Servisi
+
+## Gelişmiş Özellikler
+
+* Plugin yükleme sistemi
+* Hata kurtarma mekanizması
+* Otomatik restart sistemi
+* Komut kayıt sistemi
+* Performans izleme
+
+---
+
+# Güvenlik Aşaması
+
+## Kimlik Doğrulama
+
+* JWT Authentication
+* Refresh Token Sistemi
+* Şifre Hash + Salt Yapısı
+* Rol Bazlı Yetkilendirme
+
+## Sistem Güvenliği
+
+* SQL Injection koruması
+* XSS koruması
+* CSRF koruması
+* API Rate Limiting
+* Güvenlik logları
+* Failed Login takibi
+
+---
+
+# Test Süreci
+
+## Backend Testleri
+
+* API testleri
+* Yetkilendirme testleri
+* Hata senaryoları
+* Yük testleri
+
+## Frontend Testleri
+
+* Responsive testler
+* Tarayıcı uyumluluğu
+* UI/UX kontrolleri
+
+## Sistem Testleri
+
+* Jarvis entegrasyon testleri
+* SignalR testleri
+* Database testleri
+* End-to-End testler
+
+---
+
+# Yayına Alma (Deployment)
+
+## Sunucu Hazırlığı
+
+* VPS veya Dedicated Server kurulumu
+* IIS kurulumu
+* ASP.NET Runtime kurulumu
+* SQL Server kurulumu
+* Python Runtime kurulumu
+
+## Domain ve SSL
+
+* Domain bağlantısı
+* SSL sertifikası kurulumu
+* HTTPS zorunlu yönlendirme
+
+## Monitoring
+
+* Sistem sağlık kontrolleri
+* CPU/RAM izleme
+* Disk kullanım izleme
+* Hata takip sistemi
+* Servis durum izleme
+
+## Loglama
+
+* Merkezi log sistemi
+* Hata logları
+* Kullanıcı logları
+* Güvenlik logları
+* Jarvis logları
+
+## Yedekleme
+
+* SQL Server otomatik yedekleme
+* Log yedekleme
+* Konfigürasyon yedekleme
+* Günlük backup planı
+
+## Release Kontrol Listesi
+
+* Production Config
+* HTTPS Aktif
+* JWT Secret Güvenli
+* Veritabanı Backup Aktif
+* Monitoring Aktif
+* Loglama Aktif
+* Hata Sayfaları Hazır
+* Testler Tamamlandı
+
+---
+
+# Tamamlanma Sırası
+
+1. Kalan Frontend Sayfaları
+2. UI/UX Düzenlemeleri
+3. Jarvis Arayüz Bağlantısı
+4. Backend API Geliştirme
+5. SignalR Entegrasyonu
+6. SQL Server Genişletme
+7. Python Core Geliştirme
+8. Güvenlik Katmanı
+9. Test Süreci
+10. Optimizasyon
+11. Deployment Hazırlığı
+12. Staging Ortamı
+13. Production Release
+14. Monitoring & Bakım
