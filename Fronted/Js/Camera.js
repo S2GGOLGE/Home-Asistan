@@ -5,7 +5,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Home Asistan: Kamera Kontrol Arayüzü Başlatıldı.');
 
-    // DOM Elementlerini Önbelleğe Al (Caching)
+    // DOM Elementlerini Kimliklerine (ID) Göre Önbelleğe Al
     const loaderOverlay = document.getElementById('loader-overlay');
     const loaderBar = document.getElementById('loader-bar');
     const loaderText = document.getElementById('loader-text');
@@ -27,10 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const runSystemLoading = () => {
         const loadInterval = setInterval(() => {
-            // İlerlemeye doğal bir asimetri (hızlanma/yavaşlama) katmak için dinamik adımlar
+            // İlerlemeye doğal bir asimetri katmak için dinamik adımlar
             const increment = Math.floor(Math.random() * 5) + 2;
             progress += increment;
 
+            // Güvenli sınır kontrolü
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(loadInterval);
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loaderText.textContent = activeState.text;
             }
 
-        }, 45); // Toplamda ~1.5 - 2 saniye arası akıcı yükleme hızı sunar
+        }, 40); // Akıcı animasyon süresi
     };
 
     /**
@@ -58,22 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (loaderOverlay) {
                 loaderOverlay.classList.add('fade-out');
                 
-                // Animasyon geçişi (0.8s) bittikten sonra DOM'u yormamak için elementi tamamen kaldırır
+                // Animasyon geçişi bittikten sonra elementi DOM'dan tamamen kaldırır
                 loaderOverlay.addEventListener('transitionend', () => {
                     loaderOverlay.remove();
                     triggerCameraStatusPolling(); // Kameraları dinlemeye başla
                 });
             }
-        }, 400); // 100%'e ulaştıktan sonraki stabilite bekleme süresi
+        }, 400); // 100%'e ulaştıktan sonraki kararlılık bekleme süresi
     };
 
-    /**
-     * İleride SQL veya WebSocket bağlandığında kameraların durumunu 
-     * anlık tetiklemek için ayrılmış performans döngüsü alt yapısı
-     */
     const triggerCameraStatusPolling = () => {
         console.log("Home Asistan: Kamera izleme havuzu dinleniyor...");
-        // İleride buraya kameraların canlı veri akış durumunu çekecek SQL tetikleyicileri eklenebilir.
     };
 
     // Yükleme motorunu ateşle

@@ -1,4 +1,61 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ==========================================================================
+    // HOMEOS LOADER ENGINE (Kamera Sayfasıyla Birebir Senkronize)
+    // ==========================================================================
+    const loaderOverlay = document.getElementById('loader-overlay');
+    const loaderBar = document.getElementById('loader-bar');
+    const loaderText = document.getElementById('loader-text');
+    const loaderPercentage = document.getElementById('loader-percentage');
+
+    // Odalar ve Genel Merkez için Özelleştirilmiş Adımlar
+    const loadingStates = [
+        { limit: 20, text: "Merkezi veri yolu başlatılıyor..." },
+        { limit: 45, text: "Oda sıcaklık sensörleri okunuyor..." },
+        { limit: 70, text: "Aydınlatma röleleri doğrulanıyor..." },
+        { limit: 90, text: "Grafik matrisi entegre ediliyor..." },
+        { limit: 100, text: "Akıllı Ev Kontrol Merkezi aktif!" }
+    ];
+
+    let progress = 0;
+
+    const runSystemLoading = () => {
+        const loadInterval = setInterval(() => {
+            const increment = Math.floor(Math.random() * 5) + 2;
+            progress += increment;
+
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(loadInterval);
+                terminateLoader();
+            }
+
+            if (loaderBar) loaderBar.style.width = `${progress}%`;
+            if (loaderPercentage) loaderPercentage.textContent = `${progress}%`;
+
+            const activeState = loadingStates.find(state => progress <= state.limit);
+            if (activeState && loaderText) {
+                loaderText.textContent = activeState.text;
+            }
+        }, 40);
+    };
+
+    const terminateLoader = () => {
+        setTimeout(() => {
+            if (loaderOverlay) {
+                loaderOverlay.classList.add('fade-out');
+                loaderOverlay.addEventListener('transitionend', () => {
+                    loaderOverlay.remove();
+                });
+            }
+        }, 400);
+    };
+
+    // Motoru Ateşle
+    runSystemLoading();
+
+    // ==========================================================================
+    // GRAFİK VE MODAL TETİKLEYİCİLERİ
+    // ==========================================================================
     const salonModal = document.getElementById('modal-salon');
     const mutfakModal = document.getElementById('modal-mutfak');
 

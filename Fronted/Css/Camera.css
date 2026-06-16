@@ -1,21 +1,12 @@
 /* --- GENEL AYARLAR VE HOMEOS DOĞAL RENK SKALASI --- */
 :root {
     --bg-main: #080808;
-    /* HomeOS Ana Koyu Tema */
     --bg-panel: #111111;
-    /* Panel Üstü Kart Rengi */
     --bg-inner: #161616;
-    /* İç Eleman Arka Planı */
     --accent-green: #00ff88;
-    /* Canlı Neon Yeşil */
     --border-line: #1c1c1c;
-    /* Standart İnce Çizgi Rengi */
     --text-primary: #ffffff;
-    /* Birincil Metin */
     --text-secondary: #888888;
-    /* İkincil Metin */
-
-    /* Durum Renkleri */
     --color-red: #ff4444;
     --color-orange: #ff9900;
 }
@@ -98,7 +89,6 @@ body {
     border-color: var(--accent-green);
 }
 
-/* Kamera Ekran Paneli */
 .camera-view {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -222,6 +212,7 @@ body {
 .loader-subtitle {
     font-size: 12px;
     color: var(--text-secondary);
+    min-height: 18px; /* Yazı değişirken zıplama yapmasın */
 }
 
 /* Yüzde Sayacı */
@@ -260,7 +251,6 @@ body {
         transform: scale(0.9);
         opacity: 0.5;
     }
-
     100% {
         transform: scale(1.1);
         opacity: 1;
