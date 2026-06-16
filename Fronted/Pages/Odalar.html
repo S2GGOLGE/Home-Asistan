@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/Fronted/Css/Odalar.css">
+    <link rel="stylesheet" href="/Fronted/Css/modal.css">
     <link rel="icon" type="image/x-icon" href="/Fronted/İmages/logo.png">
 </head>
 <body class="p-4 md:p-8">
@@ -34,7 +35,7 @@
 
         <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" onclick="openModal('modal-salon')">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-salon">
                 <div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-couch"></i></div>
@@ -49,7 +50,7 @@
                 <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" onclick="openModal('modal-mutfak')">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-mutfak">
                 <div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-kitchen-set"></i></div>
@@ -64,7 +65,7 @@
                 <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" onclick="openModal('modal-yatak')">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-yatak">
                 <div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-bed"></i></div>
@@ -79,7 +80,7 @@
                 <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" onclick="openModal('modal-cocuk')">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-cocuk">
                 <div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-child"></i></div>
@@ -94,7 +95,7 @@
                 <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" onclick="openModal('modal-banyo')">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-banyo">
                 <div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-bath"></i></div>
@@ -109,7 +110,7 @@
                 <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" onclick="openModal('modal-koridor')">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-koridor">
                 <div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-door-open"></i></div>
@@ -124,7 +125,7 @@
                 <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" onclick="openModal('modal-calisma')">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-calisma">
                 <div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-laptop-code"></i></div>
@@ -139,7 +140,7 @@
                 <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" onclick="openModal('modal-balkon')">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-balkon">
                 <div>
                     <div class="flex justify-between items-start mb-4">
                         <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-cloud-sun"></i></div>
@@ -157,8 +158,8 @@
         </main>
     </div>
 
-    <div id="modal-salon" class="modal-backdrop items-center justify-center p-4" onclick="closeModal(event, 'modal-salon')">
-        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar" onclick="event.stopPropagation()">
+    <div id="modal-salon" class="modal-backdrop items-center justify-center p-4" aria-hidden="true">
+        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-couch"></i></div>
@@ -171,7 +172,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" onclick="hideModal('modal-salon')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-3">
@@ -209,14 +210,14 @@
         </div>
     </div>
 
-    <div id="modal-mutfak" class="modal-backdrop items-center justify-center p-4" onclick="closeModal(event, 'modal-mutfak')">
-        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar" onclick="event.stopPropagation()">
+    <div id="modal-mutfak" class="modal-backdrop items-center justify-center p-4" aria-hidden="true">
+        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-kitchen-set"></i></div>
                     <div><h2 class="text-xl md:text-2xl font-bold">Mutfak Kontrolü</h2><p class="text-xs mt-1 text-secondary">Sıcaklık: 21.8°C</p></div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" onclick="hideModal('modal-mutfak')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
@@ -234,14 +235,14 @@
         </div>
     </div>
 
-    <div id="modal-yatak" class="modal-backdrop items-center justify-center p-4" onclick="closeModal(event, 'modal-yatak')">
-        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar" onclick="event.stopPropagation()">
+    <div id="modal-yatak" class="modal-backdrop items-center justify-center p-4" aria-hidden="true">
+        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-bed"></i></div>
                     <div><h2 class="text-xl md:text-2xl font-bold">Yatak Odası Kontrolü</h2><p class="text-xs mt-1 text-secondary">Sıcaklık: 20.5°C</p></div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" onclick="hideModal('modal-yatak')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
                 <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg orange-color"></i><div><p class="text-sm font-semibold">Gece Lambası</p></div></div>
@@ -250,14 +251,14 @@
         </div>
     </div>
 
-    <div id="modal-cocuk" class="modal-backdrop items-center justify-center p-4" onclick="closeModal(event, 'modal-cocuk')">
-        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar" onclick="event.stopPropagation()">
+    <div id="modal-cocuk" class="modal-backdrop items-center justify-center p-4" aria-hidden="true">
+        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-child"></i></div>
                     <div><h2 class="text-xl md:text-2xl font-bold">Çocuk Odası Kontrolü</h2><p class="text-xs mt-1 text-secondary">Sıcaklık: 23.0°C</p></div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" onclick="hideModal('modal-cocuk')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
                 <div class="flex items-center gap-3"><i class="fa-solid fa-baby-carriage text-lg text-pink-400"></i><div><p class="text-sm font-semibold">Hava Nemlendirici</p></div></div>
@@ -266,14 +267,14 @@
         </div>
     </div>
 
-    <div id="modal-banyo" class="modal-backdrop items-center justify-center p-4" onclick="closeModal(event, 'modal-banyo')">
-        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar" onclick="event.stopPropagation()">
+    <div id="modal-banyo" class="modal-backdrop items-center justify-center p-4" aria-hidden="true">
+        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-bath"></i></div>
                     <div><h2 class="text-xl md:text-2xl font-bold">Banyo Kontrolü</h2><p class="text-xs mt-1 text-secondary">Nem: %62</p></div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" onclick="hideModal('modal-banyo')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
                 <div class="flex items-center gap-3"><i class="fa-solid fa-fan text-lg text-sky-400"></i><div><p class="text-sm font-semibold">Havalandırma Fanı</p></div></div>
@@ -282,14 +283,14 @@
         </div>
     </div>
 
-    <div id="modal-koridor" class="modal-backdrop items-center justify-center p-4" onclick="closeModal(event, 'modal-koridor')">
-        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar" onclick="event.stopPropagation()">
+    <div id="modal-koridor" class="modal-backdrop items-center justify-center p-4" aria-hidden="true">
+        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-door-open"></i></div>
                     <div><h2 class="text-xl md:text-2xl font-bold">Koridor Kontrolü</h2><p class="text-xs mt-1 text-secondary">Işıklar Otomatik</p></div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" onclick="hideModal('modal-koridor')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
                 <div class="flex items-center gap-3"><i class="fa-solid fa-person-walking text-lg"></i><div><p class="text-sm font-semibold">Gece Karşılama Işıkları</p></div></div>
@@ -298,14 +299,14 @@
         </div>
     </div>
 
-    <div id="modal-calisma" class="modal-backdrop items-center justify-center p-4" onclick="closeModal(event, 'modal-calisma')">
-        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar" onclick="event.stopPropagation()">
+    <div id="modal-calisma" class="modal-backdrop items-center justify-center p-4" aria-hidden="true">
+        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-laptop-code"></i></div>
                     <div><h2 class="text-xl md:text-2xl font-bold">Çalışma Odası Kontrolü</h2><p class="text-xs mt-1 text-secondary">Sıcaklık: 22.1°C</p></div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" onclick="hideModal('modal-calisma')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
                 <div class="flex items-center gap-3"><i class="fa-solid fa-desktop text-lg text-purple-400"></i><div><p class="text-sm font-semibold">Masa Priz Grubu</p></div></div>
@@ -314,14 +315,14 @@
         </div>
     </div>
 
-    <div id="modal-balkon" class="modal-backdrop items-center justify-center p-4" onclick="closeModal(event, 'modal-balkon')">
-        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar" onclick="event.stopPropagation()">
+    <div id="modal-balkon" class="modal-backdrop items-center justify-center p-4" aria-hidden="true">
+        <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-cloud-sun"></i></div>
                     <div><h2 class="text-xl md:text-2xl font-bold">Balkon Kontrolü</h2><p class="text-xs mt-1 text-secondary">Dış İstasyon</p></div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" onclick="hideModal('modal-balkon')"><i class="fa-solid fa-xmark"></i></button>
+                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
                 <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg"></i><div><p class="text-sm font-semibold">Dış Aydınlatma</p></div></div>
@@ -330,6 +331,7 @@
         </div>
     </div>
 
+    <script src="/Fronted/Js/modal.js"></script>
     <script src="/Fronted/Js/Odalar.js"></script>
 </body>
 </html> 

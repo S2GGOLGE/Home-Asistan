@@ -7,6 +7,7 @@
     <title>HomeOS - Cihaz Yönetimi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/Fronted/Css/cihazlar.css">
+    <link rel="stylesheet" href="/Fronted/Css/modal.css">
     <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
 </head>
 
@@ -48,7 +49,7 @@
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="Cihaz veya oda ara...">
                     </div>
-                    <button class="add-btn"><i class="fas fa-plus"></i> Yeni Cihaz Ekle</button>
+                    <button class="add-btn" type="button" data-modal-open="device-modal"><i class="fas fa-plus"></i> Yeni Cihaz Ekle</button>
                 </div>
             </header>
 
@@ -124,11 +125,11 @@
 
     </div>
 
-    <div id="device-modal" class="modal-overlay">
+    <div id="device-modal" class="modal-overlay" aria-hidden="true">
         <div class="modal-window">
             <div class="modal-header">
                 <h2><i class="fas fa-plus-circle"></i> Yeni Cihaz Ekle</h2>
-                <button id="close-modal" class="close-btn">&times;</button>
+                <button id="close-modal" class="close-btn" type="button" data-modal-close aria-label="Kapat">&times;</button>
             </div>
 
             <form id="add-device-form" class="modal-form">
@@ -159,13 +160,14 @@
                 </div>
 
                 <div class="modal-actions">
-                    <button type="button" id="cancel-modal" class="btn-secondary">İptal Et</button>
+                    <button type="button" id="cancel-modal" class="btn-secondary" data-modal-close>İptal Et</button>
                     <button type="submit" class="btn-primary">Sisteme Kaydet</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <script src="/Fronted/Js/modal.js"></script>
     <script src="/Fronted/Js/cihazlar.js"></script>
     <script src="/Fronted/Js/Endpoint/cihazdurumguncelleme.js"></script>
     <script src="/Fronted/Js/Endpoint/CihazlarEndpoint.js"></script>

@@ -1,14 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Asistan | Otomasyonlar</title>
+    <title>Home Asistan Otomasyonlar</title>
+    <link rel="stylesheet" href="/Fronted/Css/otomasyonlar.css">
+    <link rel="stylesheet" href="/Fronted/Css/modal.css">
+    <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
 </head>
 
 <body>
 
+    <div class="container">
+        <div class="header-container">
+            <button class="back-btn" type="button" id="backButton">&#10229; Geri</button>
+
+            <h1 class="main-title">Home Asistan Otomasyonlar</h1>
+
+            <button class="add-btn" type="button" data-modal-open="automationModal">+ Yeni Otomasyon</button>
+        </div>
+
+        <div class="automation-grid">
+            <button class="card" type="button" data-automation-id="1">
+                <div class="card-content">Otomasyon 1</div>
+            </button>
+            <button class="card" type="button" data-automation-id="2">
+                <div class="card-content">Otomasyon 2</div>
+            </button>
+            <button class="card" type="button" data-automation-id="3">
+                <div class="card-content">Otomasyon 3</div>
+            </button>
+            <button class="card" type="button" data-automation-id="4">
+                <div class="card-content">Otomasyon 4</div>
+            </button>
+            <button class="card" type="button" data-automation-id="5">
+                <div class="card-content">Otomasyon 5</div>
+            </button>
+        </div>
+    </div>
+
+    <div id="automationModal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <button class="close-btn" type="button" data-modal-close aria-label="Kapat">&times;</button>
+            <h2>Yeni Otomasyon Ekle</h2>
+            <form id="automationForm">
+                <div class="form-group">
+                    <label for="autoName">Otomasyon Adı</label>
+                    <input type="text" id="autoName" placeholder="Örn: Akşam Işıkları" required>
+                </div>
+                <button type="submit" class="submit-btn">Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/Fronted/Js/modal.js"></script>
+    <script src="/Fronted/Js/otomasyonlar.js"></script>
 </body>
 
 </html>

@@ -5,7 +5,7 @@ async function ekle() {
   
   if (!nameInput) {
     console.error("HATA: 'device-name' ID'li input bulunamadı!");
-    return;
+    return false;
   }
 
   const cihazAdi = nameInput.value.trim();
@@ -22,7 +22,7 @@ async function ekle() {
 
   if (!payload.DeviceName) {
     alert("Cihaz adı boş olamaz!");
-    return;
+    return false;
   }
 
   try {
@@ -41,15 +41,18 @@ async function ekle() {
       
       const modal = document.getElementById("device-modal");
       if (modal) modal.classList.remove("show", "active");
-      location.reload(); 
+      location.reload();
+      return true;
     } else {
       const errorText = await res.text();
       console.error("Backend Hatası:", errorText);
       alert("Sistem Hatası: " + errorText);
+      return false;
     }
 
   } catch (err) {
     console.error("Bağlantı Kurulamadı:", err);
     alert("Backend sunucusuna bağlanılamadı. Projenin çalıştığından emin olun!");
+    return false;
   }
 }

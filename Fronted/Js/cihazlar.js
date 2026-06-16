@@ -21,11 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const ramText = document.querySelectorAll('.res-labels span:last-child')[1];
     const terminalBox = document.querySelector('.terminal-box');
 
-    // Yeni Cihaz Ekle Modal Elementleri
-    const openModalBtn = document.querySelector('.add-btn');
+    // Yeni Cihaz Ekle Form Elementleri
     const deviceModal = document.getElementById('device-modal');
-    const closeModalX = document.getElementById('close-modal');
-    const closeModalCancel = document.getElementById('cancel-modal');
     const addDeviceForm = document.getElementById('add-device-form');
 
     // Arama ve Filtre Hafızası
@@ -79,31 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     runInitialLoader();
 
-    // ══════════════════════════════
-    //  2. YENİ CİHAZ EKLE MODAL POPUP
-    // ══════════════════════════════
-    if (openModalBtn && deviceModal) {
-        openModalBtn.addEventListener('click', () => {
-            deviceModal.classList.add('show');
-            deviceModal.classList.add('active');
+    if (deviceModal) {
+        deviceModal.addEventListener('modal:open', () => {
             logToTerminal("[Sistem] Yeni cihaz ekleme penceresi açıldı.");
         });
     }
-
-    const closeModal = () => {
-        if (deviceModal) {
-            deviceModal.classList.remove('show');
-            deviceModal.classList.remove('active');
-            if (addDeviceForm) addDeviceForm.reset();
-        }
-    };
-
-    if (closeModalX) closeModalX.addEventListener('click', closeModal);
-    if (closeModalCancel) closeModalCancel.addEventListener('click', closeModal);
-
-    window.addEventListener('click', (e) => {
-        if (e.target === deviceModal) closeModal();
-    });
 
     // 🚀 FORM SUBMIT KONTROLÜ (Birleştirilmiş & Çakışmasız Tek Tetikleyici)
     if (addDeviceForm) {
@@ -117,12 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // CihazlarEndpoint.js içerisindeki fonksiyonu güvenli bir şekilde çağırır
             if (typeof ekle === "function") {
-                await ekle();
+                const saved = await ekle();
+                if (saved && window.HomeOSModal) {
+                    window.HomeOSModal.close('device-modal');
+                }
             } else {
                 console.error("HATA: CihazlarEndpoint.js yüklenemedi veya ekle() fonksiyonu bulunamadı!");
             }
-            
-            closeModal();
         });
     }
 

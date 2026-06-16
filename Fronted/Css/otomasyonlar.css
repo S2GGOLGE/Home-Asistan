@@ -1,0 +1,180 @@
+/* Genel Sayfa Ayarları */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #000000;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* Başlık ve Butonların Yan Yana Düzeni */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Sol Üstteki Geri Butonu */
+.back-btn {
+    background-color: transparent;
+    color: #00aa00;
+    border: 2px solid #004400;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    color: #00FF00;
+    border-color: #00FF00;
+    background-color: #001100;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+/* Başlık Stili */
+.main-title {
+    color: #00FF00;
+    font-size: 2.2rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Sağ Üstteki Yeni Otomasyon Butonu */
+.add-btn {
+    background-color: #004400;
+    color: #00FF00;
+    border: 2px solid #00FF00;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-btn:hover {
+    background-color: #00FF00;
+    color: #000000;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+/* Grid Yapısı */
+.automation-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+}
+
+/* Kartların Temel Stili */
+.card {
+    appearance: none;
+    background-color: #003300;
+    width: calc(33.333% - 20px);
+    min-width: 250px;
+    height: 180px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid transparent;
+    font: inherit;
+}
+
+.card-content {
+    color: #00aa00;
+    font-size: 1.2rem;
+    font-weight: 600;
+    user-select: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    background-color: #004400;
+    border-color: #00FF00;
+    box-shadow: 0 10px 20px rgba(0, 255, 0, 0.2);
+}
+
+.card:hover .card-content {
+    color: #00FF00;
+}
+
+.card.active {
+    background-color: #005500;
+    border-color: #00FF00;
+    box-shadow: 0 0 15px #00FF00;
+}
+
+.card.active .card-content {
+    color: #ffffff;
+}
+
+.modal-content {
+    background-color: #0a140a;
+    border: 2px solid #00FF00;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.3);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal h2 {
+    color: #00FF00;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+/* Mobil Cihazlar İçin Uyumluluk */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    .back-btn, .add-btn {
+        width: 100%; /* Mobilde butonlar tam genişlik kaplar */
+    }
+    .card {
+        width: calc(50% - 15px);
+    }
+    .main-title {
+        font-size: 1.8rem;
+        order: -1; /* Mobilde başlığı en üste taşır */
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        width: 100%;
+    }
+}

@@ -1,49 +1,29 @@
-// Modal Açma Fonksiyonu
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Sayfa kaymasını durdur
-        
-        // Sadece modal açıldığında grafikleri çizdir (Performans optimizasyonu)
-        setTimeout(() => {
-            if (modalId === 'modal-salon') initSalonChart();
-            if (modalId === 'modal-mutfak') initMutfakChart();
-        }, 150);
-    }
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const salonModal = document.getElementById('modal-salon');
+    const mutfakModal = document.getElementById('modal-mutfak');
 
-// Modal Kapatma Fonksiyonları
-function hideModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
+    if (salonModal) {
+        salonModal.addEventListener('modal:open', () => {
+            setTimeout(initSalonChart, 150);
+        });
     }
-}
 
-function closeModal(event, modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal && event.target === modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-}
-
-// ESC Tuşu ile Kapatma Desteği
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
-        document.body.style.overflow = '';
+    if (mutfakModal) {
+        mutfakModal.addEventListener('modal:open', () => {
+            setTimeout(initMutfakChart, 150);
+        });
     }
 });
 
-// ================= GRAFİK MOTORLARI (CHART.JS) =================
 let salonChartInstance = null;
+
 function initSalonChart() {
-    if (salonChartInstance) return; // Zaten çizildiyse tekrar tetikleme
-    const ctx = document.getElementById('chart-salon').getContext('2d');
-    salonChartInstance = new Chart(ctx, {
+    if (salonChartInstance || typeof Chart === 'undefined') return;
+
+    const canvas = document.getElementById('chart-salon');
+    if (!canvas) return;
+
+    salonChartInstance = new Chart(canvas.getContext('2d'), {
         type: 'line',
         data: {
             labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
@@ -57,32 +37,55 @@ function initSalonChart() {
             }]
         },
         options: {
-            responsive: true, maintainAspectRatio: false,
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
-            scales: { 
-                x: { grid: { display: false }, ticks: { color: '#888888', font: { size: 9 } } }, 
-                y: { grid: { color: '#1c1c1c' }, ticks: { color: '#888888', font: { size: 9 } } } 
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#888888', font: { size: 9 } }
+                },
+                y: {
+                    grid: { color: '#1c1c1c' },
+                    ticks: { color: '#888888', font: { size: 9 } }
+                }
             }
         }
     });
 }
 
 let mutfakChartInstance = null;
+
 function initMutfakChart() {
-    if (mutfakChartInstance) return;
-    const ctx = document.getElementById('chart-mutfak').getContext('2d');
-    mutfakChartInstance = new Chart(ctx, {
+    if (mutfakChartInstance || typeof Chart === 'undefined') return;
+
+    const canvas = document.getElementById('chart-mutfak');
+    if (!canvas) return;
+
+    mutfakChartInstance = new Chart(canvas.getContext('2d'), {
         type: 'bar',
         data: {
             labels: ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'],
-            datasets: [{ data: [12, 19, 14, 15, 22, 28, 20], backgroundColor: '#ff9900', borderRadius: 4, barThickness: 12 }]
+            datasets: [{
+                data: [12, 19, 14, 15, 22, 28, 20],
+                backgroundColor: '#ff9900',
+                borderRadius: 4,
+                barThickness: 12
+            }]
         },
         options: {
-            responsive: true, maintainAspectRatio: false,
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: { legend: { display: false } },
-            scales: { 
-                x: { grid: { display: false }, ticks: { color: '#888888', font: { size: 9 } } }, 
-                y: { grid: { color: '#1c1c1c' }, ticks: { color: '#888888', font: { size: 9 } } } 
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#888888', font: { size: 9 } }
+                },
+                y: {
+                    grid: { color: '#1c1c1c' },
+                    ticks: { color: '#888888', font: { size: 9 } }
+                }
             }
         }
     });

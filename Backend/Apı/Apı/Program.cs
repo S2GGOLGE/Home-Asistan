@@ -53,8 +53,8 @@ if (app.Environment.IsDevelopment())
     logger.AddLog("INFO", "Development ortamı algılandı. OpenAPI aktif.", "Program");
 }
 
-app.UseHttpsRedirection();
 app.UseCors("HomeAsistan");
+app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
