@@ -68,7 +68,7 @@
                         <p>SQL Server veritabanındaki tabloları ve sistem kayıtlarını gerçek zamanlı görüntüleyin.</p>
                     </div>
                 </div>
-                <div class="status">Veritabanı Bağlı</div>
+                <div class="status" id="system-status-indicator">Sistem Durumu %100</div>
             </header>
 
             <!-- Sayaç Panelleri -->
@@ -93,13 +93,16 @@
 
             <!-- Tab ve Veri Listeleme Alanı -->
             <div class="tab-container">
-                
+
                 <!-- Tab Başlıkları -->
                 <div class="tab-headers">
-                    <button class="tab-btn active" data-tab="logs"><i class="fas fa-terminal"></i> Sistem Günlükleri (Logs)</button>
-                    <button class="tab-btn" data-tab="devices"><i class="fas fa-lightbulb"></i> Cihazlar (Devices)</button>
+                    <button class="tab-btn active" data-tab="logs"><i class="fas fa-terminal"></i> Sistem Günlükleri
+                        (Logs)</button>
+                    <button class="tab-btn" data-tab="devices"><i class="fas fa-lightbulb"></i> Cihazlar
+                        (Devices)</button>
                     <button class="tab-btn" data-tab="users"><i class="fas fa-users"></i> Kullanıcılar (Users)</button>
-                    <button class="tab-btn" data-tab="commands"><i class="fas fa-history"></i> Jarvis Komut Geçmişi</button>
+                    <button class="tab-btn" data-tab="commands"><i class="fas fa-history"></i> Jarvis Komut
+                        Geçmişi</button>
                 </div>
 
                 <!-- Araç Çubuğu (Arama & Filtreleme) -->
@@ -109,7 +112,7 @@
                             <i class="fas fa-search"></i>
                             <input type="text" id="search-input" placeholder="Veri ara...">
                         </div>
-                        
+
                         <!-- Log Seviyesi Filtresi (Sadece Log sekmesinde gösterilir) -->
                         <select class="select-filter" id="filter-log-level">
                             <option value="all">Tüm Seviyeler</option>
@@ -129,14 +132,14 @@
                             <option value="climate">Klima (Climate)</option>
                         </select>
                     </div>
-                    
+
                     <button class="refresh-btn" id="refresh-btn" title="Yenile">
                         <i class="fas fa-sync-alt"></i> Verileri Yenile
                     </button>
                 </div>
 
                 <!-- Tab İçerikleri -->
-                
+
                 <!-- 1. Sistem Günlükleri Tabı -->
                 <div class="tab-content active" id="logs-tab">
                     <div class="table-wrap">

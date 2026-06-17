@@ -15,11 +15,151 @@ document.addEventListener('DOMContentLoaded', () => {
     // ══════════════════════════════
     //  KAYNAK ÇUBUKLARI GÜNCELLEME
     // ══════════════════════════════
-    const cpu = 27;
-    const ram = 48;
+    const cpuBar = document.getElementById("cpuBar");
+    const cpuText = document.getElementById("cpuText");
+    const ramBar = document.getElementById("ramBar");
+    const ramText = document.getElementById("ramText");
+    const diskText = document.getElementById("diskText");
+    const diskFill = document.querySelector(".fill.disk");
 
-    if (document.getElementById("cpuBar")) document.getElementById("cpuBar").style.width = cpu + "%";
-    if (document.getElementById("ramBar")) document.getElementById("ramBar").style.width = ram + "%";
+    function updateResources() {
+        const cpuVal = Math.floor(Math.random() * 20) + 15; // 15% - 35%
+        const ramVal = Math.floor(Math.random() * 10) + 45; // 45% - 55%
+        const diskVal = 61; // sabit
+
+        if (cpuBar) cpuBar.style.width = cpuVal + "%";
+        if (cpuText) cpuText.textContent = cpuVal + "%";
+        
+        if (ramBar) ramBar.style.width = ramVal + "%";
+        if (ramText) ramText.textContent = ramVal + "%";
+
+        if (diskFill) diskFill.style.width = diskVal + "%";
+        if (diskText) diskText.textContent = diskVal + "%";
+    }
+
+    // ══════════════════════════════
+    //  SİSTEM SAĞLIK & BULUT BAĞLANTI DURUMU DİNAMİK KONTROLÜ
+    // ══════════════════════════════
+    async function checkServices() {
+        let activeCount = 0;
+        const totalServices = 6;
+
+        // 1. Backend Servisi (C# API on Port 5000)
+        let backendOk = false;
+        try {
+            const res = await fetch("http://localhost:5000/api/Listing");
+            backendOk = res.ok;
+        } catch (e) {
+            backendOk = false;
+        }
+
+        const badgeBackend = document.getElementById("badge-backend");
+        if (badgeBackend) {
+            if (backendOk) {
+                badgeBackend.textContent = "Çalışıyor";
+                badgeBackend.className = "badge success";
+                activeCount++;
+            } else {
+                badgeBackend.textContent = "Çevrimdışı";
+                badgeBackend.className = "badge danger";
+            }
+        }
+
+        // 2. Jarvis Çekirdeği (Python API on Port 8082)
+        let jarvisOk = false;
+        try {
+            const res = await fetch("http://localhost:8082/");
+            jarvisOk = res.ok || res.status === 404;
+        } catch (e) {
+            jarvisOk = false;
+        }
+
+        const badgeJarvis = document.getElementById("badge-jarvis");
+        if (badgeJarvis) {
+            if (jarvisOk) {
+                badgeJarvis.textContent = "Çalışıyor";
+                badgeJarvis.className = "badge success";
+                activeCount++;
+            } else {
+                badgeJarvis.textContent = "Çevrimdışı";
+                badgeJarvis.className = "badge danger";
+            }
+        }
+
+        // 3. Watchdog (Jarvis durumunu takip eder)
+        const badgeWatchdog = document.getElementById("badge-watchdog");
+        if (badgeWatchdog) {
+            if (jarvisOk) {
+                badgeWatchdog.textContent = "Çalışıyor";
+                badgeWatchdog.className = "badge success";
+                activeCount++;
+            } else {
+                badgeWatchdog.textContent = "Durduruldu";
+                badgeWatchdog.className = "badge danger";
+            }
+        }
+
+        // 4. SignalR (Backend durumunu takip eder)
+        const badgeSignalr = document.getElementById("badge-signalr");
+        if (badgeSignalr) {
+            if (backendOk) {
+                badgeSignalr.textContent = "Bağlı";
+                badgeSignalr.className = "badge success";
+                activeCount++;
+            } else {
+                badgeSignalr.textContent = "Bağlantı Yok";
+                badgeSignalr.className = "badge danger";
+            }
+        }
+
+        // 5. Veritabanı (Backend durumunu takip eder)
+        const badgeDatabase = document.getElementById("badge-database");
+        if (badgeDatabase) {
+            if (backendOk) {
+                badgeDatabase.textContent = "Bağlı";
+                badgeDatabase.className = "badge success";
+                activeCount++;
+            } else {
+                badgeDatabase.textContent = "Bağlantı Yok";
+                badgeDatabase.className = "badge danger";
+            }
+        }
+
+        // 6. MQTT (Backend durumunu takip eder)
+        const badgeMqtt = document.getElementById("badge-mqtt");
+        if (badgeMqtt) {
+            if (backendOk) {
+                badgeMqtt.textContent = "Bağlı";
+                badgeMqtt.className = "badge success";
+                activeCount++;
+            } else {
+                badgeMqtt.textContent = "Bağlantı Yok";
+                badgeMqtt.className = "badge danger";
+            }
+        }
+
+        // Yüzde hesaplama
+        const percentage = Math.round((activeCount / totalServices) * 100);
+
+        // Arayüzdeki üst durum göstergesini güncelleme
+        const systemStatusEl = document.getElementById("system-status-indicator");
+        if (systemStatusEl) {
+            systemStatusEl.textContent = `Sistem Durumu %${percentage}`;
+            if (percentage === 100) {
+                systemStatusEl.style.color = "var(--accent-green)";
+            } else if (percentage >= 50) {
+                systemStatusEl.style.color = "var(--color-warn)";
+            } else {
+                systemStatusEl.style.color = "var(--color-error)";
+            }
+        }
+    }
+
+    // İlk çalıştırmalar ve döngüler
+    updateResources();
+    checkServices();
+    setInterval(updateResources, 3000);
+    setInterval(checkServices, 5000);
 
     // ══════════════════════════════
     //  DİNAMİK LOADER MOTORU

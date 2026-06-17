@@ -10,7 +10,7 @@ echo.
 
 :: Sanal ortam kontrolu
 if not exist "%~dp0.venv\Scripts\activate.bat" (
-    echo [1] Sanal ortam bulunamadi. Olusturuluyor...
+    echo [0] Sanal ortam bulunamadi. Olusturuluyor...
     python -m venv "%~dp0.venv"
     if errorlevel 1 (
         echo [HATA] Sanal ortam olusturulamadi! Python yuklu mu?
@@ -23,9 +23,37 @@ if not exist "%~dp0.venv\Scripts\activate.bat" (
 call "%~dp0.venv\Scripts\activate.bat"
 
 :: ------------------------------------------------
-:: 1. PYTON BACKEND (FastAPI - Port 8082)
+:: 1. ASP.NET BACKEND (C# API - Port 5000)
 :: ------------------------------------------------
-echo [1/4] Pyton backend bagimliliklar yukleniyor...
+echo [1/5] ASP.NET Backend baslatiliyor - Port 5000...
+
+where dotnet >nul 2>&1
+if errorlevel 1 (
+    echo [HATA] dotnet SDK bulunamadi! .NET SDK yukleyin.
+    pause
+    exit /b 1
+)
+
+:: Ozel karakterli klasor adi icin .csproj dosyasini dinamik bul
+set "API_CSPROJ="
+for /r "%~dp0Backend" %%F in (*.csproj) do set "API_CSPROJ=%%F"
+
+if not defined API_CSPROJ (
+    echo [HATA] ASP.NET Backend projesi bulunamadi!
+    echo        Kontrol edin: "%~dp0Backend"
+    pause
+    exit /b 1
+)
+
+echo [OK] Proje bulundu: %API_CSPROJ%
+start "ASP.NET Backend - Port 5000" cmd /k ""%~dp0baslat_aspnet.bat""
+
+timeout /t 3 /nobreak > nul
+
+:: ------------------------------------------------
+:: 2. PYTON BACKEND (FastAPI - Port 8082)
+:: ------------------------------------------------
+echo [2/5] Pyton backend bagimliliklar yukleniyor...
 pip install -r "%~dp0Pyton\requirements.txt" --quiet
 if errorlevel 1 (
     echo [HATA] Pyton backend bagimliliklar yuklenemedi!
@@ -33,15 +61,15 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [2/4] Pyton backend baslatiliyor - Port 8082...
-start "Backend API" cmd /k "call "%~dp0.venv\Scripts\activate.bat" && cd /d "%~dp0Pyton" && python main.py"
+echo [3/5] Pyton backend baslatiliyor - Port 8082...
+start "Pyton Backend - Port 8082" cmd /k ""%~dp0baslat_pyton.bat""
 
 timeout /t 2 /nobreak > nul
 
 :: ------------------------------------------------
-:: 2. JAVIS V.02 - Sesli AI
+:: 3. JAVIS V.02 - Sesli AI
 :: ------------------------------------------------
-echo [3/4] JAViS V.02 bagimliliklar yukleniyor...
+echo [4/5] JAViS V.02 bagimliliklar yukleniyor...
 
 :: Klasor adini dinamik olarak bul (ozel karakter sorunu icin)
 for /d %%D in ("%~dp0*V.02*") do set JAVIS_DIR=%%D
@@ -59,16 +87,17 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [4/4] JAViS V.02 Sesli AI baslatiliyor...
-start "JAViS V.02 - Sesli AI" cmd /k "call "%~dp0.venv\Scripts\activate.bat" && cd /d "%JAVIS_DIR%" && python main.py"
+echo [5/5] JAViS V.02 Sesli AI baslatiliyor...
+start "JAViS V.02 - Sesli AI" cmd /k ""%~dp0baslat_javis.bat""
 
 :: ------------------------------------------------
 echo.
 echo  ================================================
 echo   TUM SERVISLER BASLATILDI!
 echo.
-echo   Backend API : http://127.0.0.1:8082
-echo   JAViS V.02  : Sesli AI penceresi acildi
+echo   Backend (ASP.NET) : http://localhost:5000
+echo   Backend (Pyton)   : http://127.0.0.1:8082
+echo   JAViS V.02        : Sesli AI penceresi acildi
 echo.
 echo   Kapatmak icin her pencerede CTRL+C
 echo  ================================================

@@ -10,6 +10,12 @@
     --text-primary: #ffffff;
     --text-secondary: #888888;
     --text-muted: #555555;
+
+    /* Durum Renkleri */
+    --color-info: #00ccff;
+    --color-warn: #ff9900;
+    --color-error: #ff4444;
+    --color-fatal: #cc00ff;
 }
 
 * {
@@ -260,6 +266,11 @@ main {
 .badge.success {
     background: #0a2e1a;
     color: var(--accent-green);
+}
+
+.badge.danger {
+    background: #2d0a0a;
+    color: var(--color-error);
 }
 
 /* ══════════════════════════════
