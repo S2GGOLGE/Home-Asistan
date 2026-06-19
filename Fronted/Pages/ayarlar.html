@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeOS - Akıllı Ev Asistanı Ayarları</title>
+    <link rel="stylesheet" href="/Fronted/Css/ayarlar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div id="loading-screen" class="loading-wrapper">
+        <div class="loader-container">
+            <h1 class="loader-title">HOME <span>ASİSTAN</span></h1>
+            <div class="spinner-box">
+                <svg class="circle-svg" viewBox="0 0 100 100">
+                    <circle class="bg-circle" cx="50" cy="50" r="45"></circle>
+                    <circle id="loader-progress-circle" class="fg-circle" cx="50" cy="50" r="45"></circle>
+                </svg>
+            </div>
+            <p id="loader-status" class="loader-status-text">ÇEKİRDEK MODÜLLER YÜKLENİYOR...</p>
+            <span id="loader-percent" class="loader-number">0%</span>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message">Ayarlar başarıyla kaydedildi!</span>
+    </div>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-house-laptop brand-icon"></i>
+                <h2>Home<span>OS</span></h2>
+            </div>
+            <nav class="nav-menu">
+                <button type="button" class="nav-item active" data-target="genel"><i class="fa-solid fa-gear"></i> Genel
+                    Ayarlar</button>
+                <button type="button" class="nav-item" data-target="kullanici"><i class="fa-solid fa-user-gear"></i>
+                    Kullanıcı Ayarları</button>
+                <button type="button" class="nav-item" data-target="guvenlik"><i class="fa-solid fa-shield-halved"></i>
+                    Güvenlik</button>
+                <button type="button" class="nav-item" data-target="bildirimler"><i class="fa-solid fa-bell"></i>
+                    Bildirimler</button>
+                <button type="button" class="nav-item" data-target="jarvis"><i class="fa-solid fa-brain"></i> Jarvis
+                    Ayarları</button>
+                <button type="button" class="nav-item" data-target="cihazlar"><i class="fa-solid fa-plug"></i> Cihaz
+                    Ayarları</button>
+                <button type="button" class="nav-item" data-target="otomasyon"><i class="fa-solid fa-robot"></i>
+                    Otomasyon</button>
+                <button type="button" class="nav-item" data-target="kamera"><i class="fa-solid fa-video"></i> Kamera
+                    Ayarları</button>
+                <button type="button" class="nav-item" data-target="izleme"><i class="fa-solid fa-chart-line"></i>
+                    Sistem İzleme</button>
+                <button type="button" class="nav-item" data-target="yedekleme"><i class="fa-solid fa-database"></i>
+                    Yedekleme</button>
+                <button type="button" class="nav-item" data-target="gelistirici"><i class="fa-solid fa-code"></i>
+                    Geliştirici Ayarları</button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button type="button" id="btn-back" class="nav-item back-button">
+                    <i class="fa-solid fa-arrow-left-long"></i> Geri Dön
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="content-header">
+                <h1 id="section-title">Genel Ayarlar</h1>
+                <p class="section-desc">Sistem temel yapılandırma ayarlarını buradan yönetebilirsiniz.</p>
+            </header>
+
+            <form id="settings-form">
+                <div class="settings-section active-section" id="section-genel">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-sliders"></i> Temel Yapılandırma</h3>
+                        <div class="form-group">
+                            <label>Sistem Adı</label>
+                            <input type="text" name="systemName" value="HomeOS-Hub">
+                        </div>
+                        <div class="form-group">
+                            <label>Sistem Açıklaması</label>
+                            <textarea name="systemDesc">Akıllı ev ve otomasyon yönetim merkezi.</textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Dil Seçimi</label>
+                                <select name="language">
+                                    <option value="tr">Türkçe</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Saat Dilimi</label>
+                                <select name="timezone">
+                                    <option value="GMT+3">İstanbul (GMT+3)</option>
+                                    <option value="GMT+0">London (GMT+0)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Tarih Formatı</label>
+                            <select name="dateFormat">
+                                <option value="DD.MM.YYYY">GG.AA.YYYY</option>
+                                <option value="YYYY-MM-DD">YYYY-AA-GG</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-kullanici">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-user-lock"></i> Hesap ve Yetki</h3>
+                        <div class="form-group">
+                            <label>Kullanıcı Yönetimi</label>
+                            <input type="text" name="username" value="admin" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Yeni Şifre</label>
+                            <input type="password" name="newPassword" placeholder="••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label>Yetki Yönetimi</label>
+                            <select name="userRole">
+                                <option value="superadmin">Süper Admin</option>
+                                <option value="user">Standart Kullanıcı</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Oturum Süresi (Dakika)</label>
+                            <input type="number" name="sessionTimeout" value="30">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-guvenlik">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-shield-halved"></i> Güvenlik Protokolleri</h3>
+                        <div class="form-group toggle-group">
+                            <div>
+                                <label>İki Adımlı Doğrulama (2FA)</label>
+                                <p class="sub-label">Giriş güvenliğini artırın.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" name="enable2FA">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>API Anahtarları</label>
+                            <input type="text" name="apiKey" value="hos_live_72x92183hasjdh1289" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Şifre Politikaları</label>
+                            <select name="passwordPolicy">
+                                <option value="high">Yüksek (Harf, Sayı ve Özel Karakter)</option>
+                                <option value="medium">Orta (Harf ve Sayı)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Son Güvenlik Logu</label>
+                            <div class="log-box code-font">Başarılı admin girişi - IP: 192.168.1.50</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-bildirimler">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-bell"></i> Bildirim Tercihleri</h3>
+                        <div class="form-group toggle-group">
+                            <label>E-posta Bildirimleri</label>
+                            <label class="switch"><input type="checkbox" name="emailNotif" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group toggle-group">
+                            <label>Web Bildirimleri</label>
+                            <label class="switch"><input type="checkbox" name="webNotif" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group toggle-group">
+                            <label>Kritik Alarm Bildirimleri</label>
+                            <label class="switch"><input type="checkbox" name="criticalNotif" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Bildirim Sesleri</label>
+                            <select name="notifSound">
+                                <option value="classic">Klasik Çan</option>
+                                <option value="digital">Dijital Uyarı</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-jarvis">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-brain"></i> Yapay Zeka & Asistan Configuration</h3>
+                        <div class="form-group toggle-group">
+                            <label>Yapay Zeka Durumu</label>
+                            <label class="switch"><input type="checkbox" name="jarvisActive" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label>AI Model Seçimi</label>
+                            <select name="aiModel">
+                                <option value="homeos-v2">HomeOS Core v2.5 (Local)</option>
+                                <option value="gpt4">Cloud GPT-4 Entegrasyonu</option>
+                            </select>
+                        </div>
+                        <div class="form-group toggle-group">
+                            <label>Sesli Komutlar</label>
+                            <label class="switch"><input type="checkbox" name="voiceCommand" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Mikrofon Hassasiyeti</label>
+                            <input type="range" name="micSensitivity" min="1" max="100" value="75">
+                        </div>
+                        <div class="form-group">
+                            <label>Yanıt Dili</label>
+                            <select name="jarvisLanguage">
+                                <option value="tr">Türkçe (Robotik Olmayan)</option>
+                                <option value="en">English (UK)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Wake Word (Uyandırma Kelimesi)</label>
+                            <input type="text" name="wakeWord" value="Hey Jarvis">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-cihazlar">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-plug"></i> Akıllı Cihaz Yönetimi</h3>
+                        <div class="form-group">
+                            <label>Varsayılan Oda</label>
+                            <select name="defaultRoom">
+                                <option value="salon">Salon</option>
+                                <option value="mutfak">Mutfak</option>
+                                <option value="yatak">Yatak Odası</option>
+                            </select>
+                        </div>
+                        <div class="form-group toggle-group">
+                            <label>Yeni Cihaz Keşfi</label>
+                            <label class="switch"><input type="checkbox" name="deviceDiscovery" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group toggle-group">
+                            <label>Otomatik Tarama</label>
+                            <label class="switch"><input type="checkbox" name="autoScan"><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Bağlantı Zaman Aşımı (Sn)</label>
+                            <input type="number" name="connectionTimeout" value="15">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-otomasyon">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-robot"></i> Senaryolar & Otomasyon</h3>
+                        <div class="form-group toggle-group">
+                            <label>Otomasyonları Aktif Yap</label>
+                            <label class="switch"><input type="checkbox" name="automationActive" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Hata Yönetimi Modu</label>
+                            <select name="errorManagement">
+                                <option value="log">Yalnızca Logla</option>
+                                <option value="retry">Yeniden Dene ve Bildir</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tekrar Deneme Sayısı</label>
+                            <input type="number" name="retryCount" value="3" min="0" max="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Çalışma Logları</label>
+                            <div class="log-box code-font">
+                                [16:42:01] Otomasyon 'Gece Modu' başarıyla tetiklendi.<br>
+                                [17:00:00] Otomasyon 'Bahçe Sulama' ertelendi (Yağmur algılandı).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-kamera">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-video"></i> Kamera Stream & Kayıt</h3>
+                        <div class="form-group">
+                            <label>Kamera Akış Kalitesi</label>
+                            <select name="cameraQuality">
+                                <option value="1080p">Full HD (1080p - 60fps)</option>
+                                <option value="720p">HD (720p - 30fps)</option>
+                                <option value="4k">Ultra HD (4K - 24fps)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Döngüsel Kayıt Süresi (Gün)</label>
+                            <input type="number" name="recordDays" value="7">
+                        </div>
+                        <div class="form-group toggle-group">
+                            <label>Hareket Algılama (Motion Detection)</label>
+                            <label class="switch"><input type="checkbox" name="motionDetection" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Depolama Yönetimi</label>
+                            <select name="storageTarget">
+                                <option value="local">Yerel HDD / NVMe</option>
+                                <option value="nas">NAS (Ağ Sürücüsü)</option>
+                                <option value="cloud">HomeOS Cloud</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-izleme">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-chart-line"></i> Donanım ve Kaynak Durumu</h3>
+                        <div class="monitor-grid">
+                            <div class="monitor-item">
+                                <span>CPU</span>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 24%"></div>
+                                </div>
+                                <span class="percent">24%</span>
+                            </div>
+                            <div class="monitor-item">
+                                <span>RAM</span>
+                                <div class="progress-bar">
+                                    <div class="progress text-warn" style="width: 58%"></div>
+                                </div>
+                                <span class="percent">58%</span>
+                            </div>
+                            <div class="monitor-item">
+                                <span>Disk</span>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 41%"></div>
+                                </div>
+                                <span class="percent">41%</span>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>Log Seviyesi</label>
+                            <select name="logLevel">
+                                <option value="info">INFO (Standart)</option>
+                                <option value="debug">DEBUG (Ayrıntılı)</option>
+                                <option value="error">ERROR (Sadece Hatalar)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Performans Modu</label>
+                            <select name="perfMode">
+                                <option value="balanced">Dengeli</option>
+                                <option value="performance">Yüksek Performans</option>
+                                <option value="eco">Eko (Düşük Güç)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-yedekleme">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-database"></i> Yedekleme ve Kurtarma</h3>
+                        <div class="form-group toggle-group">
+                            <label>Automated Backup</label>
+                            <label class="switch"><input type="checkbox" name="autoBackup" checked><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Yedekleme Sıklığı</label>
+                            <select name="backupFreq">
+                                <option value="daily">Her Gün Gece Yarısı</option>
+                                <option value="weekly">Haftalık</option>
+                            </select>
+                        </div>
+                        <div class="action-buttons-inline">
+                            <button type="button" class="btn btn-secondary"><i class="fa-solid fa-download"></i> Manuel
+                                Yedek Al</button>
+                            <button type="button" class="btn btn-danger"><i class="fa-solid fa-upload"></i> Sistem Geri
+                                Yükle</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="section-gelistirici">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-code"></i> Developer Console</h3>
+                        <div class="form-group toggle-group">
+                            <label>Debug Modu</label>
+                            <label class="switch"><input type="checkbox" name="debugMode"><span
+                                    class="slider"></span></label>
+                        </div>
+                        <div class="form-row status-container">
+                            <div class="status-indicator">
+                                <span class="dot active"></span> WebSocket: Bağlı
+                            </div>
+                            <div class="status-indicator">
+                                <span class="dot active"></span> SignalR: Aktif
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label>API Test Aracı</label>
+                            <button type="button" class="btn btn-secondary btn-full">Ping Endpoint Test Et</button>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="form-actions">
+                    <button type="button" id="btn-reset" class="btn btn-secondary"><i
+                            class="fa-solid fa-rotate-left"></i> Sıfırla</button>
+                    <button type="submit" id="btn-save" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i>
+                        Ayarları Kaydet</button>
+                </footer>
+            </form>
+        </main>
+    </div>
+
+    <script src="/Fronted/Js/ayarlar.js"></script>
+    <script src="/Fronted/Js/Endpoint/CihazlarListemeEndpoint.js"></script>
+</body>
+
+</html>

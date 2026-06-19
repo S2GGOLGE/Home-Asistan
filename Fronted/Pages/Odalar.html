@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <link rel="stylesheet" href="/Fronted/Css/modal.css">
     <link rel="icon" type="image/x-icon" href="/Fronted/İmages/logo.png">
 </head>
+
 <body class="p-4 md:p-8">
 
     <div id="loader-overlay">
@@ -24,7 +26,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto space-y-8">
-        
+
         <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b pb-6 main-border">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
@@ -45,124 +47,180 @@
 
         <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-salon">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer"
+                data-modal-open="modal-salon">
                 <div>
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-couch"></i></div>
+                        <div
+                            class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container">
+                            <i class="fa-solid fa-couch"></i>
+                        </div>
                         <span class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange">2 Cihaz Açık</span>
                     </div>
                     <h3 class="text-lg font-bold text-white">Salon</h3>
                     <p class="text-xs mb-4 text-secondary">Son hareket: 2 dk önce</p>
                     <div class="space-y-1.5 border-t pt-3 text-xs main-border">
-                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span class="font-semibold">22.4°C</span></div>
+                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span
+                                class="font-semibold">22.4°C</span></div>
                     </div>
                 </div>
-                <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
+                <button
+                    class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol
+                    Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-mutfak">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer"
+                data-modal-open="modal-mutfak">
                 <div>
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-kitchen-set"></i></div>
+                        <div
+                            class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container">
+                            <i class="fa-solid fa-kitchen-set"></i>
+                        </div>
                         <span class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-dark">Tümü Kapalı</span>
                     </div>
                     <h3 class="text-lg font-bold text-white">Mutfak</h3>
                     <p class="text-xs mb-4 text-secondary">Son hareket: 15 dk önce</p>
                     <div class="space-y-1.5 border-t pt-3 text-xs main-border">
-                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span class="font-semibold">21.8°C</span></div>
+                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span
+                                class="font-semibold">21.8°C</span></div>
                     </div>
                 </div>
-                <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
+                <button
+                    class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol
+                    Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-yatak">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer"
+                data-modal-open="modal-yatak">
                 <div>
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-bed"></i></div>
+                        <div
+                            class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container">
+                            <i class="fa-solid fa-bed"></i>
+                        </div>
                         <span class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange">1 Cihaz Açık</span>
                     </div>
                     <h3 class="text-lg font-bold text-white">Yatak Odası</h3>
                     <p class="text-xs mb-4 text-secondary">Son hareket: Hareketsiz</p>
                     <div class="space-y-1.5 border-t pt-3 text-xs main-border">
-                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span class="font-semibold">20.5°C</span></div>
+                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span
+                                class="font-semibold">20.5°C</span></div>
                     </div>
                 </div>
-                <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
+                <button
+                    class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol
+                    Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-cocuk">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer"
+                data-modal-open="modal-cocuk">
                 <div>
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-child"></i></div>
+                        <div
+                            class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container">
+                            <i class="fa-solid fa-child"></i>
+                        </div>
                         <span class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-orange">1 Cihaz Açık</span>
                     </div>
                     <h3 class="text-lg font-bold text-white">Çocuk Odası</h3>
                     <p class="text-xs mb-4 text-secondary">Son hareket: Şimdi</p>
                     <div class="space-y-1.5 border-t pt-3 text-xs main-border">
-                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span class="font-semibold">23.0°C</span></div>
+                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span
+                                class="font-semibold">23.0°C</span></div>
                     </div>
                 </div>
-                <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
+                <button
+                    class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol
+                    Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-banyo">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer"
+                data-modal-open="modal-banyo">
                 <div>
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-bath"></i></div>
+                        <div
+                            class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container">
+                            <i class="fa-solid fa-bath"></i>
+                        </div>
                         <span class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-green">Fan Aktif</span>
                     </div>
                     <h3 class="text-lg font-bold text-white">Banyo</h3>
                     <p class="text-xs mb-4 text-secondary">Son hareket: 8 dk önce</p>
                     <div class="space-y-1.5 border-t pt-3 text-xs main-border">
-                        <div class="flex justify-between"><span class="text-secondary">Nem Oranı</span><span class="font-semibold">%62</span></div>
+                        <div class="flex justify-between"><span class="text-secondary">Nem Oranı</span><span
+                                class="font-semibold">%62</span></div>
                     </div>
                 </div>
-                <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
+                <button
+                    class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol
+                    Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-koridor">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer"
+                data-modal-open="modal-koridor">
                 <div>
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-door-open"></i></div>
+                        <div
+                            class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container">
+                            <i class="fa-solid fa-door-open"></i>
+                        </div>
                         <span class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-dark">Hareketsiz</span>
                     </div>
                     <h3 class="text-lg font-bold text-white">Koridor</h3>
                     <p class="text-xs mb-4 text-secondary">Son hareket: 4 dk önce</p>
                     <div class="space-y-1.5 border-t pt-3 text-xs main-border">
-                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span class="font-semibold">21.0°C</span></div>
+                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span
+                                class="font-semibold">21.0°C</span></div>
                     </div>
                 </div>
-                <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
+                <button
+                    class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol
+                    Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-calisma">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer"
+                data-modal-open="modal-calisma">
                 <div>
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-laptop-code"></i></div>
+                        <div
+                            class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
                         <span class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-dark">Mod: Uyku</span>
                     </div>
                     <h3 class="text-lg font-bold text-white">Çalışma Odası</h3>
                     <p class="text-xs mb-4 text-secondary">Son hareket: 1 saat önce</p>
                     <div class="space-y-1.5 border-t pt-3 text-xs main-border">
-                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span class="font-semibold">22.1°C</span></div>
+                        <div class="flex justify-between"><span class="text-secondary">Sıcaklık</span><span
+                                class="font-semibold">22.1°C</span></div>
                     </div>
                 </div>
-                <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
+                <button
+                    class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol
+                    Et</button>
             </div>
 
-            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer" data-modal-open="modal-balkon">
+            <div class="custom-panel p-6 flex flex-col justify-between group cursor-pointer"
+                data-modal-open="modal-balkon">
                 <div>
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container"><i class="fa-solid fa-cloud-sun"></i></div>
+                        <div
+                            class="w-11 h-11 rounded-xl custom-inner flex items-center justify-center text-lg icon-container">
+                            <i class="fa-solid fa-cloud-sun"></i>
+                        </div>
                         <span class="text-[10px] font-bold px-2.5 py-1 rounded-full badge-dark">Dış Alan</span>
                     </div>
                     <h3 class="text-lg font-bold text-white">Balkon</h3>
                     <p class="text-xs mb-4 text-secondary">Son tetik: 2 saat önce</p>
                     <div class="space-y-1.5 border-t pt-3 text-xs main-border">
-                        <div class="flex justify-between"><span class="text-secondary">Dış Sıcaklık</span><span class="font-semibold">18.2°C</span></div>
+                        <div class="flex justify-between"><span class="text-secondary">Dış Sıcaklık</span><span
+                                class="font-semibold">18.2°C</span></div>
                     </div>
                 </div>
-                <button class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol Et</button>
+                <button
+                    class="mt-5 w-full custom-inner text-white py-2 rounded-xl text-xs font-semibold transition-all group-hover:bg-zinc-800">Kontrol
+                    Et</button>
             </div>
 
         </main>
@@ -172,38 +230,60 @@
         <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-couch"></i></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container">
+                        <i class="fa-solid fa-couch"></i>
+                    </div>
                     <div>
                         <h2 class="text-xl md:text-2xl font-bold">Salon Kontrolü</h2>
                         <div class="flex gap-3 text-xs mt-1 text-secondary">
                             <span><i class="fa-solid fa-thermometer mr-1"></i> 22.4°C</span>
                             <span><i class="fa-solid fa-droplet mr-1"></i> %45 Nem</span>
-                            <span class="accent-color"><i class="fa-solid fa-circle-check mr-1"></i> Sistem Güvenli</span>
+                            <span class="accent-color"><i class="fa-solid fa-circle-check mr-1"></i> Sistem
+                                Güvenli</span>
                         </div>
                     </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+                <button
+                    class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white"
+                    type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-secondary">Cihaz Anahtarları</h4>
                     <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg orange-color"></i><div><p class="text-sm font-semibold">Tavan Aydınlatma</p></div></div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg orange-color"></i>
+                            <div>
+                                <p class="text-sm font-semibold">Tavan Aydınlatma</p>
+                            </div>
+                        </div>
                         <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
                     </div>
                     <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-plug text-lg text-zinc-500"></i><div><p class="text-sm font-semibold">Ses Sistemi Prizi</p></div></div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-plug text-lg text-zinc-500"></i>
+                            <div>
+                                <p class="text-sm font-semibold">Ses Sistemi Prizi</p>
+                            </div>
+                        </div>
                         <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
                     </div>
                 </div>
                 <div class="space-y-3">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-secondary">Sistemler & Perdeler</h4>
                     <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-tv text-lg text-indigo-400"></i><div><p class="text-sm font-semibold">Akıllı Televizyon</p></div></div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-tv text-lg text-indigo-400"></i>
+                            <div>
+                                <p class="text-sm font-semibold">Akıllı Televizyon</p>
+                            </div>
+                        </div>
                         <label class="switch"><input type="checkbox"><span class="slider"></span></label>
                     </div>
                     <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-scroll text-lg text-teal-400"></i><div><p class="text-sm font-semibold">Motorlu Stor Perde</p></div></div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-scroll text-lg text-teal-400"></i>
+                            <div>
+                                <p class="text-sm font-semibold">Motorlu Stor Perde</p>
+                            </div>
+                        </div>
                         <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
                     </div>
                 </div>
@@ -211,7 +291,8 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t pt-4 main-border">
                 <div class="custom-inner p-4 rounded-2xl md:col-span-1 space-y-2">
                     <p class="text-[11px] uppercase font-bold text-secondary">Sensör Durumları</p>
-                    <div class="flex justify-between text-xs"><span>Hareket:</span> <span class="accent-color">Algılandı</span></div>
+                    <div class="flex justify-between text-xs"><span>Hareket:</span> <span
+                            class="accent-color">Algılandı</span></div>
                 </div>
                 <div class="custom-inner p-4 rounded-2xl md:col-span-2 h-36">
                     <canvas id="chart-salon" class="w-full h-24"></canvas>
@@ -224,19 +305,36 @@
         <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-kitchen-set"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold">Mutfak Kontrolü</h2><p class="text-xs mt-1 text-secondary">Sıcaklık: 21.8°C</p></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container">
+                        <i class="fa-solid fa-kitchen-set"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold">Mutfak Kontrolü</h2>
+                        <p class="text-xs mt-1 text-secondary">Sıcaklık: 21.8°C</p>
+                    </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+                <button
+                    class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white"
+                    type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg text-zinc-500"></i><div><p class="text-sm font-semibold">Tezgah Üstü LED</p></div></div>
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg text-zinc-500"></i>
+                        <div>
+                            <p class="text-sm font-semibold">Tezgah Üstü LED</p>
+                        </div>
+                    </div>
                     <label class="switch"><input type="checkbox"><span class="slider"></span></label>
                 </div>
                 <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-plug text-lg accent-color"></i><div><p class="text-sm font-semibold">Buzdolabı Prizi</p></div></div>
-                    <label class="switch"><input type="checkbox" checked disabled><span class="slider opacity-50"></span></label>
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-plug text-lg accent-color"></i>
+                        <div>
+                            <p class="text-sm font-semibold">Buzdolabı Prizi</p>
+                        </div>
+                    </div>
+                    <label class="switch"><input type="checkbox" checked disabled><span
+                            class="slider opacity-50"></span></label>
                 </div>
             </div>
             <div class="custom-inner p-4 rounded-2xl h-32">
@@ -249,13 +347,25 @@
         <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-bed"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold">Yatak Odası Kontrolü</h2><p class="text-xs mt-1 text-secondary">Sıcaklık: 20.5°C</p></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container">
+                        <i class="fa-solid fa-bed"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold">Yatak Odası Kontrolü</h2>
+                        <p class="text-xs mt-1 text-secondary">Sıcaklık: 20.5°C</p>
+                    </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+                <button
+                    class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white"
+                    type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg orange-color"></i><div><p class="text-sm font-semibold">Gece Lambası</p></div></div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg orange-color"></i>
+                    <div>
+                        <p class="text-sm font-semibold">Gece Lambası</p>
+                    </div>
+                </div>
                 <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
             </div>
         </div>
@@ -265,13 +375,25 @@
         <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-child"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold">Çocuk Odası Kontrolü</h2><p class="text-xs mt-1 text-secondary">Sıcaklık: 23.0°C</p></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container">
+                        <i class="fa-solid fa-child"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold">Çocuk Odası Kontrolü</h2>
+                        <p class="text-xs mt-1 text-secondary">Sıcaklık: 23.0°C</p>
+                    </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+                <button
+                    class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white"
+                    type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                <div class="flex items-center gap-3"><i class="fa-solid fa-baby-carriage text-lg text-pink-400"></i><div><p class="text-sm font-semibold">Hava Nemlendirici</p></div></div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-baby-carriage text-lg text-pink-400"></i>
+                    <div>
+                        <p class="text-sm font-semibold">Hava Nemlendirici</p>
+                    </div>
+                </div>
                 <label class="switch"><input type="checkbox"><span class="slider"></span></label>
             </div>
         </div>
@@ -281,13 +403,25 @@
         <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-bath"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold">Banyo Kontrolü</h2><p class="text-xs mt-1 text-secondary">Nem: %62</p></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container">
+                        <i class="fa-solid fa-bath"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold">Banyo Kontrolü</h2>
+                        <p class="text-xs mt-1 text-secondary">Nem: %62</p>
+                    </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+                <button
+                    class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white"
+                    type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                <div class="flex items-center gap-3"><i class="fa-solid fa-fan text-lg text-sky-400"></i><div><p class="text-sm font-semibold">Havalandırma Fanı</p></div></div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-fan text-lg text-sky-400"></i>
+                    <div>
+                        <p class="text-sm font-semibold">Havalandırma Fanı</p>
+                    </div>
+                </div>
                 <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
             </div>
         </div>
@@ -297,13 +431,25 @@
         <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-door-open"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold">Koridor Kontrolü</h2><p class="text-xs mt-1 text-secondary">Işıklar Otomatik</p></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container">
+                        <i class="fa-solid fa-door-open"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold">Koridor Kontrolü</h2>
+                        <p class="text-xs mt-1 text-secondary">Işıklar Otomatik</p>
+                    </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+                <button
+                    class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white"
+                    type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                <div class="flex items-center gap-3"><i class="fa-solid fa-person-walking text-lg"></i><div><p class="text-sm font-semibold">Gece Karşılama Işıkları</p></div></div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-person-walking text-lg"></i>
+                    <div>
+                        <p class="text-sm font-semibold">Gece Karşılama Işıkları</p>
+                    </div>
+                </div>
                 <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
             </div>
         </div>
@@ -313,13 +459,25 @@
         <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-laptop-code"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold">Çalışma Odası Kontrolü</h2><p class="text-xs mt-1 text-secondary">Sıcaklık: 22.1°C</p></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold">Çalışma Odası Kontrolü</h2>
+                        <p class="text-xs mt-1 text-secondary">Sıcaklık: 22.1°C</p>
+                    </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+                <button
+                    class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white"
+                    type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                <div class="flex items-center gap-3"><i class="fa-solid fa-desktop text-lg text-purple-400"></i><div><p class="text-sm font-semibold">Masa Priz Grubu</p></div></div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-desktop text-lg text-purple-400"></i>
+                    <div>
+                        <p class="text-sm font-semibold">Masa Priz Grubu</p>
+                    </div>
+                </div>
                 <label class="switch"><input type="checkbox"><span class="slider"></span></label>
             </div>
         </div>
@@ -329,19 +487,33 @@
         <div class="modal-content-wrapper w-full max-w-4xl rounded-[32px] p-6 md:p-8 space-y-6 custom-scrollbar">
             <div class="flex justify-between items-start border-b pb-4 main-border">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container"><i class="fa-solid fa-cloud-sun"></i></div>
-                    <div><h2 class="text-xl md:text-2xl font-bold">Balkon Kontrolü</h2><p class="text-xs mt-1 text-secondary">Dış İstasyon</p></div>
+                    <div
+                        class="w-14 h-14 rounded-2xl custom-inner flex items-center justify-center text-2xl icon-container">
+                        <i class="fa-solid fa-cloud-sun"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold">Balkon Kontrolü</h2>
+                        <p class="text-xs mt-1 text-secondary">Dış İstasyon</p>
+                    </div>
                 </div>
-                <button class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white" type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+                <button
+                    class="w-8 h-8 rounded-full custom-inner flex items-center justify-center text-sm text-zinc-400 hover:text-white"
+                    type="button" data-modal-close aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="custom-inner p-4 rounded-2xl flex items-center justify-between">
-                <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg"></i><div><p class="text-sm font-semibold">Dış Aydınlatma</p></div></div>
+                <div class="flex items-center gap-3"><i class="fa-solid fa-lightbulb text-lg"></i>
+                    <div>
+                        <p class="text-sm font-semibold">Dış Aydınlatma</p>
+                    </div>
+                </div>
                 <label class="switch"><input type="checkbox"><span class="slider"></span></label>
             </div>
         </div>
     </div>
 
     <script src="/Fronted/Js/modal.js"></script>
+    <script src="/Fronted/Js/Endpoint/CihazlarListemeEndpoint.js"></script>
     <script src="/Fronted/Js/Odalar.js"></script>
 </body>
+
 </html>

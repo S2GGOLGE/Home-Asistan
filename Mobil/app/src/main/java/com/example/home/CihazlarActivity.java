@@ -1,21 +1,25 @@
 package com.example.home;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import retrofit2.Call;
@@ -26,9 +30,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CihazlarActivity extends AppCompatActivity {
 
-    private MaterialButton btnAddNewDevice;
-    private ChipGroup chipGroupFilters;
+    // XML ID'lerine göre güncellenen bileşenler
+    private Button btnAddNewDevice;
+    private Button btnBack;
     private RecyclerView deviceRecyclerView;
+
+    // Yükleme Animasyonu Elementleri
+    private ConstraintLayout loadingScreen;
+    private ProgressBar progressCircle;
+    private TextView loaderStatus;
+    private TextView loaderPercent;
+
+    private int currentPercent = 0;
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     private ApiService apiService;
     private final String BASE_URL = "http://192.168.1.115:5174/";
@@ -43,6 +57,9 @@ public class CihazlarActivity extends AppCompatActivity {
         initViews();
         setupEdgeToEdge();
         setupListeners();
+
+        // Animasyonu Çalıştır
+        startLoadingAnimation();
     }
 
     private void setupRetrofit() {
@@ -55,13 +72,21 @@ public class CihazlarActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        btnAddNewDevice = findViewById(R.id.btnAddNewDevice);
-        chipGroupFilters = findViewById(R.id.chipGroupFilters);
-        deviceRecyclerView = findViewById(R.id.deviceRecyclerView);
+        // Yeni XML dosyasındaki ID'lerle eşleştirildi
+        btnAddNewDevice = findViewById(R.id.btn_add_device);
+        btnBack = findViewById(R.id.btn_back);
+        deviceRecyclerView = findViewById(R.id.rc_devices_grid);
+
+        // Animasyon görünümleri bağlandı
+        loadingScreen = findViewById(R.id.loading_screen);
+        progressCircle = findViewById(R.id.loader_progress_circle);
+        loaderStatus = findViewById(R.id.loader_status);
+        loaderPercent = findViewById(R.id.loader_percent);
     }
 
     private void setupEdgeToEdge() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        // XML'in en dış katmanı olan ConstraintLayout'a bağlandı
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -73,14 +98,48 @@ public class CihazlarActivity extends AppCompatActivity {
             btnAddNewDevice.setOnClickListener(v -> showAddDeviceDialog());
         }
 
-        if (chipGroupFilters != null) {
-            chipGroupFilters.setOnCheckedStateChangeListener((group, checkedIds) -> {
-                if (!checkedIds.isEmpty()) {
-                    int checkedId = checkedIds.get(0);
-                    // TODO: chip seçimine göre filtreleme eklenecek
-                }
-            });
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish()); // Geri dön butonu basıldığında aktiviteyi kapatır
         }
+    }
+
+    // ---------------- YÜKLEME ANİMASYONU MOTORU ----------------
+    private void startLoadingAnimation() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (currentPercent <= 100) {
+                    if (loaderPercent != null) {
+                        loaderPercent.setText(currentPercent + "%");
+                    }
+                    if (progressCircle != null) {
+                        progressCircle.setProgress(currentPercent);
+                    }
+
+                    // Durum metinleri siberpunk temasına göre güncelleniyor
+                    if (currentPercent == 25) {
+                        loaderStatus.setText("DONANIM PROTOKOLLERİ KONTROL EDİLİYOR...");
+                    } else if (currentPercent == 60) {
+                        loaderStatus.setText("VIRTUAL GRID MODÜLLERİ BAĞLANIYOR...");
+                    } else if (currentPercent == 90) {
+                        loaderStatus.setText("KULLANICI PANELİ AKTİF EDİLİYOR...");
+                    }
+
+                    currentPercent++;
+                    handler.postDelayed(this, 18); // Akıcı ve hızlı sayaç geçişi
+                } else {
+                    // %100 bitiminde yumuşak yok olma efekti (Fade-out)
+                    if (loadingScreen != null) {
+                        loadingScreen.animate()
+                                .alpha(0f)
+                                .setDuration(300)
+                                .withEndAction(() -> loadingScreen.setVisibility(View.GONE))
+                                .start();
+                    }
+                }
+            }
+        };
+        handler.post(runnable);
     }
 
     private void showAddDeviceDialog() {
@@ -115,7 +174,7 @@ public class CihazlarActivity extends AppCompatActivity {
                         cihazAdi,
                         cihazTuru.isEmpty() ? "Genel" : cihazTuru,
                         false,
-                        1, // TODO: oturum açan kullanıcının ID'si buraya gelecek
+                        1,
                         cihazFeature
                 );
                 sendDeviceToBackend(yeniCihaz);
