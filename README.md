@@ -217,6 +217,6 @@ python main.py
 
 # Lisans
 
-Bu proje kişisel projedir Kişiseldir
+Bu proje kişisel projedir
 
 © HomeOS Project
