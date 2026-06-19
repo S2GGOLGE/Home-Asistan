@@ -12,7 +12,6 @@
 
 <body>
 
-    <!-- Dinamik Arayüz Başlangıç Yükleyicisi -->
     <div id="loader-overlay">
         <div class="loader-ring"></div>
         <div class="loader-title">Jarvis <span>Engine</span></div>
@@ -25,7 +24,6 @@
 
     <div class="layout">
 
-        <!-- Sol Menü (Sidebar) -->
         <aside class="sidebar collapsed" id="sidebar">
             <div class="logo-area">
                 <div class="logo">EV ASİSTANI</div>
@@ -52,10 +50,8 @@
             </div>
         </aside>
 
-        <!-- Sağ Taraf: Ana İçerik -->
         <main class="content">
 
-            <!-- Üst Bar -->
             <header class="topbar">
                 <div class="topbar-left">
                     <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
@@ -64,28 +60,24 @@
                         <span></span>
                     </button>
                     <div>
-                        <h1>Jarvis Ses Kontrol Merkezi</h1>
-                        <p>Evinizi sesli komutlarla kontrol edin, durum sorgulayın ve otomasyonları tetikleyin.</p>
+                        <h1>Jarvis Ses Kontrol</h1>
+                        <p>Evinizi sesli komutlarla kontrol edin.</p>
                     </div>
                 </div>
                 <div class="status online">Sistem Çevrimiçi</div>
             </header>
 
-            <!-- Jarvis Grid Yapısı -->
             <div class="jarvis-grid">
 
-                <!-- Sol Panel: Ses Arayüzü ve Konsol -->
                 <div class="panel">
                     <h2><i class="fas fa-keyboard"></i> Jarvis Konsol</h2>
 
-                    <!-- Ses Algılama Durum Kartı -->
                     <div class="assistant-status-card">
                         <div class="assistant-info">
                             <span class="title">Jarvis Engine</span>
                             <span class="state-desc" id="jarvis-state-desc">Bağlantı kuruluyor...</span>
                         </div>
 
-                        <!-- Ses Dalgaları Animasyonu -->
                         <div class="sound-waves" id="sound-waves">
                             <div class="wave-bar"></div>
                             <div class="wave-bar"></div>
@@ -97,20 +89,17 @@
                         </div>
                     </div>
 
-                    <!-- Chat / Sohbet Konuşma Akışı -->
                     <div class="chat-container">
                         <div class="chat-messages" id="chat-messages">
-                            <!-- JS ile dinamik olarak doldurulacaktır -->
-                        </div>
+                            </div>
 
-                        <!-- Giriş Alanı -->
                         <div class="chat-input-area">
                             <button class="mic-btn" id="mic-btn" title="Sesli Komut Ver">
                                 <i class="fas fa-microphone"></i>
                             </button>
                             <div class="text-input-wrap">
                                 <input type="text" id="cmd-input"
-                                    placeholder="Jarvis'e bir komut yazın (örn: 'salon ışığını aç')..."
+                                    placeholder="Jarvis'e bir komut yazın..."
                                     autocomplete="off">
                             </div>
                             <button class="send-btn" id="send-btn" title="Gönder">
@@ -120,10 +109,8 @@
                     </div>
                 </div>
 
-                <!-- Sağ Panel: İstatistikler ve Geçmiş -->
                 <div class="jarvis-info-panel">
 
-                    <!-- Durum & İstatistik Paneli -->
                     <div class="panel">
                         <h2><i class="fas fa-chart-bar"></i> Jarvis Durumu</h2>
 
@@ -152,30 +139,26 @@
                                 <span class="badge success">Hazır</span>
                             </div>
                             <div class="info-row">
-                                <span>Home Assistant Entegrasyonu</span>
+                                <span>Home Assistant</span>
                                 <span class="badge warning" id="ha-status-badge">Bekleniyor</span>
                             </div>
                             <div class="info-row" style="border-bottom: none;">
-                                <span>Son Algılanan Komut</span>
+                                <span>Son Algılanan</span>
                                 <strong id="last-cmd-text" style="color: var(--accent-green);">"Yok"</strong>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Son Komutlar Geçmişi -->
                     <div class="panel">
                         <h2><i class="fas fa-history"></i> Son Komutlar</h2>
                         <ul class="command-history-list" id="command-history-list">
-                            <!-- JS ile doldurulacak -->
-                        </ul>
+                            </ul>
                     </div>
 
-                    <!-- Canlı Sistem Log Terminali -->
                     <div class="panel" style="flex: 1;">
                         <h2><i class="fas fa-terminal"></i> Çekirdek Log Akışı</h2>
                         <div class="log-terminal" id="log-terminal">
-                            <!-- Canlı log akışı buraya eklenecektir -->
-                        </div>
+                            </div>
                     </div>
 
                 </div>

@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class JarvisActivity extends AppCompatActivity {
 
-    // XML ID'leri ile eşleşen arayüz elemanları
-    private Button btnBackMain;
+    // XML ID'leri ile tamamen eşleşen dikey arayüz elemanları
+    private LinearLayout btnBackMain; // Türü LinearLayout olarak güncellendi
     private ImageButton micBtn;
     private ImageButton sendBtn;
     private EditText cmdInput;
@@ -57,7 +57,7 @@ public class JarvisActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        // Sol menü ve butonlar
+        // Yeni üst bar ve butonlar
         btnBackMain = findViewById(R.id.btn_back_main);
         micBtn = findViewById(R.id.mic_btn);
         sendBtn = findViewById(R.id.send_btn);
@@ -67,7 +67,7 @@ public class JarvisActivity extends AppCompatActivity {
         // Konsol ve durum panelleri
         jarvisStateDesc = findViewById(R.id.jarvis_state_desc);
         commandCountVal = findViewById(R.id.command_count_val);
-        responseTimeVal = findViewById(R.id.response_time_val); // XML'deki response_time-val ID'si java standardına çekildi, xml'de düzeltildi varsayılmıştır
+        responseTimeVal = findViewById(R.id.response_time_val);
         jarvisStatusBadge = findViewById(R.id.jarvis_status_badge);
         lastCmdText = findViewById(R.id.last_cmd_text);
         logTerminal = findViewById(R.id.log_terminal);
@@ -80,7 +80,6 @@ public class JarvisActivity extends AppCompatActivity {
     }
 
     private void setupEdgeToEdge() {
-        // En dış katman olan android.R.id.content üzerinden güvenli alanlar ayarlandı
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -89,8 +88,11 @@ public class JarvisActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        // LinearLayout yapısına geçen yeni Geri Dönüş Butonu Dinleyicisi
         if (btnBackMain != null) {
-            btnBackMain.setOnClickListener(v -> finish()); // Ana sayfaya dön butonu
+            btnBackMain.setClickable(true);
+            btnBackMain.setFocusable(true);
+            btnBackMain.setOnClickListener(v -> finish()); // Ana sayfaya güvenle döner
         }
 
         if (sendBtn != null) {
@@ -112,6 +114,12 @@ public class JarvisActivity extends AppCompatActivity {
 
     // ---------------- JARVIS ENGINE AÇILIŞ ANİMASYONU MOTORU ----------------
     private void startJarvisEngineLoading() {
+        // Animasyon başlamadan önce yükleme ekranını öne getirelim
+        if (loadingScreen != null) {
+            loadingScreen.setVisibility(View.VISIBLE);
+            loadingScreen.setAlpha(1f);
+        }
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -124,18 +132,20 @@ public class JarvisActivity extends AppCompatActivity {
                     }
 
                     // Jarvis temasına uygun durum güncellemeleri
-                    if (currentPercent == 15) {
-                        loaderStatus.setText("SES SİNYALLERİ SENKRONİZE EDİLİYOR...");
-                    } else if (currentPercent == 45) {
-                        loaderStatus.setText("FREKANS ANALİZÖRÜ AKTİFLEŞTİRİLİYOR...");
-                    } else if (currentPercent == 75) {
-                        loaderStatus.setText("CORE INTELLIGENCE VERİ TABANINA BAĞLANILIYOR...");
-                    } else if (currentPercent == 95) {
-                        loaderStatus.setText("ARAYÜZ HAZIRLANIYOR...");
+                    if (loaderStatus != null) {
+                        if (currentPercent == 15) {
+                            loaderStatus.setText("SES SİNYALLERİ SENKRONİZE EDİLİYOR...");
+                        } else if (currentPercent == 45) {
+                            loaderStatus.setText("FREKANS ANALİZÖRÜ AKTİFLEŞTİRİLİYOR...");
+                        } else if (currentPercent == 75) {
+                            loaderStatus.setText("CORE INTELLIGENCE VERİ TABANINA BAĞLANILIYOR...");
+                        } else if (currentPercent == 95) {
+                            loaderStatus.setText("ARAYÜZ HAZIRLANIYOR...");
+                        }
                     }
 
                     currentPercent++;
-                    handler.postDelayed(this, 20); // İdeal akış hızı (20ms)
+                    handler.postDelayed(this, 15); // Akış hızı (15ms)
                 } else {
                     // Yükleme tamamlandığında arka plandaki arayüz durumlarını güncelle
                     if (jarvisStateDesc != null) {
@@ -150,11 +160,11 @@ public class JarvisActivity extends AppCompatActivity {
                         logTerminal.setText("[SYSTEM] Jarvis Engine başarıyla yüklendi.\n[AUDIO] Mikrofon hatları aktif.");
                     }
 
-                    // Ekranı yumuşakça kapat (Fade-out)
+                    // Ekranı yumuşakça kapat (Fade-out) ve GONE yaparak alt katmandaki butonları serbest bırak!
                     if (loadingScreen != null) {
                         loadingScreen.animate()
                                 .alpha(0f)
-                                .setDuration(300)
+                                .setDuration(350)
                                 .withEndAction(() -> loadingScreen.setVisibility(View.GONE))
                                 .start();
                     }
