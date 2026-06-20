@@ -32,6 +32,12 @@
         <activity
             android:name=".CihazlarActivity"
             android:exported="false" />
+        <activity
+            android:name=".SistemIzlemeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".KullaniciYonetimiActivity"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"

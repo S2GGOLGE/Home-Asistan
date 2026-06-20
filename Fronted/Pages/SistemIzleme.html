@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem İzleme - Home Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/sistem-izleme.css">
+    <!-- Chart.js for graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header glass-panel">
+            <div class="header-left">
+                <a href="/Fronted/Pages/index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+                <h1 class="page-title">Sistem İzleme</h1>
+            </div>
+            <div class="header-right">
+                <div class="health-indicator">
+                    <div class="pulse-dot"></div>
+                    <span>Sistem Sağlıklı</span>
+                </div>
+                <div class="last-update">
+                    <i class="fas fa-clock"></i> Son Güncelleme: <span id="lastUpdateTime">--:--:--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="dashboard-grid">
+            
+            <!-- 1. API Status -->
+            <section class="card glass-panel" id="apiCard">
+                <div class="card-header">
+                    <h2><i class="fas fa-network-wired"></i> API Durumu</h2>
+                    <span class="status-badge online">Online</span>
+                </div>
+                <div class="card-content">
+                    <div class="stat-row">
+                        <span>Ortalama Yanıt:</span>
+                        <strong class="neon-text">45 ms</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Son Hata:</span>
+                        <strong>Yok (Son 24s)</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Top. İstek (24s):</span>
+                        <strong>1.2M</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Başarı Oranı:</span>
+                        <strong class="neon-text">%99.9</strong>
+                    </div>
+                    <div class="mini-chart-container">
+                        <canvas id="apiMiniChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Jarvis Status -->
+            <section class="card glass-panel" id="jarvisCard">
+                <div class="card-header">
+                    <h2><i class="fas fa-robot"></i> Jarvis Durumu</h2>
+                    <span class="status-badge online">Aktif</span>
+                </div>
+                <div class="card-content">
+                    <div class="stat-row">
+                        <span>Son Komut:</span>
+                        <strong class="italic">"Işıkları aç"</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>İşlenen Komut:</span>
+                        <strong>14,250</strong>
+                    </div>
+                    <div class="progress-group">
+                        <div class="progress-label"><span>CPU</span><span>12%</span></div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 12%"></div></div>
+                    </div>
+                    <div class="progress-group">
+                        <div class="progress-label"><span>RAM</span><span>24%</span></div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 24%"></div></div>
+                    </div>
+                    <div class="stat-row mt-15">
+                        <span>Mikrofon:</span>
+                        <strong class="neon-text"><i class="fas fa-microphone"></i> Dinliyor...</strong>
+                    </div>
+                    <div class="mini-logs" id="jarvisLogs">
+                        <div class="log-entry"><span class="time">17:44</span> <span class="cmd">Komut algılandı...</span></div>
+                        <div class="log-entry"><span class="time">17:44</span> <span class="cmd">Doğal dil işleniyor...</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Server Status -->
+            <section class="card glass-panel" id="serverCard">
+                <div class="card-header">
+                    <h2><i class="fas fa-server"></i> Sunucu Durumu</h2>
+                    <span class="status-badge online">Çalışıyor</span>
+                </div>
+                <div class="card-content">
+                    <div class="grid-stats">
+                        <div class="stat-box">
+                            <i class="fas fa-microchip"></i>
+                            <span class="value">34%</span>
+                            <span class="label">CPU</span>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-memory"></i>
+                            <span class="value">68%</span>
+                            <span class="label">RAM</span>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-hdd"></i>
+                            <span class="value">42%</span>
+                            <span class="label">Disk</span>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-thermometer-half"></i>
+                            <span class="value">45°C</span>
+                            <span class="label">Sıcaklık</span>
+                        </div>
+                    </div>
+                    <div class="stat-row mt-15">
+                        <span>Ağ Trafiği:</span>
+                        <strong>↓ 2.4 MB/s | ↑ 1.1 MB/s</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Uptime:</span>
+                        <strong>14 Gün, 5 Saat</strong>
+                    </div>
+                    <div class="stat-row">
+                        <span>Aktif Cihaz/Kullanıcı:</span>
+                        <strong>46 / 3</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Performance Graphs -->
+            <section class="card glass-panel col-span-2" id="graphsCard">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-area"></i> Performans Grafikleri (Son 24 Saat)</h2>
+                </div>
+                <div class="card-content charts-wrapper">
+                    <div class="chart-container">
+                        <canvas id="mainPerformanceChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Quick Actions -->
+            <section class="card glass-panel" id="actionsCard">
+                <div class="card-header">
+                    <h2><i class="fas fa-bolt"></i> Hızlı İşlemler</h2>
+                </div>
+                <div class="card-content actions-grid">
+                    <button class="action-btn restart"><i class="fas fa-sync-alt"></i> Servisi Yeniden Başlat</button>
+                    <button class="action-btn clear"><i class="fas fa-eraser"></i> Logları Temizle</button>
+                    <button class="action-btn report"><i class="fas fa-file-alt"></i> Rapor Oluştur</button>
+                    <button class="action-btn refresh" id="refreshBtn"><i class="fas fa-redo"></i> Durum Yenile</button>
+                </div>
+            </section>
+
+            <!-- 6. Live Logs -->
+            <section class="card glass-panel col-span-3" id="liveLogsCard">
+                <div class="card-header">
+                    <h2><i class="fas fa-terminal"></i> Canlı Loglar</h2>
+                    <div class="log-filters">
+                        <span class="filter-dot info active" title="INFO"></span>
+                        <span class="filter-dot warning active" title="WARNING"></span>
+                        <span class="filter-dot error active" title="ERROR"></span>
+                        <span class="filter-dot success active" title="SUCCESS"></span>
+                    </div>
+                </div>
+                <div class="card-content terminal-bg">
+                    <div class="logs-container" id="systemLogs">
+                        <!-- Logs will be populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+    <script src="/Fronted/Js/sistem-izleme.js"></script>
+</body>
+</html>

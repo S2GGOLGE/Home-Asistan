@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kullanıcı Yönetimi - Home Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/kullanici-yonetimi.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header glass-panel">
+            <div class="header-left">
+                <a href="/Fronted/Pages/index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+                <h1 class="page-title">Kullanıcı Yönetimi</h1>
+            </div>
+            <div class="header-right">
+                <div class="health-indicator">
+                    <div class="pulse-dot"></div>
+                    <span>Sistem Çevrimiçi</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <section class="stats-grid">
+            <!-- Card 1 -->
+            <div class="stat-card glass-panel">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-details">
+                    <h3>Aktif Kullanıcılar</h3>
+                    <div class="stat-value">124</div>
+                    <div class="stat-sub">
+                        <span><i class="fas fa-clock"></i> 24s: 45 giriş</span>
+                        <span class="text-success"><i class="fas fa-circle"></i> 12 Çevrimiçi</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="stat-card glass-panel">
+                <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="stat-details">
+                    <h3>Aktif Admin Sayısı</h3>
+                    <div class="stat-value">5</div>
+                    <div class="stat-sub">
+                        <span class="text-success"><i class="fas fa-circle"></i> 2 Çevrimiçi</span>
+                        <span>Son işlem: 5dk önce</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="stat-card glass-panel">
+                <div class="stat-icon"><i class="fas fa-database"></i></div>
+                <div class="stat-details">
+                    <h3>Toplam Kullanıcı</h3>
+                    <div class="stat-value">856</div>
+                    <div class="stat-sub">
+                        <span class="text-success">+12 Yeni Kayıt</span>
+                        <span class="text-muted">45 Pasif</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Section: Table & Filters -->
+        <main class="main-content glass-panel">
+            <div class="content-header">
+                <h2><i class="fas fa-list"></i> Kullanıcı Listesi</h2>
+                <div class="header-actions">
+                    <button class="action-btn primary-btn" id="openRoleModalBtn"><i class="fas fa-user-tag"></i> Rol Ver</button>
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Kullanıcı Ara...">
+                </div>
+                <div class="filter-box">
+                    <select>
+                        <option value="">Tüm Roller</option>
+                        <option value="user">Kullanıcı</option>
+                        <option value="mod">Moderatör</option>
+                        <option value="admin">Admin</option>
+                        <option value="superadmin">Süper Admin</option>
+                    </select>
+                </div>
+                <div class="filter-box">
+                    <select>
+                        <option value="">Tüm Durumlar</option>
+                        <option value="online">Online</option>
+                        <option value="offline">Offline</option>
+                        <option value="banned">Yasaklı</option>
+                        <option value="pending">Beklemede</option>
+                    </select>
+                </div>
+                <div class="filter-box">
+                    <input type="date" title="Tarihe Göre">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Profil</th>
+                            <th>Kullanıcı Adı</th>
+                            <th>E-Posta</th>
+                            <th>Rol</th>
+                            <th>Durum</th>
+                            <th>Son Giriş</th>
+                            <th>Kayıt Tarihi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Mock row 1 -->
+                        <tr>
+                            <td><div class="avatar"><img src="https://i.pravatar.cc/150?img=11" alt="avatar"></div></td>
+                            <td>Ahmet Yılmaz</td>
+                            <td>ahmet@example.com</td>
+                            <td><span class="role-badge admin">Admin</span></td>
+                            <td><span class="status-badge online">Online</span></td>
+                            <td>Şimdi</td>
+                            <td>12.05.2025</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="icon-btn" title="Detay"><i class="fas fa-eye"></i></button>
+                                    <button class="icon-btn" title="Rol Düzenle"><i class="fas fa-user-edit"></i></button>
+                                    <button class="icon-btn" title="Şifre Sıfırla"><i class="fas fa-key"></i></button>
+                                    <button class="icon-btn danger" title="Engelle"><i class="fas fa-ban"></i></button>
+                                    <button class="icon-btn danger" title="Sil"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Mock row 2 -->
+                        <tr>
+                            <td><div class="avatar"><img src="https://i.pravatar.cc/150?img=32" alt="avatar"></div></td>
+                            <td>Ayşe Demir</td>
+                            <td>ayse@example.com</td>
+                            <td><span class="role-badge mod">Moderatör</span></td>
+                            <td><span class="status-badge offline">Offline</span></td>
+                            <td>2 Saat Önce</td>
+                            <td>01.03.2026</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="icon-btn" title="Detay"><i class="fas fa-eye"></i></button>
+                                    <button class="icon-btn" title="Rol Düzenle"><i class="fas fa-user-edit"></i></button>
+                                    <button class="icon-btn" title="Şifre Sıfırla"><i class="fas fa-key"></i></button>
+                                    <button class="icon-btn danger" title="Engelle"><i class="fas fa-ban"></i></button>
+                                    <button class="icon-btn danger" title="Sil"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Mock row 3 -->
+                        <tr>
+                            <td><div class="avatar"><div class="avatar-placeholder">M</div></div></td>
+                            <td>Mehmet Kaya</td>
+                            <td>mehmet@example.com</td>
+                            <td><span class="role-badge user">Kullanıcı</span></td>
+                            <td><span class="status-badge banned">Yasaklı</span></td>
+                            <td>3 Gün Önce</td>
+                            <td>15.06.2026</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="icon-btn" title="Detay"><i class="fas fa-eye"></i></button>
+                                    <button class="icon-btn" title="Rol Düzenle"><i class="fas fa-user-edit"></i></button>
+                                    <button class="icon-btn" title="Şifre Sıfırla"><i class="fas fa-key"></i></button>
+                                    <button class="icon-btn danger" title="Engelle" disabled><i class="fas fa-ban"></i></button>
+                                    <button class="icon-btn danger" title="Sil"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Mock row 4 -->
+                        <tr>
+                            <td><div class="avatar"><img src="https://i.pravatar.cc/150?img=5" alt="avatar"></div></td>
+                            <td>Zeynep Çelik</td>
+                            <td>zeynep@example.com</td>
+                            <td><span class="role-badge user">Kullanıcı</span></td>
+                            <td><span class="status-badge pending">Beklemede</span></td>
+                            <td>Hiç</td>
+                            <td>Bugün</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="icon-btn" title="Detay"><i class="fas fa-eye"></i></button>
+                                    <button class="icon-btn" title="Rol Düzenle"><i class="fas fa-user-edit"></i></button>
+                                    <button class="icon-btn" title="Şifre Sıfırla"><i class="fas fa-key"></i></button>
+                                    <button class="icon-btn danger" title="Engelle"><i class="fas fa-ban"></i></button>
+                                    <button class="icon-btn danger" title="Sil"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- Bottom Section: Recent Activities -->
+        <section class="activities-section glass-panel">
+            <h2><i class="fas fa-history"></i> Son Kullanıcı Hareketleri</h2>
+            <div class="activity-list" id="activityList">
+                <!-- Activities inserted via JS -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Modal for Role Assignment -->
+    <div class="modal-overlay" id="roleModal">
+        <div class="modal glass-panel">
+            <div class="modal-header">
+                <h2>Rol Ver / Düzenle</h2>
+                <button class="close-btn" id="closeRoleModalBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Kullanıcı Seçimi</label>
+                    <select class="modal-select">
+                        <option>Ahmet Yılmaz</option>
+                        <option>Ayşe Demir</option>
+                        <option>Mehmet Kaya</option>
+                        <option>Zeynep Çelik</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mevcut Rol</label>
+                    <div class="current-role">Moderatör</div>
+                </div>
+                <div class="form-group">
+                    <label>Yeni Rol Seçimi</label>
+                    <select class="modal-select">
+                        <option>Kullanıcı</option>
+                        <option>Moderatör</option>
+                        <option>Admin</option>
+                        <option>Süper Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Açıklama</label>
+                    <textarea class="modal-textarea" rows="3" placeholder="Rol değişikliği nedeni..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" id="cancelRoleModalBtn">İptal</button>
+                <button class="action-btn primary-btn">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Fronted/Js/kullanici-yonetimi.js"></script>
+</body>
+</html>

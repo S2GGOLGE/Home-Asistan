@@ -143,9 +143,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_settings) {
                 open("Ayarlar açılıyor...", SettingsActivity.class);
             } else if (id == R.id.nav_users) {
-                toast("Kullanıcılar açılıyor...");
+                open("Kullanıcılar açılıyor...", KullaniciYonetimiActivity.class);
             } else if (id == R.id.nav_system_monitor) {
-                toast("Sistem durumu açılıyor...");
+                open("Sistem durumu açılıyor...", SistemIzlemeActivity.class);
             }
 
             return true;
