@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomeOS - Sistem Günlükleri & Veritabanı İzleyici</title>
+    <meta name="description" content="HomeOS Sistem Günlükleri - Gerçek zamanlı log izleme ve yönetim paneli">
+    <title>HomeOS - Sistem Günlükleri</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/Fronted/Css/Loglar.css">
     <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
@@ -12,11 +13,11 @@
 
 <body>
 
-    <!-- Dinamik Arayüz Başlangıç Yükleyicisi -->
+    <!-- Yükleme Ekranı -->
     <div id="loader-overlay">
         <div class="loader-ring"></div>
-        <div class="loader-title">Database <span>Engine</span></div>
-        <div class="loader-subtitle" id="loader-text">SQL Server Bağlantısı Kuruluyor...</div>
+        <div class="loader-title">System <span>Logs</span></div>
+        <div class="loader-subtitle" id="loader-text">Log Servisi Başlatılıyor...</div>
         <div class="loader-percentage" id="loader-percentage">0%</div>
         <div class="loader-bar-wrap">
             <div class="loader-bar" id="loader-bar"></div>
@@ -25,140 +26,194 @@
 
     <div class="layout">
 
-        <!-- Sol Menü (Sidebar) -->
+        <!-- Sidebar -->
         <aside class="sidebar collapsed" id="sidebar">
             <div class="logo-area">
                 <div class="logo">EV ASİSTANI</div>
                 <div class="version">Sürüm 1.0.0</div>
             </div>
-
             <nav>
                 <a href="/Fronted/Pages/index.html"><i class="fas fa-chart-pie"></i> Gösterge Paneli</a>
                 <a href="/Fronted/Pages/Cihazlar.html"><i class="fas fa-lightbulb"></i> Cihazlar</a>
                 <a href="/Fronted/Pages/Odalar.html"><i class="fas fa-door-open"></i> Odalar</a>
-                <a href="/Fronted/Pages/Otomasyonlar.html"><i class="fas fa-bolt"></i> Otomasyonlar</a>
+                <a href="/Fronted/Pages/otomasyonlar.html"><i class="fas fa-bolt"></i> Otomasyonlar</a>
                 <a href="/Fronted/Pages/Jarvis.html"><i class="fas fa-robot"></i> Jarvis</a>
                 <a href="/Fronted/Pages/Kameralar.html"><i class="fas fa-video"></i> Kameralar</a>
-                <a href="/Fronted/Pages/Sensörler.html"><i class="fas fa-microchip"></i> Sensörler</a>
-                <a href="/Fronted/Pages/Bildirimler.html"><i class="fas fa-bell"></i> Bildirimler</a>
-                <a href="/Fronted/Pages/Kullanıcılar.html"><i class="fas fa-users"></i> Kullanıcılar</a>
-                <a href="/Fronted/Pages/Sistem İzleme.html"><i class="fas fa-desktop"></i> Sistem İzleme</a>
-                <a href="/Fronted/Pages/Ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="/Fronted/Pages/KullaniciYonetimi.html"><i class="fas fa-users"></i> Kullanıcılar</a>
+                <a href="/Fronted/Pages/SistemIzleme.html"><i class="fas fa-desktop"></i> Sistem İzleme</a>
+                <a href="/Fronted/Pages/ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
                 <a href="#" class="active"><i class="fas fa-terminal"></i> Loglar</a>
             </nav>
-
             <div class="back-btn-container">
                 <a href="/Fronted/Pages/index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Ana Sayfa</a>
             </div>
         </aside>
 
-        <!-- Sağ Taraf: Ana İçerik -->
+        <!-- Ana İçerik -->
         <main class="content">
 
             <!-- Üst Bar -->
             <header class="topbar">
                 <div class="topbar-left">
                     <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                        <span></span><span></span><span></span>
                     </button>
                     <div>
-                        <h1>Sistem Günlükleri & Veritabanı İzleyici</h1>
-                        <p>SQL Server veritabanındaki tabloları ve sistem kayıtlarını gerçek zamanlı görüntüleyin.</p>
+                        <h1><i class="fas fa-terminal"></i> Sistem Günlükleri</h1>
+                        <p>Gerçek zamanlı log izleme · Filtreleme · Arşivleme</p>
                     </div>
                 </div>
-                <div class="status" id="system-status-indicator">Sistem Durumu %100</div>
+                <div class="topbar-right">
+                    <!-- SignalR canlı göstergesi -->
+                    <div class="live-badge" id="live-badge">
+                        <span class="live-dot" id="live-dot"></span>
+                        <span id="live-label">Bağlanıyor...</span>
+                    </div>
+                    <button class="icon-btn" id="archive-btn" title="Eski logları arşivle">
+                        <i class="fas fa-archive"></i>
+                    </button>
+                    <button class="icon-btn" id="refresh-btn" title="Yenile">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
             </header>
 
-            <!-- Sayaç Panelleri -->
+            <!-- Dashboard Sayaç Kartları -->
             <section class="stats-grid">
                 <div class="stat-card">
-                    <h3>Toplam Kayıt (Log)</h3>
-                    <span class="num" id="count-total-logs">0</span>
+                    <div class="stat-icon blue"><i class="fas fa-list-alt"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-num" id="dash-total">—</span>
+                        <span class="stat-label">Toplam Log</span>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <h3>Hata/Kritik Hata</h3>
-                    <span class="num red" id="count-error-logs">0</span>
+                    <div class="stat-icon red"><i class="fas fa-skull-crossbones"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-num" id="dash-critical">—</span>
+                        <span class="stat-label">Kritik</span>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <h3>Kayıtlı Cihaz</h3>
-                    <span class="num" id="count-total-devices">0</span>
+                    <div class="stat-icon orange"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-num" id="dash-error">—</span>
+                        <span class="stat-label">Hata</span>
+                    </div>
                 </div>
                 <div class="stat-card">
-                    <h3>Kullanıcı Sayısı</h3>
-                    <span class="num" id="count-total-users">0</span>
+                    <div class="stat-icon yellow"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-num" id="dash-warning">—</span>
+                        <span class="stat-label">Uyarı</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fas fa-bomb"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-num" id="dash-crash">—</span>
+                        <span class="stat-label">Crash</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-redo-alt"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-num" id="dash-restarts">—</span>
+                        <span class="stat-label">Bugün Restart</span>
+                    </div>
                 </div>
             </section>
 
-            <!-- Tab ve Veri Listeleme Alanı -->
-            <div class="tab-container">
-
-                <!-- Tab Başlıkları -->
-                <div class="tab-headers">
-                    <button class="tab-btn active" data-tab="logs"><i class="fas fa-terminal"></i> Sistem Günlükleri
-                        (Logs)</button>
-                    <button class="tab-btn" data-tab="devices"><i class="fas fa-lightbulb"></i> Cihazlar
-                        (Devices)</button>
-                    <button class="tab-btn" data-tab="users"><i class="fas fa-users"></i> Kullanıcılar (Users)</button>
-                    <button class="tab-btn" data-tab="commands"><i class="fas fa-history"></i> Jarvis Komut
-                        Geçmişi</button>
-                </div>
-
-                <!-- Araç Çubuğu (Arama & Filtreleme) -->
-                <div class="toolbar">
-                    <div class="toolbar-left">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="search-input" placeholder="Veri ara...">
-                        </div>
-
-                        <!-- Log Seviyesi Filtresi (Sadece Log sekmesinde gösterilir) -->
-                        <select class="select-filter" id="filter-log-level">
-                            <option value="all">Tüm Seviyeler</option>
-                            <option value="info">INFO (Bilgi)</option>
-                            <option value="warn">WARN (Uyarı)</option>
-                            <option value="error">ERROR (Hata)</option>
-                            <option value="fatal">FATAL (Kritik)</option>
-                        </select>
-
-                        <!-- Cihaz Tipi Filtresi (Sadece Cihaz sekmesinde gösterilir) -->
-                        <select class="select-filter" id="filter-device-type" style="display: none;">
-                            <option value="all">Tüm Cihaz Tipleri</option>
-                            <option value="light">Işıklar (Light)</option>
-                            <option value="camera">Kameralar (Camera)</option>
-                            <option value="sensor">Sensörler (Sensor)</option>
-                            <option value="plug">Prizler (Plug)</option>
-                            <option value="climate">Klima (Climate)</option>
-                        </select>
+            <!-- Araç çubuğu -->
+            <div class="toolbar">
+                <div class="toolbar-filters">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Mesajda ara...">
                     </div>
+                    <select class="select-filter" id="filter-log-level">
+                        <option value="">Tüm Seviyeler</option>
+                        <option value="Information">Information</option>
+                        <option value="Warning">Warning</option>
+                        <option value="Error">Error</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                    <select class="select-filter" id="filter-event-type">
+                        <option value="">Tüm Olay Türleri</option>
+                        <option value="Startup">Startup</option>
+                        <option value="Shutdown">Shutdown</option>
+                        <option value="Restart">Restart</option>
+                        <option value="Crash">Crash</option>
+                        <option value="Exception">Exception</option>
+                        <option value="Security">Security</option>
+                        <option value="Authentication">Authentication</option>
+                        <option value="Authorization">Authorization</option>
+                        <option value="Device">Device</option>
+                        <option value="Automation">Automation</option>
+                        <option value="Watchdog">Watchdog</option>
+                        <option value="System">System</option>
+                    </select>
+                    <select class="select-filter" id="filter-service">
+                        <option value="">Tüm Servisler</option>
+                    </select>
+                    <input type="date" class="select-filter" id="filter-from" title="Başlangıç tarihi">
+                    <input type="date" class="select-filter" id="filter-to" title="Bitiş tarihi">
+                    <label class="check-label">
+                        <input type="checkbox" id="filter-archived"> Arşivlenmiş
+                    </label>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="btn-secondary" id="clear-filters-btn">
+                        <i class="fas fa-times"></i> Temizle
+                    </button>
+                    <button class="btn-primary" id="apply-filters-btn">
+                        <i class="fas fa-filter"></i> Uygula
+                    </button>
+                    <button class="btn-danger" id="test-critical-btn" title="Kritik log testi">
+                        <i class="fas fa-vial"></i> Test
+                    </button>
+                </div>
+            </div>
 
-                    <button class="refresh-btn" id="refresh-btn" title="Yenile">
-                        <i class="fas fa-sync-alt"></i> Verileri Yenile
+            <!-- Tab Konteyner -->
+            <div class="tab-container">
+                <div class="tab-headers">
+                    <button class="tab-btn active" data-tab="systemlogs">
+                        <i class="fas fa-terminal"></i> Sistem Logları
+                    </button>
+                    <button class="tab-btn" data-tab="devices">
+                        <i class="fas fa-lightbulb"></i> Cihazlar
+                    </button>
+                    <button class="tab-btn" data-tab="users">
+                        <i class="fas fa-users"></i> Kullanıcılar
+                    </button>
+                    <button class="tab-btn" data-tab="commands">
+                        <i class="fas fa-history"></i> Jarvis Geçmişi
                     </button>
                 </div>
 
-                <!-- Tab İçerikleri -->
-
-                <!-- 1. Sistem Günlükleri Tabı -->
-                <div class="tab-content active" id="logs-tab">
+                <!-- 1. Sistem Logları Tabı -->
+                <div class="tab-content active" id="systemlogs-tab">
                     <div class="table-wrap">
-                        <table>
+                        <table id="logs-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 80px;">ID</th>
-                                    <th style="width: 120px;">Seviye</th>
+                                    <th style="width:60px">#</th>
+                                    <th style="width:110px">Seviye</th>
+                                    <th style="width:120px">Olay Türü</th>
+                                    <th style="width:140px">Servis</th>
                                     <th>Mesaj</th>
-                                    <th style="width: 180px;">Kaynak / Modül</th>
-                                    <th style="width: 200px;">Kayıt Tarihi</th>
+                                    <th style="width:80px">Kullanıcı</th>
+                                    <th style="width:110px">IP</th>
+                                    <th style="width:160px">Tarih</th>
                                 </tr>
                             </thead>
                             <tbody id="logs-table-body">
-                                <!-- JS ile dinamik doldurulur -->
+                                <tr><td colspan="8" class="empty-row"><i class="fas fa-circle-notch fa-spin"></i> Yükleniyor...</td></tr>
                             </tbody>
                         </table>
                     </div>
-                    <div id="logs-pagination" class="pagination"></div>
+                    <div class="pagination" id="logs-pagination"></div>
                 </div>
 
                 <!-- 2. Cihazlar Tabı -->
@@ -167,15 +222,15 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 80px;">ID</th>
+                                    <th style="width:60px">ID</th>
                                     <th>Cihaz Adı</th>
-                                    <th>Cihaz Tipi / Sürümü</th>
-                                    <th style="width: 150px;">Bağlantı Durumu</th>
-                                    <th style="width: 200px;">Son Güncelleme</th>
+                                    <th>Tür / Sürüm</th>
+                                    <th style="width:140px">Bağlantı</th>
+                                    <th style="width:160px">Son Güncelleme</th>
                                 </tr>
                             </thead>
                             <tbody id="devices-table-body">
-                                <!-- JS ile dinamik doldurulur -->
+                                <tr><td colspan="5" class="empty-row"><i class="fas fa-circle-notch fa-spin"></i> Yükleniyor...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -187,15 +242,15 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 80px;">ID</th>
+                                    <th style="width:60px">ID</th>
                                     <th>Kullanıcı Adı</th>
-                                    <th>E-Posta Adresi</th>
-                                    <th style="width: 150px;">Sistem Rolü</th>
-                                    <th style="width: 200px;">Kayıt Tarihi</th>
+                                    <th>E-Posta</th>
+                                    <th style="width:120px">Rol</th>
+                                    <th style="width:160px">Kayıt Tarihi</th>
                                 </tr>
                             </thead>
                             <tbody id="users-table-body">
-                                <!-- JS ile dinamik doldurulur -->
+                                <tr><td colspan="5" class="empty-row"><i class="fas fa-circle-notch fa-spin"></i> Yükleniyor...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -207,30 +262,43 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 80px;">ID</th>
-                                    <th style="width: 100px;">U. ID</th>
-                                    <th>Söylenen Komut</th>
-                                    <th>Jarvis Yanıtı</th>
-                                    <th style="width: 120px;">Durum</th>
-                                    <th style="width: 200px;">Tarih</th>
+                                    <th style="width:60px">ID</th>
+                                    <th style="width:80px">U.ID</th>
+                                    <th>Komut</th>
+                                    <th>Yanıt</th>
+                                    <th style="width:100px">Durum</th>
+                                    <th style="width:160px">Tarih</th>
                                 </tr>
                             </thead>
                             <tbody id="commands-table-body">
-                                <!-- JS ile dinamik doldurulur -->
+                                <tr><td colspan="6" class="empty-row"><i class="fas fa-circle-notch fa-spin"></i> Yükleniyor...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+            </div>
 
+            <!-- Stack Trace Modal -->
+            <div class="modal-overlay" id="stacktrace-modal">
+                <div class="modal-box">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-bug"></i> Stack Trace</h3>
+                        <button class="modal-close" id="close-stacktrace"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <pre id="stacktrace-content"></pre>
+                    </div>
+                </div>
             </div>
 
             <footer>
-                <p>Ev Asistanı © 2026 | Database Management System</p>
+                <p>HomeOS Sistem Günlükleri © 2026 | Gelişmiş Loglama & İzleme Sistemi</p>
             </footer>
-
         </main>
     </div>
 
+    <!-- SignalR client kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
     <script src="/Fronted/Js/Loglar.js"></script>
     <script src="/Fronted/Js/Endpoint/CihazlarListemeEndpoint.js"></script>
     <script src="/Fronted/Js/auth.js"></script>

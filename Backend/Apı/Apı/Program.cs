@@ -1,35 +1,24 @@
-using Api.Data.Sql;
-using Api.Model.Device;
-using Api.Services.LogServices;
 using Api.Helpers;
+using Api.Hubs;
+using Api.Services.LogServices;
+using Api.Services.SystemLogging;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── LogService kaydı (connection string buradan alınıyor) ──────────────────
-var logConnStr = "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
-builder.Services.AddSingleton<LogService>(new LogService(logConnStr));
+// ── Bağlantı dizesi ────────────────────────────────────────────────────────
+var connStr = "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
 
-// Veritabanını otomatik kontrol et ve oluştur / güncelle
-DatabaseInitializer.Initialize(logConnStr);
+// ── Veritabanı başlatma (tablolar + seed) ─────────────────────────────────
+DatabaseInitializer.Initialize(connStr);
 
-// ── Port kontrolü ──────────────────────────────────────────────────────────
-var configuredPort = builder.Configuration["App:Port"];
-if (string.IsNullOrWhiteSpace(configuredPort) || !int.TryParse(configuredPort, out var port))
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    Console.Error.WriteLine("[FATAL] 'App:Port' yapılandırması eksik veya geçersiz.");
-    Console.Error.WriteLine("        appsettings.json içine ekle: { \"App\": { \"Port\": 7201 } }");
-    Console.Error.WriteLine("        Ya da ortam değişkeni ile: App__Port=7201");
-    Console.ResetColor();
+// ── Eski LogService (geriye uyumluluk) ────────────────────────────────────
+builder.Services.AddSingleton<LogService>(new LogService(connStr));
 
-    // LogService henüz DI'dan çekilemiyor, doğrudan new'leyip logla
-    new LogService(logConnStr).AddLog("FATAL", "App:Port yapılandırması eksik veya geçersiz. Uygulama başlatılamadı.", "Program");
-    return;
-}
+// ── SignalR ────────────────────────────────────────────────────────────────
+builder.Services.AddSignalR();
 
-builder.WebHost.UseUrls($"https://localhost:{port}");
-
-// ── Servisler ──────────────────────────────────────────────────────────────
+// ── Temel servisler ────────────────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
@@ -37,32 +26,52 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("HomeAsistan", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .SetIsOriginAllowed(_ => true)  // SignalR için gerekli
+              .AllowCredentials();            // SignalR WebSocket için gerekli
     });
 });
+
+// ── Port kontrolü ──────────────────────────────────────────────────────────
+var configuredPort = builder.Configuration["App:Port"];
+if (string.IsNullOrWhiteSpace(configuredPort) || !int.TryParse(configuredPort, out var port))
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.Error.WriteLine("[FATAL] 'App:Port' yapılandırması eksik veya geçersiz.");
+    Console.Error.WriteLine("        appsettings.json: { \"App\": { \"Port\": 7201 } }");
+    Console.ResetColor();
+    new LogService(connStr).AddLog("FATAL", "App:Port yapılandırması eksik.", "Program");
+    return;
+}
+
+builder.WebHost.UseUrls($"https://localhost:{port}");
 
 // ── Build ──────────────────────────────────────────────────────────────────
 var app = builder.Build();
 
-// Build sonrası LogService'i resolve et — startup logları için
-var logger = app.Services.GetRequiredService<LogService>();
-logger.AddLog("INFO", $"Uygulama başlatılıyor. Port: {port}", "Program");
+// ── SystemLogService: HubContext build sonrası hazır, AppState'e atanıyor ──
+var hubContext = app.Services.GetRequiredService<IHubContext<LogHub>>();
+AppState.SystemLog = new SystemLogService(connStr, hubContext);
+
+// ── Startup logları ────────────────────────────────────────────────────────
+var oldLogger = app.Services.GetRequiredService<LogService>();
+oldLogger.AddLog("INFO", $"Uygulama başlatılıyor. Port: {port}", "Program");
+await AppState.SystemLog.LogStartupAsync("HomeOS API");
 
 // ── Middleware ─────────────────────────────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    logger.AddLog("INFO", "Development ortamı algılandı. OpenAPI aktif.", "Program");
+    await AppState.SystemLog.InfoAsync("Development ortamı algılandı. OpenAPI aktif.", "Program");
 }
 
 app.UseCors("HomeAsistan");
-//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<LogHub>("/hubs/logs");   // ← SignalR gerçek zamanlı log endpoint'i
 
-Console.WriteLine($"[INFO] Uygulama port {port} üzerinde başlatılıyor...");
-logger.AddLog("INFO", $"Uygulama başarıyla ayağa kalktı. https://localhost:{port}", "Program");
+Console.WriteLine($"[INFO] HomeOS API port {port} üzerinde başlatılıyor...");
+await AppState.SystemLog.InfoAsync($"API başarıyla ayağa kalktı → https://localhost:{port}", "Program");
 
 app.Run();
