@@ -43,10 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await loginUser(usernameInput, passwordInput);
 
             if (result.success) {
+                const responseData = result.data || {};
+                const userRole = responseData.role || responseData.Role || 'User';
+
                 const loginState = JSON.stringify({
                     username: usernameInput,
+                    role: userRole,
                     loginTime: new Date().toISOString()
                 });
+
+                // Always store role in localStorage so auth.js can check it easily on DOMContentLoaded
+                localStorage.setItem('homeasistan_user_role', userRole);
 
                 if (remember.checked) {
                     localStorage.setItem('homeasistan_remembered_username', usernameInput);

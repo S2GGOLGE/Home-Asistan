@@ -216,24 +216,20 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Kullanıcı Seçimi</label>
-                    <select class="modal-select">
-                        <option>Ahmet Yılmaz</option>
-                        <option>Ayşe Demir</option>
-                        <option>Mehmet Kaya</option>
-                        <option>Zeynep Çelik</option>
+                    <select class="modal-select" id="modalUserSelect">
+                        <!-- Will be populated by JS -->
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Mevcut Rol</label>
-                    <div class="current-role">Moderatör</div>
+                    <div class="current-role" id="modalCurrentRole">-</div>
                 </div>
                 <div class="form-group">
                     <label>Yeni Rol Seçimi</label>
-                    <select class="modal-select">
-                        <option>Kullanıcı</option>
-                        <option>Moderatör</option>
-                        <option>Admin</option>
-                        <option>Süper Admin</option>
+                    <select class="modal-select" id="modalNewRoleSelect">
+                        <option value="Admin">Admin</option>
+                        <option value="Uye">Üye</option>
+                        <option value="Misafir">Misafir</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -243,7 +239,7 @@
             </div>
             <div class="modal-footer">
                 <button class="action-btn" id="cancelRoleModalBtn">İptal</button>
-                <button class="action-btn primary-btn">Kaydet</button>
+                <button class="action-btn primary-btn" id="saveRoleBtn">Kaydet</button>
             </div>
         </div>
     </div>

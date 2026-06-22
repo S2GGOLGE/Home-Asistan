@@ -9,17 +9,30 @@ async function loginUser(username, password) {
             },
             body: JSON.stringify({
                 Username: username,
-                PasswordHash: password // Arka uç LoginModels PasswordHash bekliyor
+                PasswordHash: password
             })
         });
 
         if (response.ok) {
-            return { success: true };
+            const data = await response.json();
+            return { success: true, data: data };
         } else {
-            const errorData = await response.text();
-            return { success: false, message: errorData || 'Giriş Başarısız' };
+            const errorText = await response.text();
+            let errorMessage = 'Giriş Başarısız';
+            try {
+                if (errorText.trim().startsWith('{')) {
+                    const errorJson = JSON.parse(errorText);
+                    errorMessage = errorJson.message || errorJson.Message || errorMessage;
+                } else {
+                    errorMessage = errorText || errorMessage;
+                }
+            } catch (e) {
+                if (errorText) errorMessage = errorText;
+            }
+            return { success: false, message: errorMessage };
         }
     } catch (error) {
+        console.error('Login error:', error);
         return { success: false, message: 'Bağlantı Hatası' };
     }
 }

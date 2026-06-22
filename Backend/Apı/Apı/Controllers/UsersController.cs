@@ -19,7 +19,11 @@ namespace Api.Controllers
             {
                 using var conn = new SqlConnection(_connectionString);
                 conn.Open();
-                string query = "SELECT Id, Username, Email, Role, CreatedAt FROM Users ORDER BY Id DESC";
+                string query = @"
+                    SELECT u.Id, u.Username, u.Email, r.Name AS Role, u.CreatedAt 
+                    FROM Users u 
+                    LEFT JOIN Roles r ON u.RoleId = r.Id 
+                    ORDER BY u.Id DESC";
                 using var cmd = new SqlCommand(query, conn);
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -40,5 +44,37 @@ namespace Api.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+
+        [HttpPut("{id}/role")]
+        public IActionResult UpdateUserRole(int id, [FromBody] UpdateRoleDto dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.Role))
+                return BadRequest(new { success = false, message = "Rol belirtilmedi." });
+
+            try
+            {
+                using var conn = new SqlConnection(_connectionString);
+                conn.Open();
+                string query = "UPDATE Users SET RoleId = (SELECT Id FROM Roles WHERE Name = @Role) WHERE Id = @Id";
+                using var cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Role", dto.Role);
+                cmd.Parameters.AddWithValue("@Id", id);
+                int rows = cmd.ExecuteNonQuery();
+                if (rows > 0)
+                {
+                    return Ok(new { success = true, message = "Kullanıcı rolü başarıyla güncellendi." });
+                }
+                return NotFound(new { success = false, message = "Kullanıcı bulunamadı." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+    }
+
+    public class UpdateRoleDto
+    {
+        public string Role { get; set; }
     }
 }

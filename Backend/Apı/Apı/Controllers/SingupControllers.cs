@@ -59,7 +59,7 @@ namespace Apı.Controllers.Singup
                 {
                     // Eğer veritabanınızda Email kolonu yoksa, SQL veritabanına Email kolonu eklemeniz gerekir.
                     // ALTER TABLE Users ADD Email NVARCHAR(255);
-                    string insertQuery = "INSERT INTO Users (Username, Email, PasswordHash, Salt) VALUES (@Username, @Email, @PasswordHash, @Salt)";
+                    string insertQuery = "INSERT INTO Users (Username, Email, PasswordHash, Salt, RoleId) VALUES (@Username, @Email, @PasswordHash, @Salt, (SELECT Id FROM Roles WHERE Name = 'Uye'))";
                     using (SqlCommand command = new SqlCommand(insertQuery, connection))
                     {
                         command.Parameters.AddWithValue("@Username", model.Username);

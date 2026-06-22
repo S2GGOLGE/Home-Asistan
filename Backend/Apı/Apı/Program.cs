@@ -1,12 +1,16 @@
 using Api.Data.Sql;
 using Api.Model.Device;
 using Api.Services.LogServices;
+using Api.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ── LogService kaydı (connection string buradan alınıyor) ──────────────────
 var logConnStr = "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
 builder.Services.AddSingleton<LogService>(new LogService(logConnStr));
+
+// Veritabanını otomatik kontrol et ve oluştur / güncelle
+DatabaseInitializer.Initialize(logConnStr);
 
 // ── Port kontrolü ──────────────────────────────────────────────────────────
 var configuredPort = builder.Configuration["App:Port"];

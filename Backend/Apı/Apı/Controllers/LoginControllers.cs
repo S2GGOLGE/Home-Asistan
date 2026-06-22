@@ -1,4 +1,4 @@
-﻿using Apı.Helpers.Empty_Space_Control;
+using Apı.Helpers.Empty_Space_Control;
 using Microsoft.AspNetCore.Mvc;
 using Apı.Model.Login;
 using Api.Services.LogServices;
@@ -31,11 +31,12 @@ namespace Apı.Controllers.Login
             {
                 string storedHash = null;
                 string storedSalt = null;
+                string storedRole = null;
 
-                // 1. Veri tabanından Hash ve Salt değerlerini çekiyoruz
+                // 1. Veri tabanından Hash, Salt ve Role değerlerini çekiyoruz
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT PasswordHash, Salt FROM Users WHERE Username = @Username";
+                    string query = "SELECT PasswordHash, Salt, Role FROM Users WHERE Username = @Username";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@Username", model.Username);
@@ -47,6 +48,7 @@ namespace Apı.Controllers.Login
                             {
                                 storedHash = reader["PasswordHash"]?.ToString();
                                 storedSalt = reader["Salt"]?.ToString();
+                                storedRole = reader["Role"]?.ToString();
                             }
                         }
                     }
@@ -70,7 +72,7 @@ namespace Apı.Controllers.Login
 
                 // 4. Giriş Başarılı
                 logservices.AddLog("Info", $"Başarılı Giriş: {model.Username} sisteme giriş yaptı.", controllerName);
-                return Ok(new { Message = "Giriş başarılı", User = model.Username });
+                return Ok(new { Message = "Giriş başarılı", User = model.Username, Role = storedRole ?? "User" });
             }
             catch (Exception ex)
             {
