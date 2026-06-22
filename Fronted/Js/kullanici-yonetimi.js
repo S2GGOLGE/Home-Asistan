@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 2. Fetch Users from Database
-    const API_BASE_URL = 'https://localhost:7201/api';
+    const API_BASE_URL = (window.location.protocol === 'file:') ? 'https://localhost:7201/api' : `${window.location.origin}/api`;
 
     async function fetchUsers() {
         try {
@@ -179,48 +179,73 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Mock Recent Activities
+    // 4. Son Kullanıcı Hareketleri - SystemLogs API'sından gerçek veriler
     const activityList = document.getElementById('activityList');
-    if (activityList) {
-        const activities = [
-            { user: "Ahmet Yılmaz", action: "Giriş yaptı", type: "login", time: "2 dk önce" },
-            { user: "Zeynep Çelik", action: "Hesap oluşturuldu", type: "create", time: "15 dk önce" },
-            { user: "Mehmet Kaya", action: "Şifre değiştirildi", type: "password", time: "1 saat önce" },
-            { user: "Ayşe Demir", action: "Çıkış yaptı", type: "logout", time: "3 saat önce" }
-        ];
-
-        const getIconConfig = (type) => {
-            switch(type) {
-                case 'login': return { icon: 'fa-sign-in-alt', color: '#2ecc71', bg: 'rgba(46, 204, 113, 0.1)' };
-                case 'logout': return { icon: 'fa-sign-out-alt', color: '#95a5a6', bg: 'rgba(149, 165, 166, 0.1)' };
-                case 'password': return { icon: 'fa-key', color: '#f39c12', bg: 'rgba(243, 156, 18, 0.1)' };
-                case 'create': return { icon: 'fa-user-plus', color: '#3498db', bg: 'rgba(52, 152, 219, 0.1)' };
-                default: return { icon: 'fa-circle', color: '#fff', bg: 'rgba(255,255,255,0.1)' };
+    async function loadRecentActivity() {
+        if (!activityList) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/SystemLogs?eventType=Authentication&limit=10`);
+            if (!res.ok) throw new Error();
+            const logs = await res.json();
+            if (!logs || logs.length === 0) {
+                activityList.innerHTML = '<div style="color:var(--text-secondary);padding:10px">Henüz aktivite kaydı yok.</div>';
+                return;
             }
-        };
+            const getIconConfig = (msg) => {
+                const m = (msg || '').toLowerCase();
+                if (m.includes('giriş') || m.includes('login')) return { icon: 'fa-sign-in-alt', color: '#2ecc71', bg: 'rgba(46,204,113,0.1)' };
+                if (m.includes('çıkış') || m.includes('logout')) return { icon: 'fa-sign-out-alt', color: '#95a5a6', bg: 'rgba(149,165,166,0.1)' };
+                if (m.includes('şifre') || m.includes('password')) return { icon: 'fa-key', color: '#f39c12', bg: 'rgba(243,156,18,0.1)' };
+                if (m.includes('kayıt') || m.includes('register')) return { icon: 'fa-user-plus', color: '#3498db', bg: 'rgba(52,152,219,0.1)' };
+                return { icon: 'fa-circle', color: '#aaa', bg: 'rgba(255,255,255,0.05)' };
+            };
+            activityList.innerHTML = '';
+            logs.forEach(log => {
+                const conf = getIconConfig(log.message);
+                const time = log.createdAt ? new Date(log.createdAt).toLocaleString('tr-TR') : '-';
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div class="act-info">
+                        <div class="act-icon" style="color:${conf.color};background:${conf.bg};">
+                            <i class="fas ${conf.icon}"></i>
+                        </div>
+                        <div class="act-text">
+                            <span class="act-user">${log.serviceName || 'Sistem'}</span>
+                            <span class="act-time">${time}</span>
+                        </div>
+                    </div>
+                    <div class="act-badge" style="color:${conf.color};font-size:0.9rem;font-weight:500;">
+                        ${log.message || '-'}
+                    </div>`;
+                activityList.appendChild(item);
+            });
+        } catch {
+            if (activityList) activityList.innerHTML = '<div style="color:var(--text-secondary);padding:10px">Aktivite verileri yüklenemedi.</div>';
+        }
+    }
 
-        activities.forEach(act => {
-            const conf = getIconConfig(act.type);
-            const item = document.createElement('div');
-            item.className = 'activity-item';
-            item.innerHTML = `
-                <div class="act-info">
-                    <div class="act-icon" style="color: ${conf.color}; background: ${conf.bg};">
-                        <i class="fas ${conf.icon}"></i>
-                    </div>
-                    <div class="act-text">
-                        <span class="act-user">${act.user}</span>
-                        <span class="act-time">${act.time}</span>
-                    </div>
-                </div>
-                <div class="act-badge" style="color: ${conf.color}; font-size: 0.9rem; font-weight: 500;">
-                    ${act.action}
-                </div>
-            `;
-            activityList.appendChild(item);
-        });
+    // 5. İstatistik kartlarını gerçek verilerle doldur
+    function updateStatCards(users) {
+        const total = users.length;
+        const admins = users.filter(u => translateRole(u.role) === 'Admin').length;
+        const members = users.filter(u => translateRole(u.role) === 'Üye').length;
+        const totalEl = document.getElementById('statTotalUsers');
+        const adminEl = document.getElementById('statAdminCount');
+        const memberEl = document.getElementById('statMemberCount');
+        if (totalEl) totalEl.textContent = total;
+        if (adminEl) adminEl.textContent = admins;
+        if (memberEl) memberEl.textContent = members;
+    }
+
+    // Patch renderUsersTable to also update stats
+    const _originalRender = renderUsersTable;
+    function renderUsersTable(users) {
+        _originalRender(users);
+        updateStatCards(users);
     }
 
     // Load users on startup
-    fetchUsers();
+    fetchUsers().then(() => updateStatCards(allUsers));
+    loadRecentActivity();
 });

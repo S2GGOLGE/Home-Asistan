@@ -1,4 +1,4 @@
-const API_BASE_URL_SIGNUP = 'https://localhost:7201/api/signup';
+const API_BASE_URL_SIGNUP = (window.location.protocol === 'file:') ? 'https://localhost:7201/api/signup' : `${window.location.origin}/api/signup`;
 
 async function registerUser(username, email, password, passwordRepeat) {
     try {

@@ -1,4 +1,4 @@
-const BACKEND_URL = "https://localhost:7201/api/DeviceRegistration";
+const BACKEND_URL = (window.location.protocol === 'file:') ? 'https://localhost:7201/api/DeviceRegistration' : `${window.location.origin}/api/DeviceRegistration`;
 
 async function ekle() {
   const nameInput = document.getElementById("device-name");

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HomeOS Bildirim Merkezi - Tüm bildirimlerinizi yönetin">
+    <title>HomeOS - Bildirimler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/style.css">
+    <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
+    <style>
+        .notif-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .notif-stat {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .notif-stat-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .notif-stat-icon.green { background: rgba(0,255,136,0.12); color: var(--accent-green); }
+        .notif-stat-icon.red { background: rgba(255,68,68,0.12); color: #ff4444; }
+        .notif-stat-icon.blue { background: rgba(0,150,255,0.12); color: #0096ff; }
+        .notif-stat-icon.orange { background: rgba(255,136,0,0.12); color: #ff8800; }
+        .notif-stat-icon.purple { background: rgba(150,80,255,0.12); color: #9650ff; }
+        .notif-stat-num { font-size: 24px; font-weight: 800; }
+        .notif-stat-lbl { font-size: 11px; color: var(--text-secondary); }
+        /* Toolbar */
+        .notif-toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .notif-toolbar input, .notif-toolbar select {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-line);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 8px 14px;
+            font-size: 13px;
+        }
+        .notif-toolbar input { flex: 1; min-width: 180px; }
+        .btn-sm {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-line);
+            background: var(--bg-panel);
+            color: var(--text-primary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-sm:hover { background: var(--bg-inner); }
+        .btn-sm.danger { border-color: #ff4444; color: #ff4444; }
+        .btn-sm.success { border-color: var(--accent-green); color: var(--accent-green); }
+        /* Notification List */
+        .notif-list { display: flex; flex-direction: column; gap: 10px; }
+        .notif-item {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-line);
+            border-left: 4px solid var(--border-line);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: border-color 0.2s, opacity 0.2s;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .notif-item.unread { background: rgba(0,255,136,0.04); }
+        .notif-item.priority-critical { border-left-color: #ff4444; }
+        .notif-item.priority-warning { border-left-color: #ff8800; }
+        .notif-item.priority-info { border-left-color: #0096ff; }
+        .notif-item.priority-success { border-left-color: var(--accent-green); }
+        .notif-item.read { opacity: 0.65; }
+        .notif-icon {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .notif-icon.critical { background: rgba(255,68,68,0.15); color: #ff4444; }
+        .notif-icon.warning { background: rgba(255,136,0,0.15); color: #ff8800; }
+        .notif-icon.info { background: rgba(0,150,255,0.15); color: #0096ff; }
+        .notif-icon.success { background: rgba(0,255,136,0.15); color: var(--accent-green); }
+        .notif-body { flex: 1; }
+        .notif-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+        .notif-msg { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+        .notif-footer { display: flex; gap: 14px; margin-top: 8px; font-size: 11px; color: var(--text-secondary); align-items: center; }
+        .notif-tag { padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+        .notif-tag.device { background: rgba(0,150,255,0.15); color: #0096ff; }
+        .notif-tag.security { background: rgba(255,68,68,0.15); color: #ff4444; }
+        .notif-tag.automation { background: rgba(150,80,255,0.15); color: #9650ff; }
+        .notif-tag.system { background: rgba(255,136,0,0.15); color: #ff8800; }
+        .notif-tag.sensor { background: rgba(0,255,136,0.15); color: var(--accent-green); }
+        .notif-actions { display: flex; gap: 8px; margin-left: auto; }
+        .notif-action-btn {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border-line);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .notif-action-btn:hover { background: var(--bg-inner); color: var(--text-primary); }
+        .notif-action-btn.delete-btn:hover { border-color: #ff4444; color: #ff4444; }
+        .unread-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .section-header h2 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .badge-count {
+            background: var(--accent-green);
+            color: #000;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        .empty-state i { font-size: 48px; margin-bottom: 16px; opacity: 0.3; display: block; }
+    </style>
+</head>
+<body>
+    <div id="loader-overlay">
+        <div class="loader-ring"></div>
+        <div class="loader-title">Bildi<span>rimler</span></div>
+        <div class="loader-subtitle" id="loader-text">Bildirimler Yükleniyor...</div>
+        <div class="loader-percentage" id="loader-percentage">0%</div>
+        <div class="loader-bar-wrap">
+            <div class="loader-bar" id="loader-bar"></div>
+        </div>
+    </div>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar collapsed" id="sidebar">
+            <div class="logo-area">
+                <div class="logo">EV ASİSTANI</div>
+                <div class="version">Sürüm 1.0.0</div>
+            </div>
+            <nav>
+                <a href="/Fronted/Pages/index.html"><i class="fas fa-chart-pie"></i> Gösterge Paneli</a>
+                <a href="/Fronted/Pages/Cihazlar.html"><i class="fas fa-lightbulb"></i> Cihazlar</a>
+                <a href="/Fronted/Pages/Odalar.html"><i class="fas fa-door-open"></i> Odalar</a>
+                <a href="/Fronted/Pages/otomasyonlar.html"><i class="fas fa-bolt"></i> Otomasyonlar</a>
+                <a href="/Fronted/Pages/Jarvis.html"><i class="fas fa-robot"></i> Jarvis</a>
+                <a href="/Fronted/Pages/Kameralar.html"><i class="fas fa-video"></i> Kameralar</a>
+                <a href="/Fronted/Pages/Sensorler.html"><i class="fas fa-microchip"></i> Sensörler</a>
+                <a href="#" class="active"><i class="fas fa-bell"></i> Bildirimler</a>
+                <a href="/Fronted/Pages/KullaniciYonetimi.html"><i class="fas fa-users"></i> Kullanıcılar</a>
+                <a href="/Fronted/Pages/RolYonetimi.html"><i class="fas fa-shield-alt"></i> Rol Yönetimi</a>
+                <a href="/Fronted/Pages/SistemIzleme.html"><i class="fas fa-desktop"></i> Sistem İzleme</a>
+                <a href="/Fronted/Pages/Loglar.html"><i class="fas fa-terminal"></i> Loglar</a>
+                <a href="/Fronted/Pages/DenetimLoglari.html"><i class="fas fa-shield-check"></i> Denetim Logları</a>
+                <a href="/Fronted/Pages/ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="/Fronted/Pages/Profil.html"><i class="fas fa-user-circle"></i> Profil</a>
+            </nav>
+            <button type="button" class="auth-action sidebar-auth-action" id="authActionBtn">
+                <i class="fas fa-sign-in-alt"></i> <span>Giriş Yap</span>
+            </button>
+        </aside>
+
+        <!-- Main -->
+        <main class="content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div>
+                        <h1><i class="fas fa-bell"></i> Bildirimler</h1>
+                        <p>Sistem bildirimleri ve uyarıları merkezi</p>
+                    </div>
+                </div>
+                <div class="topbar-right" style="display:flex;gap:8px;align-items:center;">
+                    <button class="btn-sm success" id="markAllReadBtn"><i class="fas fa-check-double"></i> Tümünü Okundu</button>
+                    <button class="btn-sm danger" id="clearAllBtn"><i class="fas fa-trash-alt"></i> Tümünü Sil</button>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="notif-stats">
+                <div class="notif-stat">
+                    <div class="notif-stat-icon blue"><i class="fas fa-bell"></i></div>
+                    <div>
+                        <div class="notif-stat-num" id="stat-total">0</div>
+                        <div class="notif-stat-lbl">Toplam</div>
+                    </div>
+                </div>
+                <div class="notif-stat">
+                    <div class="notif-stat-icon green"><i class="fas fa-circle"></i></div>
+                    <div>
+                        <div class="notif-stat-num" id="stat-unread">0</div>
+                        <div class="notif-stat-lbl">Okunmamış</div>
+                    </div>
+                </div>
+                <div class="notif-stat">
+                    <div class="notif-stat-icon red"><i class="fas fa-skull-crossbones"></i></div>
+                    <div>
+                        <div class="notif-stat-num" id="stat-critical">0</div>
+                        <div class="notif-stat-lbl">Kritik</div>
+                    </div>
+                </div>
+                <div class="notif-stat">
+                    <div class="notif-stat-icon orange"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div>
+                        <div class="notif-stat-num" id="stat-warning">0</div>
+                        <div class="notif-stat-lbl">Uyarı</div>
+                    </div>
+                </div>
+                <div class="notif-stat">
+                    <div class="notif-stat-icon purple"><i class="fas fa-robot"></i></div>
+                    <div>
+                        <div class="notif-stat-num" id="stat-automation">0</div>
+                        <div class="notif-stat-lbl">Otomasyon</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="notif-toolbar">
+                <input type="text" id="searchInput" placeholder="🔍 Bildirim ara...">
+                <select id="filterPriority">
+                    <option value="">Tüm Öncelikler</option>
+                    <option value="critical">Kritik</option>
+                    <option value="warning">Uyarı</option>
+                    <option value="info">Bilgi</option>
+                    <option value="success">Başarı</option>
+                </select>
+                <select id="filterCategory">
+                    <option value="">Tüm Kategoriler</option>
+                    <option value="device">Cihaz</option>
+                    <option value="security">Güvenlik</option>
+                    <option value="automation">Otomasyon</option>
+                    <option value="system">Sistem</option>
+                    <option value="sensor">Sensör</option>
+                </select>
+                <select id="filterRead">
+                    <option value="">Tümü</option>
+                    <option value="unread">Okunmamış</option>
+                    <option value="read">Okunmuş</option>
+                </select>
+            </div>
+
+            <!-- List -->
+            <div class="section-header">
+                <h2><i class="fas fa-list"></i> Bildirim Listesi <span class="badge-count" id="listCount">0</span></h2>
+            </div>
+            <div class="notif-list" id="notifList">
+                <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>Bildirim yükleniyor...</p>
+                </div>
+            </div>
+
+            <footer>
+                <p>Ev Asistanı © 2026 · Bildirim Merkezi</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="/Fronted/Js/auth.js"></script>
+    <script src="/Fronted/Js/bildirimler.js"></script>
+</body>
+</html>

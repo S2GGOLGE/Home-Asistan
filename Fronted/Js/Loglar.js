@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Home Asistan: Log & Veritabanı Arayüzü Başlatıldı.');
+    console.log('HomeOS: Advanced Logging & Monitoring System Initialized.');
 
     // ══════════════════════════════
     //  DOM ELEMENTLERİ
@@ -16,96 +16,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabContents = document.querySelectorAll('.tab-content');
     const searchInput = document.getElementById('search-input');
     const refreshBtn = document.getElementById('refresh-btn');
+    const archiveBtn = document.getElementById('archive-btn');
+    const testCriticalBtn = document.getElementById('test-critical-btn');
     
     // Filtreler
     const filterLogLevel = document.getElementById('filter-log-level');
-    const filterDeviceType = document.getElementById('filter-device-type');
+    const filterEventType = document.getElementById('filter-event-type');
+    const filterService = document.getElementById('filter-service');
+    const filterFrom = document.getElementById('filter-from');
+    const filterTo = document.getElementById('filter-to');
+    const filterArchived = document.getElementById('filter-archived');
+    const clearFiltersBtn = document.getElementById('clear-filters-btn');
+    const applyFiltersBtn = document.getElementById('apply-filters-btn');
 
-    // Sayaçlar
-    const countTotalLogs = document.getElementById('count-total-logs');
-    const countErrorLogs = document.getElementById('count-error-logs');
-    const countTotalDevices = document.getElementById('count-total-devices');
-    const countTotalUsers = document.getElementById('count-total-users');
+    // Dashboard Widget Sayaçları
+    const dashTotal = document.getElementById('dash-total');
+    const dashCritical = document.getElementById('dash-critical');
+    const dashError = document.getElementById('dash-error');
+    const dashWarning = document.getElementById('dash-warning');
+    const dashCrash = document.getElementById('dash-crash');
+    const dashRestarts = document.getElementById('dash-restarts');
 
-    // Tablo Gövdeleri
+    // Tablolar
     const logsTableBody = document.getElementById('logs-table-body');
     const devicesTableBody = document.getElementById('devices-table-body');
     const usersTableBody = document.getElementById('users-table-body');
     const commandsTableBody = document.getElementById('commands-table-body');
 
-    // API Bağlantı Adresleri (C# Backend Port: 7201)
-    const API_BASE = "https://localhost:7201/api";
-    const ENDPOINTS = {
-        devices: `${API_BASE}/Listing`,
-        logs: `${API_BASE}/Logs`,
-        users: `${API_BASE}/Users`,
-        commands: `${API_BASE}/Commands`
-    };
+    // Stack Trace Modal
+    const stacktraceModal = document.getElementById('stacktrace-modal');
+    const stacktraceContent = document.getElementById('stacktrace-content');
+    const closeStacktrace = document.getElementById('close-stacktrace');
 
-    // Bellekteki Veriler (Arama ve Filtreleme İçin)
-    let state = {
-        logs: [],
-        devices: [],
-        users: [],
-        commands: []
-    };
+    // SignalR Göstergeleri
+    const liveDot = document.getElementById('live-dot');
+    const liveLabel = document.getElementById('live-label');
 
-    // Sayfalama (Pagination) Durumları
-    let logPage = 1;
-    const logsPerPage = 100;
-    const logsPaginationContainer = document.getElementById('logs-pagination');
+    // API Bağlantı Adresi (Dinamik Host Çözümleme)
+    const API_BASE = (window.location.protocol === 'file:') ? 'https://localhost:7201/api' : `${window.location.origin}/api`;
+    const SIGNALR_HUB_URL = (window.location.protocol === 'file:') ? 'https://localhost:7201/hubs/logs' : `${window.location.origin}/hubs/logs`;
 
-    // SQL Server'dan Az Önce Çektiğimiz Gerçek Verilerin Simülasyon Fallback'i
-    // (Arka planda C# backend kapalıyken bile arayüzün boş kalmaması için harika bir yedek mekanizma)
-    const fallbackData = {
-        devices: [
-            { id: 2, name: "Deneme", type: "1.0.0", status: true, createdAt: "2026-06-16 12:00:00" },
-            { id: 3, name: "Deneme2", type: "1.0.0", status: true, createdAt: "2026-06-16 12:05:00" },
-            { id: 4, name: "Balkon Kamera", type: "1.0.0", status: true, createdAt: "2026-06-16 12:10:00" },
-            { id: 5, name: "Mutfak Lambası", type: "1.0.0", status: true, createdAt: "2026-06-16 12:15:00" },
-            { id: 6, name: "Yangın Sensor", type: "sensor", status: true, createdAt: "2026-06-16 12:20:00" }
-        ],
-        logs: [
-            { id: 105, level: "INFO", message: "Cihaz listesi başarıyla getirildi. Toplam 5 cihaz döndü.", source: "DeviceListing", createdAt: "2026-06-16 16:30:15" },
-            { id: 104, level: "INFO", message: "Cihaz listesi isteği alındı.", source: "DeviceListing", createdAt: "2026-06-16 16:30:14" },
-            { id: 103, level: "INFO", message: "Uygulama başarıyla ayağa kalktı. https://localhost:7201", source: "Program", createdAt: "2026-06-16 16:20:01" },
-            { id: 102, level: "INFO", message: "Development ortamı algılandı. OpenAPI aktif.", source: "Program", createdAt: "2026-06-16 16:20:00" },
-            { id: 101, level: "WARN", message: "Geçersiz veya eksik cihaz verisi geldi.", source: "DeviceStatusUpdate", createdAt: "2026-06-16 16:22:10" }
-        ],
-        users: [],
-        commands: []
-    };
+    // Bellekteki veri durumları
+    let logsList = [];
+    let devicesList = [];
+    let usersList = [];
+    let commandsList = [];
+    
+    let currentPage = 1;
+    const pageSize = 100;
+    const paginationContainer = document.getElementById('logs-pagination');
 
     // ══════════════════════════════
-    //  DİNAMİK LOADER MOTORU
+    //  DİNAMİK YÜKLEME SİMÜLASYONU
     // ══════════════════════════════
-    const loadingStates = [
-        { limit: 30, text: "Veritabanı bağlantısı doğrulanıyor..." },
-        { limit: 65, text: "Tablo şemaları yükleniyor..." },
-        { limit: 90, text: "Günlük kayıtları analiz ediliyor..." },
-        { limit: 100, text: "Sistem Hazır!" }
-    ];
-
     let progress = 0;
     const runLoader = () => {
         const loadInterval = setInterval(() => {
-            const increment = Math.floor(Math.random() * 10) + 5;
-            progress += increment;
-
+            progress += Math.floor(Math.random() * 8) + 4;
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(loadInterval);
                 terminateLoader();
             }
-
             if (loaderBar) loaderBar.style.width = `${progress}%`;
             if (loaderPercentage) loaderPercentage.textContent = `${progress}%`;
-
-            const activeState = loadingStates.find(state => progress <= state.limit);
-            if (activeState && loaderText) {
-                loaderText.textContent = activeState.text;
-            }
-        }, 40);
+        }, 30);
     };
 
     const terminateLoader = () => {
@@ -114,11 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 loaderOverlay.classList.add('fade-out');
                 loaderOverlay.addEventListener('transitionend', () => {
                     loaderOverlay.remove();
-                    // Loader bittikten sonra ilk yüklemeyi yap
-                    loadAllData();
+                    // İlk veri çekme işlemini tetikle
+                    initializeSystem();
                 });
             }
-        }, 300);
+        }, 200);
     };
 
     runLoader();
@@ -138,14 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ══════════════════════════════
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
-            logPage = 1;
             const targetTab = button.getAttribute('data-tab');
             
-            // Aktif butonu değiştir
             tabButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
-            // Aktif içeriği değiştir
             tabContents.forEach(content => {
                 content.classList.remove('active');
                 if (content.id === `${targetTab}-tab`) {
@@ -153,385 +125,458 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Filtre araç çubuklarını aktif taba göre göster/gizle
-            toggleFilterVisibility(targetTab);
-
-            // Arama filtresini sıfırla ve yeniden uygula
-            searchInput.value = '';
-            renderAll();
+            renderTab(targetTab);
         });
     });
 
-    function toggleFilterVisibility(tab) {
-        if (filterLogLevel) {
-            filterLogLevel.style.display = (tab === 'logs') ? 'block' : 'none';
-        }
-        if (filterDeviceType) {
-            filterDeviceType.style.display = (tab === 'devices') ? 'block' : 'none';
+    // ══════════════════════════════
+    //  SİSTEMİ BAŞLATMA
+    // ══════════════════════════════
+    function initializeSystem() {
+        fetchDashboardStats();
+        fetchLogs();
+        fetchDevices();
+        fetchUsers();
+        fetchCommands();
+        initializeSignalR();
+    }
+
+    // ══════════════════════════════
+    //  API KONTROLLERİ VE VERİ ÇEKME
+    // ══════════════════════════════
+
+    // 1. Dashboard istatistiklerini getir
+    async function fetchDashboardStats() {
+        try {
+            const res = await fetch(`${API_BASE}/SystemLogs/dashboard`);
+            if (res.ok) {
+                const stats = await res.json();
+                dashTotal.textContent = stats.totalLogs ?? 0;
+                dashCritical.textContent = stats.criticalCount ?? 0;
+                dashError.textContent = stats.errorCount ?? 0;
+                dashWarning.textContent = stats.warningCount ?? 0;
+                dashCrash.textContent = stats.crashCount ?? 0;
+                dashRestarts.textContent = stats.todayRestarts ?? 0;
+            }
+        } catch (err) {
+            console.error('Dashboard stats error:', err);
         }
     }
 
-    // İlk açılışta filtrelerin görünürlüğü
-    toggleFilterVisibility('logs');
-
-    // ══════════════════════════════
-    //  VERİLERİ API'DEN YÜKLEME
-    // ══════════════════════════════
-    async function loadAllData() {
-        console.log("Veriler yükleniyor...");
+    // 2. Sistem Loglarını Getir
+    async function fetchLogs() {
+        if (logsTableBody) {
+            logsTableBody.innerHTML = '<tr><td colspan="8" class="empty-row"><i class="fas fa-circle-notch fa-spin"></i> Veriler yükleniyor...</td></tr>';
+        }
         
-        // Cihazları getir
         try {
-            const res = await fetch(ENDPOINTS.devices);
-            if (res.ok) state.devices = await res.json();
-            else throw new Error("Cihaz endpoint hatası");
-        } catch (e) {
-            console.warn("Cihazlar API yüklemesi başarısız, fallback uygulanıyor.", e);
-            state.devices = [...fallbackData.devices];
+            // Filtre query parametrelerini oluştur
+            const params = new URLSearchParams();
+            params.append('page', currentPage);
+            params.append('pageSize', pageSize);
+            
+            if (filterLogLevel && filterLogLevel.value) params.append('logLevel', filterLogLevel.value);
+            if (filterEventType && filterEventType.value) params.append('eventType', filterEventType.value);
+            if (filterService && filterService.value) params.append('serviceName', filterService.value);
+            if (filterFrom && filterFrom.value) params.append('from', filterFrom.value);
+            if (filterTo && filterTo.value) params.append('to', filterTo.value);
+            if (filterArchived) params.append('includeArchived', filterArchived.checked ? 'true' : 'false');
+            
+            const res = await fetch(`${API_BASE}/SystemLogs?${params.toString()}`);
+            if (res.ok) {
+                logsList = await res.json();
+                populateServiceDropdown(logsList);
+                renderLogsTable();
+            } else {
+                throw new Error("API hatası");
+            }
+        } catch (err) {
+            console.error('Fetch logs error:', err);
+            logsTableBody.innerHTML = '<tr><td colspan="8" class="empty-row text-danger"><i class="fas fa-exclamation-triangle"></i> Loglar yüklenemedi. Sunucu bağlantısını kontrol edin.</td></tr>';
         }
-
-        // Logları getir
-        try {
-            const res = await fetch(ENDPOINTS.logs);
-            if (res.ok) state.logs = await res.json();
-            else throw new Error("Log endpoint hatası");
-        } catch (e) {
-            console.warn("Loglar API yüklemesi başarısız, fallback uygulanıyor.", e);
-            state.logs = [...fallbackData.logs];
-        }
-
-        // Kullanıcıları getir
-        try {
-            const res = await fetch(ENDPOINTS.users);
-            if (res.ok) state.users = await res.json();
-            else throw new Error("Kullanıcı endpoint hatası");
-        } catch (e) {
-            console.warn("Kullanıcılar API yüklemesi başarısız, fallback uygulanıyor.", e);
-            state.users = [...fallbackData.users];
-        }
-
-        // Komutları getir
-        try {
-            const res = await fetch(ENDPOINTS.commands);
-            if (res.ok) state.commands = await res.json();
-            else throw new Error("Komut endpoint hatası");
-        } catch (e) {
-            console.warn("Komutlar API yüklemesi başarısız, fallback uygulanıyor.", e);
-            state.commands = [...fallbackData.commands];
-        }
-
-        // Sayaçları güncelle ve ekrana bas
-        updateStats();
-        renderAll();
     }
 
-    // ══════════════════════════════
-    //  SAYAÇLARI GÜNCELLEME
-    // ══════════════════════════════
-    function updateStats() {
-        if (countTotalLogs) countTotalLogs.textContent = state.logs.length;
-        if (countTotalDevices) countTotalDevices.textContent = state.devices.length;
-        if (countTotalUsers) countTotalUsers.textContent = state.users.length;
+    // Servis listesini loglardan toplayarak dropdown'ı doldurur
+    function populateServiceDropdown(logs) {
+        if (!filterService) return;
+        const currentVal = filterService.value;
+        const services = new Set();
+        logs.forEach(log => {
+            if (log.serviceName) services.add(log.serviceName);
+        });
         
-        const errorCount = state.logs.filter(log => 
-            log.Level === 'ERROR' || log.Level === 'FATAL' || 
-            log.level === 'ERROR' || log.level === 'FATAL'
-        ).length;
-        if (countErrorLogs) countErrorLogs.textContent = errorCount;
+        filterService.innerHTML = '<option value="">Tüm Servisler</option>';
+        Array.from(services).sort().forEach(service => {
+            filterService.innerHTML += `<option value="${service}">${service}</option>`;
+        });
+        filterService.value = currentVal;
     }
 
-    // Helper: pascal ya da camelCase veriyi okumak için
-    function getVal(obj, ...keys) {
-        for (const key of keys) {
-            if (obj[key] !== undefined && obj[key] !== null) return obj[key];
+    // 3. Cihazları Getir
+    async function fetchDevices() {
+        try {
+            const res = await fetch(`${API_BASE}/Listing`);
+            if (res.ok) {
+                devicesList = await res.json();
+                renderDevicesTable();
+            }
+        } catch (err) {
+            console.error('Fetch devices error:', err);
         }
-        return "";
+    }
+
+    // 4. Kullanıcıları Getir
+    async function fetchUsers() {
+        try {
+            const res = await fetch(`${API_BASE}/Users`);
+            if (res.ok) {
+                usersList = await res.json();
+                renderUsersTable();
+            }
+        } catch (err) {
+            console.error('Fetch users error:', err);
+        }
+    }
+
+    // 5. Jarvis Komut Geçmişini Getir
+    async function fetchCommands() {
+        try {
+            const res = await fetch(`${API_BASE}/Commands`);
+            if (res.ok) {
+                commandsList = await res.json();
+                renderCommandsTable();
+            }
+        } catch (err) {
+            console.error('Fetch commands error:', err);
+        }
     }
 
     // ══════════════════════════════
-    //  RENDER MOTORU (TABLOLAR)
+    //  GERÇEK ZAMANLI LOG AKIŞI (SignalR)
     // ══════════════════════════════
-    
+    let hubConnection;
+    function initializeSignalR() {
+        if (typeof signalR === 'undefined') {
+            console.warn('SignalR kütüphanesi yüklenemedi.');
+            if (liveLabel) liveLabel.textContent = 'Bağlantı Yok';
+            return;
+        }
+
+        hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl(SIGNALR_HUB_URL)
+            .withAutomaticReconnect()
+            .build();
+
+        hubConnection.on("NewLog", (log) => {
+            // Ekrana canlı yeni log ekle
+            console.log('[SignalR Live Log]:', log);
+            
+            // Eğer aktif tab systemlogs ise ve filtreler eşleşiyorsa tabloya en başa ekle
+            if (document.querySelector('.tab-btn.active').getAttribute('data-tab') === 'systemlogs') {
+                // Arama ve filtre eşleme kontrolü
+                if (matchesCurrentFilters(log)) {
+                    logsList.unshift(log);
+                    if (logsList.length > pageSize) logsList.pop();
+                    renderLogsTable();
+                }
+            }
+            // Dashboard widgetlarını güncelle
+            fetchDashboardStats();
+        });
+
+        hubConnection.start()
+            .then(() => {
+                console.log('SignalR connected to LogHub.');
+                if (liveDot) liveDot.style.background = '#00FF88';
+                if (liveLabel) liveLabel.textContent = 'Canlı Akış Aktif';
+                // Abone ol
+                hubConnection.invoke("Subscribe").catch(err => console.error(err));
+            })
+            .catch(err => {
+                console.error('SignalR connection failed:', err);
+                if (liveDot) liveDot.style.background = '#FF3B30';
+                if (liveLabel) liveLabel.textContent = 'Çevrimdışı';
+            });
+
+        hubConnection.onclose(() => {
+            if (liveDot) liveDot.style.background = '#FF3B30';
+            if (liveLabel) liveLabel.textContent = 'Bağlantı Kesildi';
+        });
+    }
+
+    function matchesCurrentFilters(log) {
+        if (filterLogLevel && filterLogLevel.value && log.logLevel !== filterLogLevel.value) return false;
+        if (filterEventType && filterEventType.value && log.eventType !== filterEventType.value) return false;
+        if (filterService && filterService.value && log.serviceName !== filterService.value) return false;
+        return true;
+    }
+
+    // ══════════════════════════════
+    //  RENDER TABLOLARI
+    // ══════════════════════════════
+
     // 1. Logs Tablosu
-    function renderLogs() {
+    function renderLogsTable() {
         if (!logsTableBody) return;
         logsTableBody.innerHTML = '';
 
-        const search = searchInput.value.toLowerCase();
-        const levelFilter = filterLogLevel ? filterLogLevel.value : 'all';
-
-        const filtered = state.logs.filter(log => {
-            const level = getVal(log, 'level', 'Level').toLowerCase();
-            const msg = getVal(log, 'message', 'Message').toLowerCase();
-            const src = getVal(log, 'source', 'Source').toLowerCase();
-            
-            const matchesSearch = msg.includes(search) || src.includes(search) || level.includes(search);
-            const matchesFilter = (levelFilter === 'all') || (level === levelFilter.toLowerCase());
-
-            return matchesSearch && matchesFilter;
+        const search = searchInput ? searchInput.value.toLowerCase() : '';
+        const filtered = logsList.filter(log => {
+            const msg = (log.message || '').toLowerCase();
+            const srv = (log.serviceName || '').toLowerCase();
+            return msg.includes(search) || srv.includes(search);
         });
 
         if (filtered.length === 0) {
-            logsTableBody.innerHTML = `<tr><td colspan="5" class="empty-state"><i class="fas fa-search"></i><p>Arama kriterine uygun günlük kaydı bulunamadı.</p></td></tr>`;
-            if (logsPaginationContainer) logsPaginationContainer.innerHTML = '';
+            logsTableBody.innerHTML = '<tr><td colspan="8" class="empty-row">Eşleşen sistem günlüğü bulunamadı.</td></tr>';
             return;
         }
 
-        const totalItems = filtered.length;
-        const totalPages = Math.ceil(totalItems / logsPerPage);
-
-        if (logPage > totalPages) logPage = totalPages;
-        if (logPage < 1) logPage = 1;
-
-        const startIndex = (logPage - 1) * logsPerPage;
-        const endIndex = Math.min(startIndex + logsPerPage, totalItems);
-        const paginatedLogs = filtered.slice(startIndex, endIndex);
-
-        paginatedLogs.forEach(log => {
-            const id = getVal(log, 'id', 'Id');
-            const level = getVal(log, 'level', 'Level');
-            const message = getVal(log, 'message', 'Message');
-            const source = getVal(log, 'source', 'Source');
-            const time = getVal(log, 'createdAt', 'CreatedAt') || '-';
-
-            const badgeClass = `log-badge ${level.toLowerCase()}`;
+        filtered.forEach((log, index) => {
+            const isCriticalOrError = log.logLevel === 'Critical' || log.logLevel === 'Error';
+            const trClass = isCriticalOrError ? 'error-row' : '';
+            const stackTraceIcon = log.stackTrace ? `<button class="btn-stack" data-index="${index}"><i class="fas fa-bug text-danger"></i> Trace</button>` : '';
 
             logsTableBody.innerHTML += `
-                <tr>
-                    <td class="mono">${id}</td>
-                    <td><span class="${badgeClass}">${level}</span></td>
-                    <td>${message}</td>
-                    <td><strong>${source}</strong></td>
-                    <td class="mono">${time}</td>
+                <tr class="${trClass}">
+                    <td class="mono">${log.id ?? (index + 1)}</td>
+                    <td><span class="log-badge ${String(log.logLevel).toLowerCase()}">${log.logLevel}</span></td>
+                    <td><span class="event-badge">${log.eventType}</span></td>
+                    <td><strong>${log.serviceName}</strong></td>
+                    <td class="log-msg">${log.message} ${stackTraceIcon}</td>
+                    <td class="mono">${log.userId ?? '-'}</td>
+                    <td class="mono">${log.ipAddress ?? '-'}</td>
+                    <td class="mono">${log.createdAt}</td>
                 </tr>
             `;
         });
 
-        renderLogsPagination(totalItems, totalPages);
+        // Stack Trace buton olaylarını bağla
+        document.querySelectorAll('.btn-stack').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(btn.getAttribute('data-index'), 10);
+                const log = filtered[idx];
+                if (log && log.stackTrace) {
+                    showStackTrace(log.message, log.stackTrace);
+                }
+            });
+        });
+
+        renderPagination(filtered.length);
     }
 
-    function renderLogsPagination(totalItems, totalPages) {
-        if (!logsPaginationContainer) return;
-        logsPaginationContainer.innerHTML = '';
+    function renderPagination(totalItems) {
+        if (!paginationContainer) return;
+        paginationContainer.innerHTML = '';
 
-        if (totalPages <= 1) {
-            return;
-        }
+        if (totalItems <= pageSize && currentPage === 1) return;
 
-        const startIndex = (logPage - 1) * logsPerPage + 1;
-        const endIndex = Math.min(startIndex + logsPerPage, totalItems);
-        
+        const totalPages = Math.ceil(totalItems / pageSize) || 1;
+
         const infoSpan = document.createElement('span');
         infoSpan.className = 'pagination-info';
-        infoSpan.textContent = `${startIndex}-${endIndex} / ${totalItems} gösteriliyor`;
-        logsPaginationContainer.appendChild(infoSpan);
+        infoSpan.textContent = `Sayfa ${currentPage} / ${totalPages}`;
+        paginationContainer.appendChild(infoSpan);
 
-        // Önceki Sayfa butonu
         const prevBtn = document.createElement('button');
         prevBtn.className = 'pagination-btn';
         prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i> Geri';
-        prevBtn.disabled = logPage === 1;
+        prevBtn.disabled = currentPage === 1;
         prevBtn.addEventListener('click', () => {
-            logPage--;
-            renderLogs();
+            currentPage--;
+            fetchLogs();
         });
-        logsPaginationContainer.appendChild(prevBtn);
+        paginationContainer.appendChild(prevBtn);
 
-        // Sayfa Numaraları
-        for (let i = 1; i <= totalPages; i++) {
-            const pageBtn = document.createElement('button');
-            pageBtn.className = `pagination-btn ${logPage === i ? 'active' : ''}`;
-            pageBtn.textContent = i;
-            pageBtn.addEventListener('click', () => {
-                logPage = i;
-                renderLogs();
-            });
-            logsPaginationContainer.appendChild(pageBtn);
-        }
-
-        // Sonraki Sayfa butonu
         const nextBtn = document.createElement('button');
         nextBtn.className = 'pagination-btn';
         nextBtn.innerHTML = 'İleri <i class="fas fa-chevron-right"></i>';
-        nextBtn.disabled = logPage === totalPages;
+        nextBtn.disabled = currentPage >= totalPages;
         nextBtn.addEventListener('click', () => {
-            logPage++;
-            renderLogs();
+            currentPage++;
+            fetchLogs();
         });
-        logsPaginationContainer.appendChild(nextBtn);
+        paginationContainer.appendChild(nextBtn);
     }
 
-    // 2. Devices Tablosu
-    function renderDevices() {
+    // 2. Cihazlar Tablosu
+    function renderDevicesTable() {
         if (!devicesTableBody) return;
         devicesTableBody.innerHTML = '';
 
-        const search = searchInput.value.toLowerCase();
-        const typeFilter = filterDeviceType ? filterDeviceType.value : 'all';
-
-        const filtered = state.devices.filter(dev => {
-            const name = getVal(dev, 'name', 'Name', 'DeviceName', 'deviceName').toLowerCase();
-            const type = getVal(dev, 'type', 'Type', 'DeviceVersion', 'deviceVersion').toLowerCase();
-            
-            const matchesSearch = name.includes(search) || type.includes(search);
-            const matchesFilter = (typeFilter === 'all') || (type.includes(typeFilter.toLowerCase()));
-
-            return matchesSearch && matchesFilter;
-        });
-
-        if (filtered.length === 0) {
-            devicesTableBody.innerHTML = `<tr><td colspan="5" class="empty-state"><i class="fas fa-laptop"></i><p>Kayıtlı cihaz bulunamadı.</p></td></tr>`;
+        if (devicesList.length === 0) {
+            devicesTableBody.innerHTML = '<tr><td colspan="5" class="empty-row">Sistemde kayıtlı cihaz bulunamadı.</td></tr>';
             return;
         }
 
-        filtered.forEach(dev => {
-            const id = getVal(dev, 'id', 'Id');
-            const name = getVal(dev, 'name', 'Name', 'DeviceName', 'deviceName');
-            const type = getVal(dev, 'type', 'Type', 'DeviceVersion', 'deviceVersion');
-            const status = getVal(dev, 'status', 'Status', 'Device_Status', 'device_Status');
-            const isOnline = status === true;
-            
-            const statusText = isOnline ? "ONLINE" : "OFFLINE";
-            const statusClass = isOnline ? "status-badge online" : "status-badge offline";
-            
-            // Basit icon
-            let icon = "fas fa-plug";
-            if (type.toLowerCase().includes("light") || type.toLowerCase().includes("lamba")) icon = "fas fa-lightbulb";
-            if (type.toLowerCase().includes("camera") || type.toLowerCase().includes("kamera")) icon = "fas fa-video";
-            if (type.toLowerCase().includes("sensor")) icon = "fas fa-microchip";
+        devicesList.forEach(dev => {
+            const isOnline = dev.status === true || dev.device_Status === true;
+            const badgeClass = isOnline ? 'status-badge online' : 'status-badge offline';
+            const badgeText = isOnline ? 'ONLINE' : 'OFFLINE';
 
             devicesTableBody.innerHTML += `
                 <tr>
-                    <td class="mono">${id}</td>
-                    <td><i class="${icon}" style="color: var(--accent-green); margin-right: 8px;"></i> ${name}</td>
-                    <td>${type}</td>
-                    <td><span class="${statusClass}">${statusText}</span></td>
-                    <td class="mono">-</td>
+                    <td class="mono">${dev.id}</td>
+                    <td><strong>${dev.name || dev.deviceName}</strong></td>
+                    <td>${dev.type || dev.deviceVersion || 'Cihaz'}</td>
+                    <td><span class="${badgeClass}">${badgeText}</span></td>
+                    <td class="mono">${dev.createdAt || '-'}</td>
                 </tr>
             `;
         });
     }
 
-    // 3. Users Tablosu
-    function renderUsers() {
+    // 3. Kullanıcılar Tablosu
+    function renderUsersTable() {
         if (!usersTableBody) return;
         usersTableBody.innerHTML = '';
 
-        const search = searchInput.value.toLowerCase();
-        
-        const filtered = state.users.filter(usr => {
-            const username = getVal(usr, 'username', 'Username').toLowerCase();
-            const email = getVal(usr, 'email', 'Email').toLowerCase();
-            const role = getVal(usr, 'role', 'Role').toLowerCase();
-            return username.includes(search) || email.includes(search) || role.includes(search);
-        });
-
-        if (filtered.length === 0) {
-            usersTableBody.innerHTML = `<tr><td colspan="5" class="empty-state"><i class="fas fa-users-slash"></i><p>Kullanıcı verisi bulunmamaktadır.</p></td></tr>`;
+        if (usersList.length === 0) {
+            usersTableBody.innerHTML = '<tr><td colspan="5" class="empty-row">Sistemde kullanıcı kaydı bulunamadı.</td></tr>';
             return;
         }
 
-        filtered.forEach(usr => {
-            const id = getVal(usr, 'id', 'Id');
-            const username = getVal(usr, 'username', 'Username');
-            const email = getVal(usr, 'email', 'Email') || '-';
-            const role = getVal(usr, 'role', 'Role') || 'Kullanıcı';
-            const time = getVal(usr, 'createdAt', 'CreatedAt') || '-';
-
+        usersList.forEach(usr => {
             usersTableBody.innerHTML += `
                 <tr>
-                    <td class="mono">${id}</td>
-                    <td><strong>${username}</strong></td>
-                    <td>${email}</td>
-                    <td><span class="status-badge online" style="background: rgba(0,255,136,0.1); color: var(--accent-green);">${role}</span></td>
-                    <td class="mono">${time}</td>
+                    <td class="mono">${usr.id}</td>
+                    <td><strong>${usr.username}</strong></td>
+                    <td>${usr.email || '-'}</td>
+                    <td><span class="role-badge user">${usr.role || 'Uye'}</span></td>
+                    <td class="mono">${usr.createdAt || '-'}</td>
                 </tr>
             `;
         });
     }
 
-    // 4. Commands Tablosu
-    function renderCommands() {
+    // 4. Komutlar Tablosu
+    function renderCommandsTable() {
         if (!commandsTableBody) return;
         commandsTableBody.innerHTML = '';
 
-        const search = searchInput.value.toLowerCase();
-
-        const filtered = state.commands.filter(cmd => {
-            const text = getVal(cmd, 'commandText', 'CommandText').toLowerCase();
-            const resp = getVal(cmd, 'responseText', 'ResponseText').toLowerCase();
-            const status = getVal(cmd, 'status', 'Status').toLowerCase();
-            return text.includes(search) || resp.includes(search) || status.includes(search);
-        });
-
-        if (filtered.length === 0) {
-            commandsTableBody.innerHTML = `<tr><td colspan="6" class="empty-state"><i class="fas fa-history"></i><p>Komut geçmişi kaydı bulunmamaktadır.</p></td></tr>`;
+        if (commandsList.length === 0) {
+            commandsTableBody.innerHTML = '<tr><td colspan="6" class="empty-row">Jarvis komut geçmişi bulunamadı.</td></tr>';
             return;
         }
 
-        filtered.forEach(cmd => {
-            const id = getVal(cmd, 'id', 'Id');
-            const uId = getVal(cmd, 'userId', 'UserId') || 'Sistem';
-            const text = getVal(cmd, 'commandText', 'CommandText');
-            const responseText = getVal(cmd, 'responseText', 'ResponseText') || '-';
-            const status = getVal(cmd, 'status', 'Status') || 'Bilinmiyor';
-            const time = getVal(cmd, 'createdAt', 'CreatedAt') || '-';
-
-            const statusClass = status.toLowerCase() === 'success' || status === 'True' || status === 'Başarılı' ? 'status-badge online' : 'status-badge offline';
+        commandsList.forEach(cmd => {
+            const isSuccess = cmd.status === 'Success' || cmd.status === 'True' || cmd.status === true;
+            const badgeClass = isSuccess ? 'status-badge online' : 'status-badge offline';
+            const badgeText = isSuccess ? 'Başarılı' : 'Hata';
 
             commandsTableBody.innerHTML += `
                 <tr>
-                    <td class="mono">${id}</td>
-                    <td class="mono">${uId}</td>
-                    <td><strong>"${text}"</strong></td>
-                    <td>${responseText}</td>
-                    <td><span class="${statusClass}">${status}</span></td>
-                    <td class="mono">${time}</td>
+                    <td class="mono">${cmd.id}</td>
+                    <td class="mono">${cmd.userId ?? 'Sistem'}</td>
+                    <td><strong>"${cmd.commandText}"</strong></td>
+                    <td>${cmd.responseText || '-'}</td>
+                    <td><span class="${badgeClass}">${badgeText}</span></td>
+                    <td class="mono">${cmd.createdAt || '-'}</td>
                 </tr>
             `;
         });
     }
 
-    // Hepsini render eden master tetikleyici
-    function renderAll() {
-        const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
-        if (activeTab === 'logs') renderLogs();
-        if (activeTab === 'devices') renderDevices();
-        if (activeTab === 'users') renderUsers();
-        if (activeTab === 'commands') renderCommands();
+    function renderTab(tab) {
+        currentPage = 1;
+        if (tab === 'systemlogs') fetchLogs();
+        if (tab === 'devices') fetchDevices();
+        if (tab === 'users') fetchUsers();
+        if (tab === 'commands') fetchCommands();
     }
 
     // ══════════════════════════════
-    //  OLAY DİNLEYİCİLERİ
+    //  STACK TRACE DIALOG
     // ══════════════════════════════
-    searchInput.addEventListener('input', () => {
-        logPage = 1;
-        renderAll();
-    });
-    if (filterLogLevel) {
-        filterLogLevel.addEventListener('change', () => {
-            logPage = 1;
-            renderAll();
+    function showStackTrace(msg, trace) {
+        if (!stacktraceModal || !stacktraceContent) return;
+        stacktraceContent.textContent = `Mesaj: ${msg}\n\nStack Trace:\n${trace}`;
+        stacktraceModal.classList.add('active');
+    }
+
+    if (closeStacktrace) {
+        closeStacktrace.addEventListener('click', () => {
+            stacktraceModal.classList.remove('active');
         });
     }
-    if (filterDeviceType) {
-        filterDeviceType.addEventListener('change', () => {
-            logPage = 1;
-            renderAll();
+    if (stacktraceModal) {
+        stacktraceModal.addEventListener('click', (e) => {
+            if (e.target === stacktraceModal) stacktraceModal.classList.remove('active');
         });
     }
-    
-    refreshBtn.addEventListener('click', () => {
-        refreshBtn.classList.add('fa-spin');
-        loadAllData().then(() => {
+
+    // ══════════════════════════════
+    //  FİLTRE EYLEMLERİ
+    // ══════════════════════════════
+    if (applyFiltersBtn) {
+        applyFiltersBtn.addEventListener('click', () => {
+            currentPage = 1;
+            fetchLogs();
+            fetchDashboardStats();
+        });
+    }
+
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', () => {
+            if (filterLogLevel) filterLogLevel.value = '';
+            if (filterEventType) filterEventType.value = '';
+            if (filterService) filterService.value = '';
+            if (filterFrom) filterFrom.value = '';
+            if (filterTo) filterTo.value = '';
+            if (filterArchived) filterArchived.checked = false;
+            if (searchInput) searchInput.value = '';
+            
+            currentPage = 1;
+            fetchLogs();
+            fetchDashboardStats();
+        });
+    }
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => {
+            refreshBtn.querySelector('i').classList.add('fa-spin');
+            initializeSystem();
             setTimeout(() => {
-                refreshBtn.classList.remove('fa-spin');
-                addTerminalLog("Veritabanı verileri manuel tetikleme ile yenilendi.", "success");
-            }, 500);
+                refreshBtn.querySelector('i').classList.remove('fa-spin');
+            }, 800);
         });
-    });
+    }
 
-    function addTerminalLog(msg, type = "info") {
-        console.log(`[LogPage] [${type.toUpperCase()}] ${msg}`);
+    // ══════════════════════════════
+    //  ARŞİV VE TEST TETİKLEYİCİLERİ
+    // ══════════════════════════════
+    if (archiveBtn) {
+        archiveBtn.addEventListener('click', async () => {
+            if (confirm("10.000'den eski logları arşivlemek istiyor musunuz?")) {
+                try {
+                    const res = await fetch(`${API_BASE}/SystemLogs/archive`, { method: 'POST' });
+                    if (res.ok) {
+                        alert("Eski loglar başarıyla arşivlendi.");
+                        fetchLogs();
+                        fetchDashboardStats();
+                    } else {
+                        alert("Arşivleme işlemi başarısız.");
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        });
+    }
+
+    if (testCriticalBtn) {
+        testCriticalBtn.addEventListener('click', async () => {
+            try {
+                const res = await fetch(`${API_BASE}/SystemLogs/test-critical`, { method: 'POST' });
+                if (res.ok) {
+                    alert("Kritik log tetiklendi. Canlı akışa düşecektir.");
+                } else {
+                    alert("Kritik log testi tetiklenemedi.");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
     }
 });

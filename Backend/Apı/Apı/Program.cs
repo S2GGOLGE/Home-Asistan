@@ -68,6 +68,22 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("HomeAsistan");
 app.UseAuthorization();
+
+// ── Static Files (Serve Y:\Home Asistan\Fronted) ──────────────────────────
+var frontedPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "..", "Fronted"));
+if (Directory.Exists(frontedPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(frontedPath),
+        RequestPath = "/Fronted"
+    });
+}
+else
+{
+    Console.WriteLine($"[WARNING] Fronted path not found at: {frontedPath}");
+}
+
 app.MapControllers();
 app.MapHub<LogHub>("/hubs/logs");   // ← SignalR gerçek zamanlı log endpoint'i
 

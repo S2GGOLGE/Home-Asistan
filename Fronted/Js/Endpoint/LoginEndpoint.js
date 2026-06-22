@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://localhost:7201/api';
+const API_BASE_URL = (window.location.protocol === 'file:') ? 'https://localhost:7201/api' : `${window.location.origin}/api`;
 
 async function loginUser(username, password) {
     try {

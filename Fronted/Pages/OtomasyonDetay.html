@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeOS - Otomasyon Detayı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/style.css">
+    <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-green);
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .automation-config-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-line);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            background: var(--bg-inner);
+            border: 1px solid var(--border-line);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .row-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .action-bar {
+            border-top: 1px solid var(--border-line);
+            padding-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .btn {
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-cancel {
+            background: #252525;
+            color: #ffffff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-save {
+            background: var(--accent-green);
+            color: #000000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar collapsed" id="sidebar">
+            <div class="logo">EV ASİSTANI</div>
+            <div class="version">Sürüm 1.0.0</div>
+            <nav>
+                <a href="/Fronted/Pages/index.html"><i class="fas fa-chart-pie"></i> Gösterge Paneli</a>
+                <a href="/Fronted/Pages/Cihazlar.html"><i class="fas fa-lightbulb"></i> Cihazlar</a>
+                <a href="/Fronted/Pages/Odalar.html"><i class="fas fa-door-open"></i> Odalar</a>
+                <a href="/Fronted/Pages/otomasyonlar.html" class="active"><i class="fas fa-bolt"></i> Otomasyonlar</a>
+                <a href="/Fronted/Pages/Jarvis.html"><i class="fas fa-robot"></i> Jarvis</a>
+                <a href="/Fronted/Pages/Kameralar.html"><i class="fas fa-video"></i> Kameralar</a>
+                <a href="/Fronted/Pages/Sensorler.html"><i class="fas fa-microchip"></i> Sensörler</a>
+                <a href="/Fronted/Pages/Bildirimler.html"><i class="fas fa-bell"></i> Bildirimler</a>
+                <a href="/Fronted/Pages/KullaniciYonetimi.html"><i class="fas fa-users"></i> Kullanıcılar</a>
+                <a href="/Fronted/Pages/SistemIzleme.html"><i class="fas fa-desktop"></i> Sistem İzleme</a>
+                <a href="/Fronted/Pages/ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="/Fronted/Pages/Loglar.html"><i class="fas fa-terminal"></i> Loglar</a>
+            </nav>
+            <button type="button" class="auth-action sidebar-auth-action" id="authActionBtn">
+                <i class="fas fa-sign-in-alt"></i> <span>Giriş Yap</span>
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div>
+                        <h1>Otomasyon Ayarı</h1>
+                        <p>Tetikleyici koşulları ve çalıştırılacak senaryoları detaylandırın.</p>
+                    </div>
+                </div>
+            </header>
+
+            <a href="/Fronted/Pages/otomasyonlar.html" class="back-link"><i class="fas fa-arrow-left"></i> Listeye
+                Dön</a>
+
+            <div class="automation-config-card">
+                <form id="automation-detail-form">
+                    <div class="form-group">
+                        <label for="auto-name">Otomasyon Adı</label>
+                        <input type="text" id="auto-name" class="form-control" placeholder="ör: Gece Modu Işıkları"
+                            required>
+                    </div>
+
+                    <div class="row-grid">
+                        <div class="form-group">
+                            <label for="auto-trigger">Tetikleyici Koşul (TRIGGER)</label>
+                            <select id="auto-trigger" class="form-select">
+                                <option value="time">Saat Koşulu (00:00 vs.)</option>
+                                <option value="sensor">Sensör Değeri Değiştiğinde</option>
+                                <option value="device">Cihaz Durumu Değiştiğinde</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="auto-action">Gerçekleştirilecek Eylem (ACTION)</label>
+                            <select id="auto-action" class="form-select">
+                                <option value="off">Cihazı Kapat</option>
+                                <option value="on">Cihazı Aç</option>
+                                <option value="notify">Bildirim Gönder</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="auto-desc">Açıklama</label>
+                        <textarea id="auto-desc" class="form-control" style="height: 100px;"
+                            placeholder="Otomasyon kuralının işlevini açıklayın..."></textarea>
+                    </div>
+
+                    <div class="action-bar">
+                        <a href="/Fronted/Pages/otomasyonlar.html" class="btn btn-cancel">İptal</a>
+                        <button type="submit" class="btn btn-save">Kuralı Kaydet</button>
+                    </div>
+                </form>
+            </div>
+
+            <footer>
+                <p>Ev Asistanı © 2026</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="/Fronted/Js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            const nameInput = document.getElementById('auto-name');
+            const descInput = document.getElementById('auto-desc');
+
+            if (id) {
+                // Edit mode
+                nameInput.value = id == 1 ? "Gece Modu" : "Eve Geliş Karşılaması";
+                descInput.value = "Bu otomasyon ID " + id + " referansı ile oluşturuldu.";
+            }
+
+            document.getElementById('automation-detail-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Otomasyon kuralı başarıyla güncellendi.');
+                window.location.href = '/Fronted/Pages/otomasyonlar.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

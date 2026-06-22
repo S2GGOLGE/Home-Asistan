@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeOS - Oda Detayı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/style.css">
+    <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-green);
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .room-summary-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-line);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .room-meta-info h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .room-meta-info p {
+            color: var(--text-secondary);
+        }
+
+        .room-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .room-stat-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border-line);
+            border-radius: 10px;
+            padding: 12px 20px;
+            text-align: center;
+        }
+
+        .room-stat-label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .room-stat-val {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent-green);
+        }
+
+        .devices-list-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .room-devices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .device-card-mini {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .device-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .device-icon-mini {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(0, 255, 136, 0.05);
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .device-details h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .device-details span {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar collapsed" id="sidebar">
+            <div class="logo">EV ASİSTANI</div>
+            <div class="version">Sürüm 1.0.0</div>
+            <nav>
+                <a href="/Fronted/Pages/index.html"><i class="fas fa-chart-pie"></i> Gösterge Paneli</a>
+                <a href="/Fronted/Pages/Cihazlar.html"><i class="fas fa-lightbulb"></i> Cihazlar</a>
+                <a href="/Fronted/Pages/Odalar.html" class="active"><i class="fas fa-door-open"></i> Odalar</a>
+                <a href="/Fronted/Pages/otomasyonlar.html"><i class="fas fa-bolt"></i> Otomasyonlar</a>
+                <a href="/Fronted/Pages/Jarvis.html"><i class="fas fa-robot"></i> Jarvis</a>
+                <a href="/Fronted/Pages/Kameralar.html"><i class="fas fa-video"></i> Kameralar</a>
+                <a href="/Fronted/Pages/Sensorler.html"><i class="fas fa-microchip"></i> Sensörler</a>
+                <a href="/Fronted/Pages/Bildirimler.html"><i class="fas fa-bell"></i> Bildirimler</a>
+                <a href="/Fronted/Pages/KullaniciYonetimi.html"><i class="fas fa-users"></i> Kullanıcılar</a>
+                <a href="/Fronted/Pages/SistemIzleme.html"><i class="fas fa-desktop"></i> Sistem İzleme</a>
+                <a href="/Fronted/Pages/ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="/Fronted/Pages/Loglar.html"><i class="fas fa-terminal"></i> Loglar</a>
+            </nav>
+            <button type="button" class="auth-action sidebar-auth-action" id="authActionBtn">
+                <i class="fas fa-sign-in-alt"></i> <span>Giriş Yap</span>
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div>
+                        <h1>Oda Detayı</h1>
+                        <p>Odaya bağlı akıllı cihazları ve çevre sensörlerini takip edin.</p>
+                    </div>
+                </div>
+            </header>
+
+            <a href="/Fronted/Pages/Odalar.html" class="back-link"><i class="fas fa-arrow-left"></i> Odalara Dön</a>
+
+            <!-- Oda Başlığı ve İstatistikler -->
+            <div class="room-summary-card">
+                <div class="room-meta-info">
+                    <h2 id="room-name-display">Yükleniyor...</h2>
+                    <p id="room-desc-display">Oda Bilgisi</p>
+                </div>
+                <div class="room-stats">
+                    <div class="room-stat-item">
+                        <span class="room-stat-label">Sıcaklık</span>
+                        <span class="room-stat-val">22.5 °C</span>
+                    </div>
+                    <div class="room-stat-item">
+                        <span class="room-stat-label">Nem</span>
+                        <span class="room-stat-val">%48</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cihazlar Listesi -->
+            <div class="devices-list-section">
+                <h3 class="devices-list-title">Odadaki Cihazlar</h3>
+                <div class="room-devices-grid" id="room-devices-container">
+                    <!-- Dinamik doldurulur -->
+                    <div class="device-card-mini">
+                        <div class="device-left">
+                            <div class="device-icon-mini"><i class="fas fa-lightbulb"></i></div>
+                            <div class="device-details">
+                                <h4>Ana Aydınlatma</h4>
+                                <span>Işık (LIGHT)</span>
+                            </div>
+                        </div>
+                        <span class="badge online">Online</span>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <p>Ev Asistanı © 2026</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="/Fronted/Js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const roomName = params.get('name') || 'Salon';
+
+            document.getElementById('room-name-display').textContent = roomName;
+            document.getElementById('room-desc-display').textContent = `${roomName} Kontrol Ve Takip Paneli`;
+        });
+    </script>
+</body>
+
+</html>

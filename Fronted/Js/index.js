@@ -99,7 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Backend Servisi (C# API on Port 7201)
         let backendOk = false;
         try {
-            const res = await fetch("https://localhost:7201/api/Listing");
+            const backendUrl = (window.location.protocol === 'file:') ? 'https://localhost:7201/api/Listing' : `${window.location.origin}/api/Listing`;
+            const res = await fetch(backendUrl);
             backendOk = res.ok;
         } catch (e) {
             backendOk = false;

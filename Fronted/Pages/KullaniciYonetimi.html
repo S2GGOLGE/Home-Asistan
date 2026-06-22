@@ -29,11 +29,10 @@
             <div class="stat-card glass-panel">
                 <div class="stat-icon"><i class="fas fa-users"></i></div>
                 <div class="stat-details">
-                    <h3>Aktif Kullanıcılar</h3>
-                    <div class="stat-value">124</div>
+                    <h3>Toplam Kullanıcı</h3>
+                    <div class="stat-value" id="statTotalUsers">—</div>
                     <div class="stat-sub">
-                        <span><i class="fas fa-clock"></i> 24s: 45 giriş</span>
-                        <span class="text-success"><i class="fas fa-circle"></i> 12 Çevrimiçi</span>
+                        <span><i class="fas fa-database"></i> Veritabanından</span>
                     </div>
                 </div>
             </div>
@@ -41,23 +40,21 @@
             <div class="stat-card glass-panel">
                 <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
                 <div class="stat-details">
-                    <h3>Aktif Admin Sayısı</h3>
-                    <div class="stat-value">5</div>
+                    <h3>Admin Sayısı</h3>
+                    <div class="stat-value" id="statAdminCount">—</div>
                     <div class="stat-sub">
-                        <span class="text-success"><i class="fas fa-circle"></i> 2 Çevrimiçi</span>
-                        <span>Son işlem: 5dk önce</span>
+                        <span><i class="fas fa-user-shield"></i> Yöneticiler</span>
                     </div>
                 </div>
             </div>
             <!-- Card 3 -->
             <div class="stat-card glass-panel">
-                <div class="stat-icon"><i class="fas fa-database"></i></div>
+                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
                 <div class="stat-details">
-                    <h3>Toplam Kullanıcı</h3>
-                    <div class="stat-value">856</div>
+                    <h3>Üye Sayısı</h3>
+                    <div class="stat-value" id="statMemberCount">—</div>
                     <div class="stat-sub">
-                        <span class="text-success">+12 Yeni Kayıt</span>
-                        <span class="text-muted">45 Pasif</span>
+                        <span><i class="fas fa-users"></i> Normal üyeler</span>
                     </div>
                 </div>
             </div>
@@ -114,83 +111,11 @@
                             <th>İşlemler</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Mock row 1 -->
-                        <tr>
-                            <td><div class="avatar"><img src="https://i.pravatar.cc/150?img=11" alt="avatar"></div></td>
-                            <td>Ahmet Yılmaz</td>
-                            <td>ahmet@example.com</td>
-                            <td><span class="role-badge admin">Admin</span></td>
-                            <td><span class="status-badge online">Online</span></td>
-                            <td>Şimdi</td>
-                            <td>12.05.2025</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="icon-btn" title="Detay"><i class="fas fa-eye"></i></button>
-                                    <button class="icon-btn" title="Rol Düzenle"><i class="fas fa-user-edit"></i></button>
-                                    <button class="icon-btn" title="Şifre Sıfırla"><i class="fas fa-key"></i></button>
-                                    <button class="icon-btn danger" title="Engelle"><i class="fas fa-ban"></i></button>
-                                    <button class="icon-btn danger" title="Sil"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Mock row 2 -->
-                        <tr>
-                            <td><div class="avatar"><img src="https://i.pravatar.cc/150?img=32" alt="avatar"></div></td>
-                            <td>Ayşe Demir</td>
-                            <td>ayse@example.com</td>
-                            <td><span class="role-badge mod">Moderatör</span></td>
-                            <td><span class="status-badge offline">Offline</span></td>
-                            <td>2 Saat Önce</td>
-                            <td>01.03.2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="icon-btn" title="Detay"><i class="fas fa-eye"></i></button>
-                                    <button class="icon-btn" title="Rol Düzenle"><i class="fas fa-user-edit"></i></button>
-                                    <button class="icon-btn" title="Şifre Sıfırla"><i class="fas fa-key"></i></button>
-                                    <button class="icon-btn danger" title="Engelle"><i class="fas fa-ban"></i></button>
-                                    <button class="icon-btn danger" title="Sil"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Mock row 3 -->
-                        <tr>
-                            <td><div class="avatar"><div class="avatar-placeholder">M</div></div></td>
-                            <td>Mehmet Kaya</td>
-                            <td>mehmet@example.com</td>
-                            <td><span class="role-badge user">Kullanıcı</span></td>
-                            <td><span class="status-badge banned">Yasaklı</span></td>
-                            <td>3 Gün Önce</td>
-                            <td>15.06.2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="icon-btn" title="Detay"><i class="fas fa-eye"></i></button>
-                                    <button class="icon-btn" title="Rol Düzenle"><i class="fas fa-user-edit"></i></button>
-                                    <button class="icon-btn" title="Şifre Sıfırla"><i class="fas fa-key"></i></button>
-                                    <button class="icon-btn danger" title="Engelle" disabled><i class="fas fa-ban"></i></button>
-                                    <button class="icon-btn danger" title="Sil"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Mock row 4 -->
-                        <tr>
-                            <td><div class="avatar"><img src="https://i.pravatar.cc/150?img=5" alt="avatar"></div></td>
-                            <td>Zeynep Çelik</td>
-                            <td>zeynep@example.com</td>
-                            <td><span class="role-badge user">Kullanıcı</span></td>
-                            <td><span class="status-badge pending">Beklemede</span></td>
-                            <td>Hiç</td>
-                            <td>Bugün</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="icon-btn" title="Detay"><i class="fas fa-eye"></i></button>
-                                    <button class="icon-btn" title="Rol Düzenle"><i class="fas fa-user-edit"></i></button>
-                                    <button class="icon-btn" title="Şifre Sıfırla"><i class="fas fa-key"></i></button>
-                                    <button class="icon-btn danger" title="Engelle"><i class="fas fa-ban"></i></button>
-                                    <button class="icon-btn danger" title="Sil"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody id="usersTableBody">
+                        <!-- Veriler /api/Users üzerinden JS tarafından yükleniyor -->
+                        <tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text-secondary)">
+                            <i class="fas fa-spinner fa-spin"></i> Kullanıcılar yükleniyor...
+                        </td></tr>
                     </tbody>
                 </table>
             </div>

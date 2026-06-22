@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeOS - Cihaz Detayı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/style.css">
+    <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
+    <style>
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 800px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-green);
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .device-info-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-line);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .device-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 15px;
+        }
+
+        .device-icon-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .device-title-wrap h2 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .device-title-wrap p {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        .control-row:last-child {
+            border-bottom: none;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333333;
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+            background-color: #000000;
+        }
+
+        .log-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-line);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+
+        .log-console {
+            background: var(--bg-main);
+            border: 1px solid var(--border-line);
+            border-radius: 8px;
+            flex: 1;
+            padding: 15px;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            color: var(--accent-green);
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .log-line {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar collapsed" id="sidebar">
+            <div class="logo">EV ASİSTANI</div>
+            <div class="version">Sürüm 1.0.0</div>
+            <nav>
+                <a href="/Fronted/Pages/index.html"><i class="fas fa-chart-pie"></i> Gösterge Paneli</a>
+                <a href="/Fronted/Pages/Cihazlar.html" class="active"><i class="fas fa-lightbulb"></i> Cihazlar</a>
+                <a href="/Fronted/Pages/Odalar.html"><i class="fas fa-door-open"></i> Odalar</a>
+                <a href="/Fronted/Pages/otomasyonlar.html"><i class="fas fa-bolt"></i> Otomasyonlar</a>
+                <a href="/Fronted/Pages/Jarvis.html"><i class="fas fa-robot"></i> Jarvis</a>
+                <a href="/Fronted/Pages/Kameralar.html"><i class="fas fa-video"></i> Kameralar</a>
+                <a href="/Fronted/Pages/Sensorler.html"><i class="fas fa-microchip"></i> Sensörler</a>
+                <a href="/Fronted/Pages/Bildirimler.html"><i class="fas fa-bell"></i> Bildirimler</a>
+                <a href="/Fronted/Pages/KullaniciYonetimi.html"><i class="fas fa-users"></i> Kullanıcılar</a>
+                <a href="/Fronted/Pages/SistemIzleme.html"><i class="fas fa-desktop"></i> Sistem İzleme</a>
+                <a href="/Fronted/Pages/ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="/Fronted/Pages/Loglar.html"><i class="fas fa-terminal"></i> Loglar</a>
+            </nav>
+            <button type="button" class="auth-action sidebar-auth-action" id="authActionBtn">
+                <i class="fas fa-sign-in-alt"></i> <span>Giriş Yap</span>
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Menüyü aç/kapat">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div>
+                        <h1>Cihaz Detay Kontrolü</h1>
+                        <p>Cihaz durumunu, kullanım analizini ve canlı logları bu sayfadan yönetin.</p>
+                    </div>
+                </div>
+            </header>
+
+            <a href="/Fronted/Pages/Cihazlar.html" class="back-link"><i class="fas fa-arrow-left"></i> Cihaz Listesine Dön</a>
+
+            <div class="detail-grid">
+                <!-- Sol Cihaz Bilgi Kartı -->
+                <div class="device-info-card">
+                    <div class="device-header">
+                        <div class="device-icon-large" id="device-icon-box">
+                            <i class="fas fa-plug"></i>
+                        </div>
+                        <div class="device-title-wrap">
+                            <h2 id="device-name-display">Yükleniyor...</h2>
+                            <p id="device-type-display">-</p>
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <span>Güç Durumu</span>
+                        <label class="switch">
+                            <input type="checkbox" id="device-status-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="control-row">
+                        <span>Bağlantı Durumu</span>
+                        <span class="badge success" id="connection-badge">Aktif</span>
+                    </div>
+
+                    <div class="control-row">
+                        <span>Kayıt Numarası (ID)</span>
+                        <strong id="device-id-display">-</strong>
+                    </div>
+
+                    <div class="control-row">
+                        <span>Oluşturulma Tarihi</span>
+                        <span id="device-date-display">-</span>
+                    </div>
+                </div>
+
+                <!-- Sağ Log Konsolu -->
+                <div class="log-panel">
+                    <h2>Canlı Aktivite Kayıtları</h2>
+                    <div class="log-console" id="device-logs-console">
+                        <div class="log-line">[SİSTEM] Cihaz dinleme oturumu başlatıldı.</div>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <p>Ev Asistanı © 2026</p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="/Fronted/Js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const deviceId = params.get('id');
+
+            const nameDisplay = document.getElementById('device-name-display');
+            const typeDisplay = document.getElementById('device-type-display');
+            const idDisplay = document.getElementById('device-id-display');
+            const dateDisplay = document.getElementById('device-date-display');
+            const toggle = document.getElementById('device-status-toggle');
+            const iconBox = document.getElementById('device-icon-box');
+            const logsConsole = document.getElementById('device-logs-console');
+
+            if (!deviceId) {
+                alert('Cihaz ID parametresi bulunamadı!');
+                window.location.href = '/Fronted/Pages/Cihazlar.html';
+                return;
+            }
+
+            const API_BASE = window.location.origin + '/api';
+
+            async function loadDeviceDetails() {
+                try {
+                    const res = await fetch(`${API_BASE}/Listing`);
+                    if (res.ok) {
+                        const devices = await res.json();
+                        const device = devices.find(d => d.id == deviceId);
+                        if (device) {
+                            nameDisplay.textContent = device.name;
+                            typeDisplay.textContent = device.type ? device.type.toUpperCase() : 'CİHAZ';
+                            idDisplay.textContent = device.id;
+                            dateDisplay.textContent = device.createdAt ? new Date(device.createdAt).toLocaleDateString('tr-TR') : '-';
+                            toggle.checked = device.status === true;
+
+                            // Set matching icon
+                            let icon = "fas fa-plug";
+                            const type = (device.type || '').toLowerCase();
+                            if (type.includes('light') || type.includes('lamba')) icon = "fas fa-lightbulb";
+                            else if (type.includes('camera') || type.includes('kamera')) icon = "fas fa-video";
+                            else if (type.includes('sensor')) icon = "fas fa-microchip";
+                            iconBox.innerHTML = `<i class="${icon}"></i>`;
+
+                            addLog(`Cihaz yükleme tamamlandı. Durum: ${device.status ? 'ONLINE' : 'OFFLINE'}`);
+                        } else {
+                            nameDisplay.textContent = 'Cihaz Bulunamadı';
+                        }
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            function addLog(text) {
+                const time = new Date().toLocaleTimeString('tr-TR');
+                logsConsole.innerHTML += `<div class="log-line">[${time}] ${text}</div>`;
+                logsConsole.scrollTop = logsConsole.scrollHeight;
+            }
+
+            toggle.addEventListener('change', async () => {
+                const checked = toggle.checked;
+                addLog(`Güç durumu değiştiriliyor: ${checked ? 'AÇIK' : 'KAPALI'}`);
+                
+                try {
+                    const res = await fetch(`${API_BASE}/devicestatusupdate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            Id: parseInt(deviceId),
+                            DeviceName: nameDisplay.textContent,
+                            DeviceVersion: "",
+                            Device_Status: checked
+                        })
+                    });
+                    if (res.ok) {
+                        addLog(`Backend başarıyla güncellendi.`);
+                    } else {
+                        addLog(`Backend hatası! Geri alınıyor.`);
+                        toggle.checked = !checked;
+                    }
+                } catch (e) {
+                    addLog(`Bağlantı hatası! Geri alınıyor.`);
+                    toggle.checked = !checked;
+                }
+            });
+
+            loadDeviceDetails();
+        });
+    </script>
+</body>
+
+</html>
