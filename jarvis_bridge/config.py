@@ -15,7 +15,7 @@ class BridgeConfig:
     """
     # --- Home Asistan API ---
     ha_base_url: str = field(
-        default_factory=lambda: os.getenv("HA_BASE_URL", "http://localhost:5000/api")
+        default_factory=lambda: os.getenv("HA_BASE_URL", "https://localhost:7201/api")
     )
     ha_api_token: str = field(
         default_factory=lambda: os.getenv("HA_API_TOKEN", "")

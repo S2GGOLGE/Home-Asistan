@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const usersTableBody = document.getElementById('users-table-body');
     const commandsTableBody = document.getElementById('commands-table-body');
 
-    // API Bağlantı Adresleri (C# Backend Port: 5000)
-    const API_BASE = "http://localhost:5000/api";
+    // API Bağlantı Adresleri (C# Backend Port: 7201)
+    const API_BASE = "https://localhost:7201/api";
     const ENDPOINTS = {
         devices: `${API_BASE}/Listing`,
         logs: `${API_BASE}/Logs`,
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logs: [
             { id: 105, level: "INFO", message: "Cihaz listesi başarıyla getirildi. Toplam 5 cihaz döndü.", source: "DeviceListing", createdAt: "2026-06-16 16:30:15" },
             { id: 104, level: "INFO", message: "Cihaz listesi isteği alındı.", source: "DeviceListing", createdAt: "2026-06-16 16:30:14" },
-            { id: 103, level: "INFO", message: "Uygulama başarıyla ayağa kalktı. http://0.0.0.0:5000", source: "Program", createdAt: "2026-06-16 16:20:01" },
+            { id: 103, level: "INFO", message: "Uygulama başarıyla ayağa kalktı. https://localhost:7201", source: "Program", createdAt: "2026-06-16 16:20:01" },
             { id: 102, level: "INFO", message: "Development ortamı algılandı. OpenAPI aktif.", source: "Program", createdAt: "2026-06-16 16:20:00" },
             { id: 101, level: "WARN", message: "Geçersiz veya eksik cihaz verisi geldi.", source: "DeviceStatusUpdate", createdAt: "2026-06-16 16:22:10" }
         ],

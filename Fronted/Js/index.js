@@ -11,6 +11,58 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     const menuToggle = document.getElementById('menuToggle');
     const logContainer = document.getElementById("logs");
+    const authActionBtn = document.getElementById('authActionBtn');
+    const sidebarNav = sidebar?.querySelector('nav');
+
+    function getLoginState() {
+        return localStorage.getItem('homeasistan_login_state') || sessionStorage.getItem('homeasistan_login_state');
+    }
+
+    function isLoggedIn() {
+        return Boolean(getLoginState());
+    }
+
+    function applyAuthUi() {
+        const loggedIn = isLoggedIn();
+
+        if (sidebarNav) {
+            sidebarNav.hidden = !loggedIn;
+        }
+
+        if (menuToggle) {
+            menuToggle.hidden = !loggedIn;
+            menuToggle.setAttribute('aria-hidden', String(!loggedIn));
+        }
+
+        if (sidebar) {
+            sidebar.classList.toggle('collapsed', !loggedIn);
+        }
+
+        if (authActionBtn) {
+            const icon = authActionBtn.querySelector('i');
+            const text = authActionBtn.querySelector('span');
+            if (text) text.textContent = loggedIn ? '\u00C7\u0131k\u0131\u015F Yap' : 'Giri\u015F Yap';
+            if (icon) {
+                icon.className = loggedIn ? 'fas fa-sign-out-alt' : 'fas fa-sign-in-alt';
+            }
+            authActionBtn.setAttribute('aria-label', loggedIn ? '\u00C7\u0131k\u0131\u015F Yap' : 'Giri\u015F Yap');
+        }
+    }
+
+    if (authActionBtn) {
+        authActionBtn.addEventListener('click', () => {
+            if (isLoggedIn()) {
+                localStorage.removeItem('homeasistan_login_state');
+                sessionStorage.removeItem('homeasistan_login_state');
+                applyAuthUi();
+                return;
+            }
+
+            window.location.href = '/Fronted/Pages/Login.html';
+        });
+    }
+
+    applyAuthUi();
 
     // ══════════════════════════════
     //  KAYNAK ÇUBUKLARI GÜNCELLEME
@@ -44,10 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let activeCount = 0;
         const totalServices = 6;
 
-        // 1. Backend Servisi (C# API on Port 5000)
+        // 1. Backend Servisi (C# API on Port 7201)
         let backendOk = false;
         try {
-            const res = await fetch("http://localhost:5000/api/Listing");
+            const res = await fetch("https://localhost:7201/api/Listing");
             backendOk = res.ok;
         } catch (e) {
             backendOk = false;

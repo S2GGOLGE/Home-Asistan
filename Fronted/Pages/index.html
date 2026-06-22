@@ -42,6 +42,10 @@
                 <a href="/Fronted/Pages/ayarlar.html"><i class="fas fa-cog"></i> Ayarlar</a>
                 <a href="/Fronted/Pages/Loglar.html"><i class="fas fa-terminal"></i> Loglar</a>
             </nav>
+            <button type="button" class="auth-action sidebar-auth-action" id="authActionBtn">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Giriş Yap</span>
+            </button>
         </aside>
 
         <main class="content">
@@ -58,7 +62,7 @@
                         <p>Sistemin genel durumunu buradan takip edebilirsiniz.</p>
                     </div>
                 </div>
-                <div class="status online">● Sistem Aktif</div>
+                <div class="status online">&bull; Sistem Aktif</div>
             </header>
 
             <section class="stats">
@@ -194,6 +198,7 @@
 
     <script src="/Fronted/Js/index.js"></script>
     <script src="/Fronted/Js/Endpoint/CihazlarListemeEndpoint.js"></script>
+    <script src="/Fronted/Js/auth.js"></script>
 </body>
 
 </html>

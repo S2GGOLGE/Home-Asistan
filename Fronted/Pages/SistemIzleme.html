@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <!-- Chart.js for graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <div class="dashboard-container">
         <!-- Header -->
@@ -30,7 +32,7 @@
 
         <!-- Main Content -->
         <main class="dashboard-grid">
-            
+
             <!-- 1. API Status -->
             <section class="card glass-panel" id="apiCard">
                 <div class="card-header">
@@ -77,19 +79,25 @@
                     </div>
                     <div class="progress-group">
                         <div class="progress-label"><span>CPU</span><span>12%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 12%"></div></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 12%"></div>
+                        </div>
                     </div>
                     <div class="progress-group">
                         <div class="progress-label"><span>RAM</span><span>24%</span></div>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 24%"></div></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 24%"></div>
+                        </div>
                     </div>
                     <div class="stat-row mt-15">
                         <span>Mikrofon:</span>
                         <strong class="neon-text"><i class="fas fa-microphone"></i> Dinliyor...</strong>
                     </div>
                     <div class="mini-logs" id="jarvisLogs">
-                        <div class="log-entry"><span class="time">17:44</span> <span class="cmd">Komut algılandı...</span></div>
-                        <div class="log-entry"><span class="time">17:44</span> <span class="cmd">Doğal dil işleniyor...</span></div>
+                        <div class="log-entry"><span class="time">17:44</span> <span class="cmd">Komut
+                                algılandı...</span></div>
+                        <div class="log-entry"><span class="time">17:44</span> <span class="cmd">Doğal dil
+                                işleniyor...</span></div>
                     </div>
                 </div>
             </section>
@@ -184,5 +192,7 @@
         </main>
     </div>
     <script src="/Fronted/Js/sistem-izleme.js"></script>
+    <script src="/Fronted/Js/auth.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ev Asistanı - Kayıt Ol</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/style.css">
+    <link rel="stylesheet" href="/Fronted/Css/Login.css">
+    <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
+</head>
+
+<body class="login-body">
+
+    <div class="login-wrapper">
+        <div class="login-card" style="padding: 30px 35px;">
+            <!-- Kayıt formunun biraz daha kısa paddingi olması iyi olur -->
+            <!-- Dekoratif Arka Plan Işıkları -->
+            <div class="glow glow-1"></div>
+            <div class="glow glow-2"></div>
+
+            <div class="login-header" style="margin-bottom: 25px;">
+                <div class="logo-icon" style="width: 50px; height: 50px; font-size: 20px; margin-bottom: 15px;">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2>Yeni Hesap Oluştur</h2>
+                <p>Sisteme erişmek için kayıt olun</p>
+            </div>
+
+            <form class="login-form" id="registerForm">
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" id="username" placeholder="Kullanıcı Adı" required autocomplete="off">
+                    <span class="focus-border"></span>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <input type="email" id="email" placeholder="E-Posta Adresi" required autocomplete="off">
+                    <span class="focus-border"></span>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" id="password" placeholder="Şifre" required>
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <span class="focus-border"></span>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" id="passwordRepeat" placeholder="Şifreyi Tekrar Girin" required>
+                    <button type="button" class="toggle-password" id="togglePasswordRepeat">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <span class="focus-border"></span>
+                </div>
+
+                <div id="passwordError"
+                    style="color: var(--color-error); font-size: 13px; display: none; margin-top: -10px; margin-bottom: 5px;">
+                    Şifreler eşleşmiyor!</div>
+
+                <button type="submit" class="btn-login" style="margin-top: 5px;">
+                    <span>Kayıt Ol</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="login-footer" style="margin-top: 20px;">
+                <p>Zaten hesabınız var mı? <a href="/Fronted/Pages/Login.html"
+                        style="color: var(--accent-green); text-decoration: none; margin-left: 5px; font-weight: bold;">Giriş
+                        Yap</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Fronted/Js/Register.js"></script>
+    <script src="/Fronted/Js/Endpoint/RegisterEndpoint.js"></script>
+</body>
+
+</html>

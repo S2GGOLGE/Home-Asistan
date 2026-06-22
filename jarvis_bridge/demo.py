@@ -100,7 +100,7 @@ def make_mock_session():
 # ─── DEMO ───────────────────────────────────────────────────────────────────
 
 async def run_demo():
-    os.environ["HA_BASE_URL"]   = "http://localhost:5000/api"
+    os.environ["HA_BASE_URL"]   = "https://localhost:7201/api"
     os.environ["HA_API_TOKEN"]  = "demo-token-12345"
 
     from jarvis_bridge.bridge import JarvisBridge

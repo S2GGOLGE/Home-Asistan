@@ -23,9 +23,9 @@ if not exist "%~dp0.venv\Scripts\activate.bat" (
 call "%~dp0.venv\Scripts\activate.bat"
 
 :: ------------------------------------------------
-:: 1. ASP.NET BACKEND (C# API - Port 5000)
+:: 1. ASP.NET BACKEND (C# API - Port 7201)
 :: ------------------------------------------------
-echo [1/5] ASP.NET Backend baslatiliyor - Port 5000...
+echo [1/5] ASP.NET Backend baslatiliyor - Port 7201...
 
 where dotnet >nul 2>&1
 if errorlevel 1 (
@@ -46,7 +46,7 @@ if not defined API_CSPROJ (
 )
 
 echo [OK] Proje bulundu: %API_CSPROJ%
-start "ASP.NET Backend - Port 5000" cmd /k ""%~dp0baslat_aspnet.bat""
+start "ASP.NET Backend - Port 7201" cmd /k ""%~dp0baslat_aspnet.bat""
 
 timeout /t 3 /nobreak > nul
 
@@ -95,7 +95,7 @@ echo.
 echo  ================================================
 echo   TUM SERVISLER BASLATILDI!
 echo.
-echo   Backend (ASP.NET) : http://localhost:5000
+echo   Backend (ASP.NET) : https://localhost:7201
 echo   Backend (Pyton)   : http://127.0.0.1:8082
 echo   JAViS V.02        : Sesli AI penceresi acildi
 echo.

@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://localhost:5000/api/DeviceRegistration";
+const BACKEND_URL = "https://localhost:7201/api/DeviceRegistration";
 
 async function ekle() {
   const nameInput = document.getElementById("device-name");

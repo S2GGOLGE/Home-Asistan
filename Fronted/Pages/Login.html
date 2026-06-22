@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ev Asistanı - Giriş</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/Fronted/Css/style.css">
+    <link rel="stylesheet" href="/Fronted/Css/Login.css">
+    <link rel="icon" href="/Fronted/İmages/logo.png" type="image/png">
+</head>
+<body class="login-body">
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <!-- Dekoratif Arka Plan Işıkları -->
+            <div class="glow glow-1"></div>
+            <div class="glow glow-2"></div>
+            
+            <div class="login-header">
+                <div class="logo-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h2>Ev Asistanı</h2>
+                <p>Kontrol merkezine hoş geldiniz</p>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" id="username" placeholder="Kullanıcı Adı" required autocomplete="username">
+                    <span class="focus-border"></span>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <input type="password" id="password" placeholder="Şifre" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <span class="focus-border"></span>
+                </div>
+
+                <div class="form-actions">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <span class="checkmark"></span>
+                        Beni Hatırla
+                    </label>
+                    <a href="#" class="forgot-password">Şifremi Unuttum</a>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <span>Giriş Yap</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>Sistem Durumu: <span class="status-indicator"></span> Çevrimiçi</p>
+                <p style="margin-top: 15px;">Hesabınız yok mu? <a href="/Fronted/Pages/Register.html" style="color: var(--accent-green); text-decoration: none; margin-left: 5px; font-weight: bold;">Kayıt Ol</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/Fronted/Js/Endpoint/LoginEndpoint.js"></script>
+    <script src="/Fronted/Js/Login.js"></script>
+</body>
+</html>

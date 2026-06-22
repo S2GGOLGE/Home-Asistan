@@ -1,8 +1,8 @@
 // ============================================================
 // app.js — Cihaz Yönetim Paneli
 // ============================================================
-const API_LIST_URL = "http://localhost:5000/api/Listing";
-const API_UPDATE_URL = "http://localhost:5000/api/devicestatusupdate";
+const API_LIST_URL = "https://localhost:7201/api/Listing";
+const API_UPDATE_URL = "https://localhost:7201/api/devicestatusupdate";
 
 // ------------------------------------------------------------
 // Yardımcı: hem PascalCase hem camelCase field'ları destekle

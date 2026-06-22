@@ -157,6 +157,36 @@ main {
 .status.online {
     color: var(--accent-green);
 }
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.auth-action {
+    border: 1px solid var(--border-line);
+    background: #111111;
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.auth-action:hover {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+}
+.sidebar-auth-action {
+    width: 100%;
+    justify-content: center;
+    margin-top: auto;
+    white-space: nowrap;
+}
 
 /* ══════════════════════════════
     HAMBURGER BUTTON

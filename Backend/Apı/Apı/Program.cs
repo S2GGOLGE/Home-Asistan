@@ -14,8 +14,8 @@ if (string.IsNullOrWhiteSpace(configuredPort) || !int.TryParse(configuredPort, o
 {
     Console.ForegroundColor = ConsoleColor.Red;
     Console.Error.WriteLine("[FATAL] 'App:Port' yapılandırması eksik veya geçersiz.");
-    Console.Error.WriteLine("        appsettings.json içine ekle: { \"App\": { \"Port\": 5000 } }");
-    Console.Error.WriteLine("        Ya da ortam değişkeni ile: App__Port=5000");
+    Console.Error.WriteLine("        appsettings.json içine ekle: { \"App\": { \"Port\": 7201 } }");
+    Console.Error.WriteLine("        Ya da ortam değişkeni ile: App__Port=7201");
     Console.ResetColor();
 
     // LogService henüz DI'dan çekilemiyor, doğrudan new'leyip logla
@@ -23,7 +23,7 @@ if (string.IsNullOrWhiteSpace(configuredPort) || !int.TryParse(configuredPort, o
     return;
 }
 
-builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+builder.WebHost.UseUrls($"https://localhost:{port}");
 
 // ── Servisler ──────────────────────────────────────────────────────────────
 builder.Services.AddControllers();
@@ -54,11 +54,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("HomeAsistan");
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
 Console.WriteLine($"[INFO] Uygulama port {port} üzerinde başlatılıyor...");
-logger.AddLog("INFO", $"Uygulama başarıyla ayağa kalktı. http://0.0.0.0:{port}", "Program");
+logger.AddLog("INFO", $"Uygulama başarıyla ayağa kalktı. https://localhost:{port}", "Program");
 
 app.Run();
