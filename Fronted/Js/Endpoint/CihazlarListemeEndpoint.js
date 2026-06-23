@@ -2,7 +2,19 @@
 //  app.js — Cihaz Yönetim Paneli
 // ============================================================
 
-const API_URL = (window.location.protocol === 'file:') ? 'https://localhost:7201/api/Listing' : `${window.location.origin}/api/Listing`;
+const API_URL = `${getApiBaseUrl()}/Listing`;
+
+function getApiBaseUrl() {
+    const liveServerPorts = ['5500', '5501', '5502'];
+    const isLiveServer = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+        && liveServerPorts.includes(window.location.port);
+
+    if (window.location.protocol === 'file:' || isLiveServer) {
+        return 'https://localhost:7201/api';
+    }
+
+    return `${window.location.origin}/api`;
+}
 
 // ------------------------------------------------------------
 // Sayfa yüklenince başlat

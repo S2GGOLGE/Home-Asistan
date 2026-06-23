@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using Api.Dto.Notification;
 
 namespace Api.Controllers
 {
@@ -200,12 +201,5 @@ namespace Api.Controllers
         }
     }
 
-    public class NotificationDto
-    {
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string Priority { get; set; }
-        public string Category { get; set; }
-        public int? UserId { get; set; }
-    }
+    
 }

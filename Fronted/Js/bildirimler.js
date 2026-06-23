@@ -3,9 +3,19 @@
    Endpoints: GET/POST/PUT/DELETE /api/Notifications
    ===================================================== */
 
-const API_BASE = (window.location.protocol === 'file:')
-    ? 'https://localhost:7201/api'
-    : `${window.location.origin}/api`;
+const API_BASE = getApiBaseUrl();
+
+function getApiBaseUrl() {
+    const liveServerPorts = ['5500', '5501', '5502'];
+    const isLiveServer = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+        && liveServerPorts.includes(window.location.port);
+
+    if (window.location.protocol === 'file:' || isLiveServer) {
+        return 'https://localhost:7201/api';
+    }
+
+    return `${window.location.origin}/api`;
+}
 
 let allNotifs = [];
 

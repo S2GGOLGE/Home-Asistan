@@ -2,12 +2,14 @@ using Api.Helpers;
 using Api.Hubs;
 using Api.Services.LogServices;
 using Api.Services.SystemLogging;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ── Bağlantı dizesi ────────────────────────────────────────────────────────
-var connStr = "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
+var connStr = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
 
 // ── Veritabanı başlatma (tablolar + seed) ─────────────────────────────────
 DatabaseInitializer.Initialize(connStr);
@@ -21,6 +23,20 @@ builder.Services.AddSignalR();
 // ── Temel servisler ────────────────────────────────────────────────────────
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddSingleton(connStr);
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var error = context.ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => string.IsNullOrWhiteSpace(e.ErrorMessage) ? e.Exception?.Message : e.ErrorMessage)
+            .FirstOrDefault(e => !string.IsNullOrWhiteSpace(e))
+            ?? "Geçersiz istek.";
+
+        return new BadRequestObjectResult(ApiResponse.Fail(error));
+    };
+});
 
 builder.Services.AddCors(options =>
 {
@@ -67,11 +83,32 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("HomeAsistan");
+
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+
+        if (AppState.SystemLog is not null)
+        {
+            await AppState.SystemLog.LogApiErrorAsync(context.Request.Path, context.Response.StatusCode, ex.Message);
+        }
+
+        await context.Response.WriteAsJsonAsync(ApiResponse.Fail("Sunucu hatası oluştu."));
+    }
+});
+
 app.UseAuthorization();
 
 // ── Static Files (Serve Y:\Home Asistan\Fronted) ──────────────────────────
-var frontedPath = Path.GetFullPath(Path.Combine(app.Environment.ContentRootPath, "..", "..", "Fronted"));
-if (Directory.Exists(frontedPath))
+var frontedPath = ResolveFrontedPath(app.Environment);
+if (frontedPath is not null)
 {
     app.UseStaticFiles(new StaticFileOptions
     {
@@ -81,7 +118,7 @@ if (Directory.Exists(frontedPath))
 }
 else
 {
-    Console.WriteLine($"[WARNING] Fronted path not found at: {frontedPath}");
+    Console.WriteLine("[WARNING] Fronted path not found.");
 }
 
 app.MapControllers();
@@ -91,3 +128,30 @@ Console.WriteLine($"[INFO] HomeOS API port {port} üzerinde başlatılıyor...")
 await AppState.SystemLog.InfoAsync($"API başarıyla ayağa kalktı → https://localhost:{port}", "Program");
 
 app.Run();
+
+static string? ResolveFrontedPath(IHostEnvironment environment)
+{
+    var roots = new[]
+    {
+        environment.ContentRootPath,
+        AppContext.BaseDirectory,
+        Directory.GetCurrentDirectory()
+    };
+
+    foreach (var root in roots.Where(r => !string.IsNullOrWhiteSpace(r)).Distinct(StringComparer.OrdinalIgnoreCase))
+    {
+        var directory = new DirectoryInfo(root);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, "Fronted");
+            if (Directory.Exists(candidate))
+            {
+                return Path.GetFullPath(candidate);
+            }
+
+            directory = directory.Parent;
+        }
+    }
+
+    return null;
+}

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using Api.Dto.Automation;
 
 namespace Api.Controllers
 {
@@ -202,12 +203,5 @@ namespace Api.Controllers
         }
     }
 
-    public class AutomationDto
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string TriggerCondition { get; set; }
-        public string ActionDescription { get; set; }
-        public bool IsActive { get; set; } = true;
-    }
+    
 }

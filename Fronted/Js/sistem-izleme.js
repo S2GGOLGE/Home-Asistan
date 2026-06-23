@@ -149,7 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         max: 100
                     }
                 }
-            });
+            }
+        });
     }
 
     // 4. Quick Actions

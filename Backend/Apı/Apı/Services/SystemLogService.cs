@@ -173,7 +173,7 @@ namespace Api.Services.SystemLogging
                 var query = @"
                     SELECT Id, EventId, ServiceName, EventType, LogLevel, Message, StackTrace,
                            Source, UserId, IpAddress, MachineName, CreatedAt, IsArchived
-                    FROM SystemLogs
+                    FROM dbo.SystemLogs
                     WHERE 1=1
                     AND (@IncludeArchived = 1 OR IsArchived = 0)
                     AND (@LogLevel IS NULL OR LogLevel = @LogLevel)
@@ -208,6 +208,60 @@ namespace Api.Services.SystemLogging
             return logs;
         }
 
+        public object GetLogsWithTotal(
+            int page = 1,
+            int pageSize = 100,
+            string? logLevel = null,
+            string? eventType = null,
+            string? serviceName = null,
+            DateTime? from = null,
+            DateTime? to = null,
+            bool includeArchived = false)
+        {
+            var logs = GetLogs(page, pageSize, logLevel, eventType, serviceName, from, to, includeArchived);
+            var total = 0;
+
+            try
+            {
+                using var conn = new SqlConnection(_connectionString);
+                conn.Open();
+
+                const string query = @"
+                    SELECT COUNT(1)
+                    FROM dbo.SystemLogs
+                    WHERE 1=1
+                    AND (@IncludeArchived = 1 OR IsArchived = 0)
+                    AND (@LogLevel IS NULL OR LogLevel = @LogLevel)
+                    AND (@EventType IS NULL OR EventType = @EventType)
+                    AND (@ServiceName IS NULL OR ServiceName = @ServiceName)
+                    AND (@From IS NULL OR CreatedAt >= @From)
+                    AND (@To IS NULL OR CreatedAt <= @To)";
+
+                using var cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@IncludeArchived", includeArchived ? 1 : 0);
+                cmd.Parameters.AddWithValue("@LogLevel", logLevel as object ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@EventType", eventType as object ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@ServiceName", serviceName as object ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@From", from as object ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@To", to as object ?? DBNull.Value);
+
+                total = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[SystemLogService] Count hata: {ex.Message}");
+            }
+
+            return new
+            {
+                items = logs,
+                page,
+                pageSize,
+                total,
+                totalPages = pageSize > 0 ? (int)Math.Ceiling(total / (double)pageSize) : 0
+            };
+        }
+
         public object GetDashboard()
         {
             try
@@ -217,14 +271,14 @@ namespace Api.Services.SystemLogging
 
                 string query = @"
                     SELECT
-                        (SELECT COUNT(1) FROM SystemLogs WHERE IsArchived = 0) AS TotalLogs,
-                        (SELECT COUNT(1) FROM SystemLogs WHERE LogLevel = 'Critical' AND IsArchived = 0) AS CriticalCount,
-                        (SELECT COUNT(1) FROM SystemLogs WHERE LogLevel = 'Error' AND IsArchived = 0) AS ErrorCount,
-                        (SELECT COUNT(1) FROM SystemLogs WHERE LogLevel = 'Warning' AND IsArchived = 0) AS WarningCount,
-                        (SELECT COUNT(1) FROM SystemLogs WHERE EventType = 'Restart' AND CAST(CreatedAt AS DATE) = CAST(GETDATE() AS DATE)) AS TodayRestarts,
-                        (SELECT COUNT(1) FROM SystemLogs WHERE EventType = 'Crash' AND IsArchived = 0) AS CrashCount,
-                        (SELECT TOP 1 Message FROM SystemLogs WHERE EventType = 'Watchdog' ORDER BY Id DESC) AS LastWatchdog,
-                        (SELECT TOP 1 CreatedAt FROM SystemLogs WHERE EventType = 'Watchdog' ORDER BY Id DESC) AS LastWatchdogTime";
+                        (SELECT COUNT(1) FROM dbo.SystemLogs WHERE IsArchived = 0) AS TotalLogs,
+                        (SELECT COUNT(1) FROM dbo.SystemLogs WHERE LogLevel = 'Critical' AND IsArchived = 0) AS CriticalCount,
+                        (SELECT COUNT(1) FROM dbo.SystemLogs WHERE LogLevel = 'Error' AND IsArchived = 0) AS ErrorCount,
+                        (SELECT COUNT(1) FROM dbo.SystemLogs WHERE LogLevel = 'Warning' AND IsArchived = 0) AS WarningCount,
+                        (SELECT COUNT(1) FROM dbo.SystemLogs WHERE EventType = 'Restart' AND CAST(CreatedAt AS DATE) = CAST(GETDATE() AS DATE)) AS TodayRestarts,
+                        (SELECT COUNT(1) FROM dbo.SystemLogs WHERE EventType = 'Crash' AND IsArchived = 0) AS CrashCount,
+                        (SELECT TOP 1 Message FROM dbo.SystemLogs WHERE EventType = 'Watchdog' ORDER BY Id DESC) AS LastWatchdog,
+                        (SELECT TOP 1 CreatedAt FROM dbo.SystemLogs WHERE EventType = 'Watchdog' ORDER BY Id DESC) AS LastWatchdogTime";
 
                 using var cmd = new SqlCommand(query, conn);
                 using var reader = cmd.ExecuteReader();
@@ -262,9 +316,9 @@ namespace Api.Services.SystemLogging
                 await conn.OpenAsync();
 
                 string query = @"
-                    UPDATE SystemLogs SET IsArchived = 1
+                    UPDATE dbo.SystemLogs SET IsArchived = 1
                     WHERE Id NOT IN (
-                        SELECT TOP (@MaxLogs) Id FROM SystemLogs ORDER BY Id DESC
+                        SELECT TOP (@MaxLogs) Id FROM dbo.SystemLogs ORDER BY Id DESC
                     ) AND IsArchived = 0";
 
                 using var cmd = new SqlCommand(query, conn);
@@ -292,7 +346,7 @@ namespace Api.Services.SystemLogging
                 await conn.OpenAsync();
 
                 string query = @"
-                    INSERT INTO SystemLogs
+                    INSERT INTO dbo.SystemLogs
                         (EventId, ServiceName, EventType, LogLevel, Message, StackTrace,
                          Source, UserId, IpAddress, MachineName, CreatedAt, IsArchived)
                     VALUES
@@ -325,19 +379,24 @@ namespace Api.Services.SystemLogging
             if (_hubContext == null) return;
             try
             {
-                await _hubContext.Clients.Group("LogViewers").SendAsync("NewLog", new
+                var payload = new
                 {
-                    entry.Id,
-                    entry.EventId,
-                    entry.ServiceName,
-                    entry.EventType,
-                    entry.LogLevel,
-                    entry.Message,
-                    entry.UserId,
-                    entry.IpAddress,
-                    entry.MachineName,
-                    CreatedAt = entry.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")
-                });
+                    id = entry.Id,
+                    eventId = entry.EventId,
+                    serviceName = entry.ServiceName,
+                    eventType = entry.EventType,
+                    logLevel = entry.LogLevel,
+                    message = entry.Message,
+                    stackTrace = entry.StackTrace,
+                    source = entry.Source,
+                    userId = entry.UserId,
+                    ipAddress = entry.IpAddress,
+                    machineName = entry.MachineName,
+                    createdAt = entry.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")
+                };
+
+                await _hubContext.Clients.Group("LogViewers").SendAsync("SystemLogCreated", payload);
+                await _hubContext.Clients.Group("LogViewers").SendAsync("NewLog", payload);
             }
             catch
             {

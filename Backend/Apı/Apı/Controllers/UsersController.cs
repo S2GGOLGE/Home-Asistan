@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Api.Dto.UpdateRole;
 namespace Api.Controllers
 {
     [ApiController]
@@ -71,10 +71,5 @@ namespace Api.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
-    }
-
-    public class UpdateRoleDto
-    {
-        public string Role { get; set; }
     }
 }

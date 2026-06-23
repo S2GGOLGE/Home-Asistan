@@ -1,3 +1,27 @@
+(function installAuthFetchGuard() {
+    if (window.__homeosAuthFetchGuardInstalled) return;
+    window.__homeosAuthFetchGuardInstalled = true;
+
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = async (...args) => {
+        const response = await nativeFetch(...args);
+        const requestUrl = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+        const isAuthEndpoint = requestUrl.includes('/api/auth/login') || requestUrl.includes('/api/signup');
+
+        if (response.status === 401 && !isAuthEndpoint) {
+            localStorage.removeItem('homeasistan_login_state');
+            sessionStorage.removeItem('homeasistan_login_state');
+            localStorage.removeItem('homeasistan_user_role');
+
+            if (!window.location.pathname.endsWith('Login.html')) {
+                window.location.href = '/Fronted/Pages/Login.html';
+            }
+        }
+
+        return response;
+    };
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     const sidebarNav = document.querySelector('#sidebar nav');
     const menuToggle = document.getElementById('menuToggle');

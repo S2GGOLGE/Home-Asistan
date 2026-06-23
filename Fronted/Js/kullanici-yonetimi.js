@@ -28,13 +28,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 2. Fetch Users from Database
-    const API_BASE_URL = (window.location.protocol === 'file:') ? 'https://localhost:7201/api' : `${window.location.origin}/api`;
+const API_BASE_URL = getApiBaseUrl();
+
+function getApiBaseUrl() {
+    const liveServerPorts = ['5500', '5501', '5502'];
+    const isLiveServer = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+        && liveServerPorts.includes(window.location.port);
+
+    if (window.location.protocol === 'file:' || isLiveServer) {
+        return 'https://localhost:7201/api';
+    }
+
+    return `${window.location.origin}/api`;
+}
 
     async function fetchUsers() {
         try {
             const response = await fetch(`${API_BASE_URL}/Users`);
             if (response.ok) {
-                allUsers = await response.json();
+                const payload = await response.json();
+                allUsers = Array.isArray(payload) ? payload : (payload.data ?? []);
                 renderUsersTable(allUsers);
             } else {
                 console.error('Kullanıcılar alınamadı:', response.statusText);
@@ -184,9 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadRecentActivity() {
         if (!activityList) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/SystemLogs?eventType=Authentication&limit=10`);
+            const res = await fetch(`${API_BASE_URL}/systemlogs?eventType=Authentication&pageSize=10`);
             if (!res.ok) throw new Error();
-            const logs = await res.json();
+            const payload = await res.json();
+            const data = payload?.data ?? payload;
+            const logs = Array.isArray(data) ? data : (data?.items ?? []);
             if (!logs || logs.length === 0) {
                 activityList.innerHTML = '<div style="color:var(--text-secondary);padding:10px">Henüz aktivite kaydı yok.</div>';
                 return;

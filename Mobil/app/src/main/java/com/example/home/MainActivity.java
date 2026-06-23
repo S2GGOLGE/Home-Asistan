@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);

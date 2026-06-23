@@ -1,6 +1,5 @@
-using System;
-using Microsoft.AspNetCore.Mvc;
 using Api.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
@@ -8,18 +7,11 @@ namespace Api.Controllers
     [Route("api/[controller]")]
     public class SystemLogsController : ControllerBase
     {
-        // ─────────────────────────────────────────────────────────────────────
-        // LOG LİSTELEME (Filtreleme + Sayfalama)
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Logları filtreli şekilde listeler.
-        /// GET /api/systemlogs?page=1&pageSize=100&logLevel=Error&eventType=Crash
-        /// </summary>
         [HttpGet]
         public IActionResult GetLogs(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 100,
+            [FromQuery] int? limit = null,
             [FromQuery] string? logLevel = null,
             [FromQuery] string? eventType = null,
             [FromQuery] string? serviceName = null,
@@ -28,87 +20,69 @@ namespace Api.Controllers
             [FromQuery] bool includeArchived = false)
         {
             if (AppState.SystemLog == null)
-                return StatusCode(503, new { error = "Log servisi henüz hazır değil." });
+            {
+                return StatusCode(503, ApiResponse.Fail("Log servisi henüz hazır değil."));
+            }
 
-            if (page < 1) page = 1;
-            if (pageSize < 1 || pageSize > 500) pageSize = 100;
+            page = Math.Max(1, page);
+            pageSize = limit.HasValue ? limit.Value : pageSize;
+            pageSize = pageSize < 1 || pageSize > 500 ? 100 : pageSize;
 
-            var logs = AppState.SystemLog.GetLogs(page, pageSize, logLevel, eventType, serviceName, from, to, includeArchived);
-            return Ok(logs);
+            var data = AppState.SystemLog.GetLogsWithTotal(page, pageSize, logLevel, eventType, serviceName, from, to, includeArchived);
+            return Ok(ApiResponse.Ok(data));
         }
 
-        /// <summary>
-        /// Son N log — admin paneli için hızlı erişim.
-        /// GET /api/systemlogs/recent?count=100
-        /// </summary>
         [HttpGet("recent")]
         public IActionResult GetRecent([FromQuery] int count = 100)
         {
             if (AppState.SystemLog == null)
-                return StatusCode(503, new { error = "Log servisi henüz hazır değil." });
+            {
+                return StatusCode(503, ApiResponse.Fail("Log servisi henüz hazır değil."));
+            }
 
-            if (count < 1 || count > 500) count = 100;
+            count = count < 1 || count > 500 ? 100 : count;
             var logs = AppState.SystemLog.GetLogs(1, count);
-            return Ok(logs);
+            return Ok(ApiResponse.Ok(logs));
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // DASHBOARD
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Dashboard istatistikleri (Critical/Error sayısı, crash, watchdog vs.)
-        /// GET /api/systemlogs/dashboard
-        /// </summary>
         [HttpGet("dashboard")]
         public IActionResult GetDashboard()
         {
             if (AppState.SystemLog == null)
-                return StatusCode(503, new { error = "Log servisi henüz hazır değil." });
+            {
+                return StatusCode(503, ApiResponse.Fail("Log servisi henüz hazır değil."));
+            }
 
-            var data = AppState.SystemLog.GetDashboard();
-            return Ok(data);
+            return Ok(ApiResponse.Ok(AppState.SystemLog.GetDashboard()));
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // ARŞİVLEME
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// 10.000+ log varsa eskileri arşivler.
-        /// POST /api/systemlogs/archive
-        /// </summary>
         [HttpPost("archive")]
         public async Task<IActionResult> Archive()
         {
             if (AppState.SystemLog == null)
-                return StatusCode(503, new { error = "Log servisi henüz hazır değil." });
+            {
+                return StatusCode(503, ApiResponse.Fail("Log servisi henüz hazır değil."));
+            }
 
             await AppState.SystemLog.ArchiveOldLogsAsync();
-            return Ok(new { success = true, message = "Arşivleme tamamlandı." });
+            return Ok(ApiResponse.Ok(new { message = "Arşivleme tamamlandı." }));
         }
 
-        // ─────────────────────────────────────────────────────────────────────
-        // TEST
-        // ─────────────────────────────────────────────────────────────────────
-
-        /// <summary>
-        /// Test amaçlı kritik log oluşturur.
-        /// POST /api/systemlogs/test-critical
-        /// </summary>
         [HttpPost("test-critical")]
         public async Task<IActionResult> TestCritical()
         {
             if (AppState.SystemLog == null)
-                return StatusCode(503, new { error = "Log servisi henüz hazır değil." });
+            {
+                return StatusCode(503, ApiResponse.Fail("Log servisi henüz hazır değil."));
+            }
 
             await AppState.SystemLog.CriticalAsync(
                 "[TEST] Admin tarafından kritik log testi yapıldı.",
                 "SystemLogsController",
                 stackTrace: null,
-                eventType: "System"
-            );
-            return Ok(new { success = true, message = "Kritik log oluşturuldu." });
+                eventType: "System");
+
+            return Ok(ApiResponse.Ok(new { message = "Kritik log oluşturuldu." }));
         }
     }
 }
