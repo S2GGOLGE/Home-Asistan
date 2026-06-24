@@ -87,23 +87,33 @@ BEGIN
     );
 END;");
 
-                EnsureColumn(connection, "SystemLogs", "EventId", "NVARCHAR(50) NOT NULL DEFAULT CONVERT(NVARCHAR(50), NEWID())");
-                EnsureColumn(connection, "SystemLogs", "ServiceName", "NVARCHAR(100) NOT NULL DEFAULT 'System'");
-                EnsureColumn(connection, "SystemLogs", "EventType", "NVARCHAR(50) NOT NULL DEFAULT 'System'");
-                EnsureColumn(connection, "SystemLogs", "LogLevel", "NVARCHAR(20) NOT NULL DEFAULT 'Information'");
-                EnsureColumn(connection, "SystemLogs", "Message", "NVARCHAR(MAX) NOT NULL DEFAULT ''");
-                EnsureColumn(connection, "SystemLogs", "StackTrace", "NVARCHAR(MAX) NULL");
-                EnsureColumn(connection, "SystemLogs", "Source", "NVARCHAR(255) NULL");
-                EnsureColumn(connection, "SystemLogs", "UserId", "INT NULL");
-                EnsureColumn(connection, "SystemLogs", "IpAddress", "NVARCHAR(50) NULL");
-                EnsureColumn(connection, "SystemLogs", "MachineName", "NVARCHAR(100) NOT NULL DEFAULT HOST_NAME()");
-                EnsureColumn(connection, "SystemLogs", "CreatedAt", "DATETIME NOT NULL DEFAULT GETDATE()");
-                EnsureColumn(connection, "SystemLogs", "IsArchived", "BIT NOT NULL DEFAULT 0");
+                EnsureColumn(connection, "SystemLogs", "EventId",     "NVARCHAR(50) NOT NULL DEFAULT CONVERT(NVARCHAR(50), NEWID())");
+                EnsureColumn(connection, "SystemLogs", "ServiceName",  "NVARCHAR(100) NOT NULL DEFAULT 'System'");
+                EnsureColumn(connection, "SystemLogs", "EventType",    "NVARCHAR(50) NOT NULL DEFAULT 'System'");
+                EnsureColumn(connection, "SystemLogs", "LogLevel",     "NVARCHAR(20) NOT NULL DEFAULT 'Information'");
+                EnsureColumn(connection, "SystemLogs", "Message",      "NVARCHAR(MAX) NOT NULL DEFAULT ''");
+                EnsureColumn(connection, "SystemLogs", "StackTrace",   "NVARCHAR(MAX) NULL");
+                EnsureColumn(connection, "SystemLogs", "Source",       "NVARCHAR(255) NULL");
+                EnsureColumn(connection, "SystemLogs", "UserId",       "INT NULL");
+                EnsureColumn(connection, "SystemLogs", "UserName",     "NVARCHAR(100) NULL");
+                EnsureColumn(connection, "SystemLogs", "IpAddress",    "NVARCHAR(50) NULL");
+                EnsureColumn(connection, "SystemLogs", "MachineName",  "NVARCHAR(100) NOT NULL DEFAULT HOST_NAME()");
+                EnsureColumn(connection, "SystemLogs", "CreatedAt",    "DATETIME NOT NULL DEFAULT GETDATE()");
+                EnsureColumn(connection, "SystemLogs", "IsArchived",   "BIT NOT NULL DEFAULT 0");
 
-                EnsureIndex(connection, "IX_SystemLogs_LogLevel", "CREATE INDEX IX_SystemLogs_LogLevel ON dbo.SystemLogs (LogLevel)");
+                EnsureIndex(connection, "IX_SystemLogs_LogLevel",  "CREATE INDEX IX_SystemLogs_LogLevel  ON dbo.SystemLogs (LogLevel)");
                 EnsureIndex(connection, "IX_SystemLogs_EventType", "CREATE INDEX IX_SystemLogs_EventType ON dbo.SystemLogs (EventType)");
                 EnsureIndex(connection, "IX_SystemLogs_CreatedAt", "CREATE INDEX IX_SystemLogs_CreatedAt ON dbo.SystemLogs (CreatedAt DESC)");
                 EnsureIndex(connection, "IX_SystemLogs_IsArchived", "CREATE INDEX IX_SystemLogs_IsArchived ON dbo.SystemLogs (IsArchived)");
+                EnsureIndex(connection, "IX_SystemLogs_UserId",    "CREATE INDEX IX_SystemLogs_UserId    ON dbo.SystemLogs (UserId) WHERE UserId IS NOT NULL");
+
+                // Logs tablosu ek alanlar ve indexler
+                EnsureColumn(connection, "Logs", "Type",     "NVARCHAR(50) NULL DEFAULT 'System'");
+                EnsureColumn(connection, "Logs", "UserId",   "INT NULL");
+                EnsureColumn(connection, "Logs", "UserName", "NVARCHAR(100) NULL");
+                EnsureIndex(connection, "IX_Logs_CreatedAt", "CREATE INDEX IX_Logs_CreatedAt ON dbo.Logs (CreatedAt DESC)");
+                EnsureIndex(connection, "IX_Logs_Level",     "CREATE INDEX IX_Logs_Level     ON dbo.Logs (Level)");
+                EnsureIndex(connection, "IX_Logs_Type",      "CREATE INDEX IX_Logs_Type      ON dbo.Logs (Type)");
 
                 EnsureFeatureTables(connection);
             }

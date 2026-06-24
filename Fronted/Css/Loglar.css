@@ -638,3 +638,253 @@ footer {
     font-family: inherit;
 }
 
+/* ─── LEVEL BADGE ─────────────────────────────────────────────────────────── */
+
+.level-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.level-badge.info {
+    background: rgba(0, 204, 255, 0.15);
+    color: var(--color-info, #00ccff);
+    border: 1px solid rgba(0, 204, 255, 0.25);
+}
+
+.level-badge.warn {
+    background: rgba(255, 153, 0, 0.15);
+    color: var(--color-warn, #ff9900);
+    border: 1px solid rgba(255, 153, 0, 0.25);
+}
+
+.level-badge.error {
+    background: rgba(255, 68, 68, 0.15);
+    color: var(--color-error, #ff4444);
+    border: 1px solid rgba(255, 68, 68, 0.25);
+}
+
+.level-badge.critical {
+    background: rgba(192, 57, 43, 0.15);
+    color: #e74c3c;
+    border: 1px solid rgba(192, 57, 43, 0.3);
+}
+
+.level-badge.security {
+    background: rgba(155, 89, 182, 0.15);
+    color: #bb6de0;
+    border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+/* ─── BUTTONS ─────────────────────────────────────────────────────────────── */
+
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-line, rgba(255,255,255,0.08));
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary, #aaa);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary, #fff);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 204, 255, 0.35);
+    background: rgba(0, 204, 255, 0.12);
+    color: var(--color-info, #00ccff);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: rgba(0, 204, 255, 0.22);
+    border-color: rgba(0, 204, 255, 0.6);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-line, rgba(255,255,255,0.08));
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary, #aaa);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary, #fff);
+}
+
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 68, 68, 0.3);
+    background: rgba(255, 68, 68, 0.1);
+    color: var(--color-error, #ff4444);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    background: rgba(255, 68, 68, 0.2);
+    border-color: rgba(255, 68, 68, 0.5);
+}
+
+/* ─── FORM ELEMENTS ───────────────────────────────────────────────────────── */
+
+.check-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary, #aaa);
+    cursor: pointer;
+    padding: 4px 0;
+    white-space: nowrap;
+}
+
+.check-label input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--color-info, #00ccff);
+    cursor: pointer;
+}
+
+/* ─── LIVE BADGE ──────────────────────────────────────────────────────────── */
+
+.live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(0, 200, 100, 0.12);
+    border: 1px solid rgba(0, 200, 100, 0.25);
+    font-size: 12px;
+    color: #00c864;
+    font-weight: 500;
+}
+
+.live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #00c864;
+    animation: livePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.7); }
+}
+
+/* ─── MESSAGE LINK ────────────────────────────────────────────────────────── */
+
+.message-link {
+    background: none;
+    border: none;
+    color: var(--text-primary, #e2e8f0);
+    cursor: pointer;
+    font-size: 13px;
+    text-align: left;
+    padding: 0;
+    max-width: 340px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    transition: color 0.2s ease;
+}
+
+.message-link:hover {
+    color: var(--color-info, #00ccff);
+    text-decoration: underline;
+    text-decoration-style: dashed;
+}
+
+/* ─── DATE SHORTCUTS ──────────────────────────────────────────────────────── */
+
+.date-shortcuts {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.date-shortcut-btn {
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-line, rgba(255,255,255,0.08));
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary, #aaa);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.date-shortcut-btn:hover {
+    background: rgba(0, 204, 255, 0.1);
+    border-color: rgba(0, 204, 255, 0.3);
+    color: var(--color-info, #00ccff);
+}
+
+.date-shortcut-btn.active {
+    background: rgba(0, 204, 255, 0.18);
+    border-color: rgba(0, 204, 255, 0.5);
+    color: var(--color-info, #00ccff);
+    box-shadow: 0 0 8px rgba(0, 204, 255, 0.2);
+}
+
+/* ─── ERROR STATE ─────────────────────────────────────────────────────────── */
+
+.empty-row.error-state {
+    color: var(--color-error, #ff4444);
+}
+
+.empty-row.error-state i {
+    margin-right: 6px;
+}
+
+/* ─── TOPBAR ──────────────────────────────────────────────────────────────── */
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+

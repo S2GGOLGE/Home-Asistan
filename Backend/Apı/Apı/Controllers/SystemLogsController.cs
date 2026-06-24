@@ -15,6 +15,7 @@ namespace Api.Controllers
             [FromQuery] string? logLevel = null,
             [FromQuery] string? eventType = null,
             [FromQuery] string? serviceName = null,
+            [FromQuery] string? search = null,
             [FromQuery] DateTime? from = null,
             [FromQuery] DateTime? to = null,
             [FromQuery] bool includeArchived = false)
@@ -26,9 +27,9 @@ namespace Api.Controllers
 
             page = Math.Max(1, page);
             pageSize = limit.HasValue ? limit.Value : pageSize;
-            pageSize = pageSize < 1 || pageSize > 500 ? 100 : pageSize;
+            pageSize = pageSize < 1 || pageSize > 100 ? 100 : pageSize;   // Max 100 (500'den düşürüldü)
 
-            var data = AppState.SystemLog.GetLogsWithTotal(page, pageSize, logLevel, eventType, serviceName, from, to, includeArchived);
+            var data = AppState.SystemLog.GetLogsWithTotal(page, pageSize, logLevel, eventType, serviceName, search, from, to, includeArchived);
             return Ok(ApiResponse.Ok(data));
         }
 

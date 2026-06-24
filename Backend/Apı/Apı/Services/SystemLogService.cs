@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Api.Model.Logging;
 using Api.Hubs;
+using Api.Services;
 
 namespace Api.Services.SystemLogging
 {
@@ -12,11 +13,12 @@ namespace Api.Services.SystemLogging
     /// Gelişmiş sistem loglama servisi.
     /// Her kritik olayı SystemLogs tablosuna yazar ve SignalR üzerinden yayar.
     /// </summary>
-    public class SystemLogService
+    public class SystemLogService : ILogService
     {
         private readonly string _connectionString;
         private readonly IHubContext<LogHub>? _hubContext;
         private const int MaxLogsToKeep = 10000;
+        private const int MaxPageSize    = 100;
 
         public SystemLogService(string connectionString, IHubContext<LogHub>? hubContext = null)
         {
@@ -39,7 +41,8 @@ namespace Api.Services.SystemLogging
             string? source = null,
             string? stackTrace = null,
             int? userId = null,
-            string? ipAddress = null)
+            string? ipAddress = null,
+            string? userName = null)
         {
             var entry = new SystemLogEntry
             {
@@ -51,6 +54,7 @@ namespace Api.Services.SystemLogging
                 Source = source,
                 StackTrace = stackTrace,
                 UserId = userId,
+                UserName = userName,
                 IpAddress = ipAddress,
                 MachineName = Environment.MachineName,
                 CreatedAt = DateTime.Now
@@ -85,6 +89,11 @@ namespace Api.Services.SystemLogging
             string eventType = EventTypes.Crash)
             => LogAsync(LogLevels.Critical, eventType, message, serviceName, stackTrace: stackTrace);
 
+        public Task SecurityAsync(string message, string serviceName,
+            int? userId = null, string? userName = null, string? ipAddress = null)
+            => LogAsync(LogLevels.Security, EventTypes.Security, message, serviceName,
+                        userId: userId, ipAddress: ipAddress, userName: userName);
+
         // ─────────────────────────────────────────────────────────────────────
         // ÖZEL OLAY METOTLARI
         // ─────────────────────────────────────────────────────────────────────
@@ -115,7 +124,7 @@ namespace Api.Services.SystemLogging
         public Task LogLoginAsync(string username, string? ipAddress = null, int? userId = null)
             => LogAsync(LogLevels.Information, EventTypes.Authentication,
                 $"[GİRİŞ] Kullanıcı '{username}' sisteme giriş yaptı.",
-                "LoginController", ipAddress: ipAddress, userId: userId);
+                "LoginController", ipAddress: ipAddress, userId: userId, userName: username);
 
         public Task LogLogoutAsync(string username, int? userId = null)
             => InfoAsync($"[ÇIKIŞ] Kullanıcı '{username}' sistemden çıkış yaptı.",
@@ -159,6 +168,7 @@ namespace Api.Services.SystemLogging
             string? logLevel = null,
             string? eventType = null,
             string? serviceName = null,
+            string? search = null,
             DateTime? from = null,
             DateTime? to = null,
             bool includeArchived = false)
@@ -172,13 +182,14 @@ namespace Api.Services.SystemLogging
 
                 var query = @"
                     SELECT Id, EventId, ServiceName, EventType, LogLevel, Message, StackTrace,
-                           Source, UserId, IpAddress, MachineName, CreatedAt, IsArchived
+                           Source, UserId, UserName, IpAddress, MachineName, CreatedAt, IsArchived
                     FROM dbo.SystemLogs
                     WHERE 1=1
                     AND (@IncludeArchived = 1 OR IsArchived = 0)
                     AND (@LogLevel IS NULL OR LogLevel = @LogLevel)
                     AND (@EventType IS NULL OR EventType = @EventType)
                     AND (@ServiceName IS NULL OR ServiceName = @ServiceName)
+                    AND (@Search IS NULL OR Message LIKE @Search OR ServiceName LIKE @Search)
                     AND (@From IS NULL OR CreatedAt >= @From)
                     AND (@To IS NULL OR CreatedAt <= @To)
                     ORDER BY Id DESC
@@ -189,6 +200,7 @@ namespace Api.Services.SystemLogging
                 cmd.Parameters.AddWithValue("@LogLevel", logLevel as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@EventType", eventType as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@ServiceName", serviceName as object ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Search", string.IsNullOrWhiteSpace(search) ? DBNull.Value : (object)$"%{search}%");
                 cmd.Parameters.AddWithValue("@From", from as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@To", to as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Offset", (page - 1) * pageSize);
@@ -214,11 +226,12 @@ namespace Api.Services.SystemLogging
             string? logLevel = null,
             string? eventType = null,
             string? serviceName = null,
+            string? search = null,
             DateTime? from = null,
             DateTime? to = null,
             bool includeArchived = false)
         {
-            var logs = GetLogs(page, pageSize, logLevel, eventType, serviceName, from, to, includeArchived);
+            var logs = GetLogs(page, pageSize, logLevel, eventType, serviceName, search, from, to, includeArchived);
             var total = 0;
 
             try
@@ -234,6 +247,7 @@ namespace Api.Services.SystemLogging
                     AND (@LogLevel IS NULL OR LogLevel = @LogLevel)
                     AND (@EventType IS NULL OR EventType = @EventType)
                     AND (@ServiceName IS NULL OR ServiceName = @ServiceName)
+                    AND (@Search IS NULL OR Message LIKE @Search OR ServiceName LIKE @Search)
                     AND (@From IS NULL OR CreatedAt >= @From)
                     AND (@To IS NULL OR CreatedAt <= @To)";
 
@@ -242,6 +256,7 @@ namespace Api.Services.SystemLogging
                 cmd.Parameters.AddWithValue("@LogLevel", logLevel as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@EventType", eventType as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@ServiceName", serviceName as object ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Search", string.IsNullOrWhiteSpace(search) ? DBNull.Value : (object)$"%{search}%");
                 cmd.Parameters.AddWithValue("@From", from as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@To", to as object ?? DBNull.Value);
 
@@ -348,10 +363,10 @@ namespace Api.Services.SystemLogging
                 string query = @"
                     INSERT INTO dbo.SystemLogs
                         (EventId, ServiceName, EventType, LogLevel, Message, StackTrace,
-                         Source, UserId, IpAddress, MachineName, CreatedAt, IsArchived)
+                         Source, UserId, UserName, IpAddress, MachineName, CreatedAt, IsArchived)
                     VALUES
                         (@EventId, @ServiceName, @EventType, @LogLevel, @Message, @StackTrace,
-                         @Source, @UserId, @IpAddress, @MachineName, @CreatedAt, 0)";
+                         @Source, @UserId, @UserName, @IpAddress, @MachineName, @CreatedAt, 0)";
 
                 using var cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@EventId", entry.EventId);
@@ -362,6 +377,7 @@ namespace Api.Services.SystemLogging
                 cmd.Parameters.AddWithValue("@StackTrace", entry.StackTrace as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Source", entry.Source as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@UserId", entry.UserId as object ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@UserName", entry.UserName as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@IpAddress", entry.IpAddress as object ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@MachineName", entry.MachineName);
                 cmd.Parameters.AddWithValue("@CreatedAt", entry.CreatedAt);
@@ -417,11 +433,350 @@ namespace Api.Services.SystemLogging
                 StackTrace = reader["StackTrace"]?.ToString(),
                 Source = reader["Source"]?.ToString(),
                 UserId = reader["UserId"] != DBNull.Value ? Convert.ToInt32(reader["UserId"]) : null,
+                UserName = reader["UserName"]?.ToString(),
                 IpAddress = reader["IpAddress"]?.ToString(),
                 MachineName = reader["MachineName"]?.ToString() ?? "",
                 CreatedAt = reader["CreatedAt"] != DBNull.Value ? Convert.ToDateTime(reader["CreatedAt"]) : DateTime.Now,
                 IsArchived = reader["IsArchived"] != DBNull.Value && Convert.ToBoolean(reader["IsArchived"])
             };
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
+        // ILogService — ASYNC READ / DELETE (yeni, LogsController için)
+        // ─────────────────────────────────────────────────────────────────────
+
+        /// <summary>Sayfalı, filtrelenebilir log sorgusu. Tek connection ile COUNT + DATA alır.</summary>
+        public async Task<PagedResult<SystemLogEntry>> GetLogsAsync(LogQuery query)
+        {
+            var page     = Math.Max(1, query.Page);
+            var pageSize = Math.Clamp(query.PageSize, 1, MaxPageSize);
+            var offset   = (page - 1) * pageSize;
+            var items    = new List<SystemLogEntry>();
+            var total    = 0;
+
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                var (where, addParams) = BuildFilterWhere(query);
+
+                // COUNT — aynı connection üzerinde
+                await using (var countCmd = new SqlCommand($"SELECT COUNT(1) FROM dbo.SystemLogs WHERE {where}", conn))
+                {
+                    addParams(countCmd);
+                    total = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
+                }
+
+                // DATA
+                var dataSql = $@"
+                    SELECT Id, EventId, ServiceName, EventType, LogLevel, Message, StackTrace,
+                           Source, UserId, UserName, IpAddress, MachineName, CreatedAt, IsArchived
+                    FROM dbo.SystemLogs
+                    WHERE {where}
+                    ORDER BY Id DESC
+                    OFFSET {offset} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+
+                await using (var dataCmd = new SqlCommand(dataSql, conn))
+                {
+                    addParams(dataCmd);
+                    await using var reader = await dataCmd.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                        items.Add(MapToEntry(reader));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[SystemLogService] GetLogsAsync hata: {ex.Message}");
+            }
+
+            return new PagedResult<SystemLogEntry>
+            {
+                Page         = page,
+                PageSize     = pageSize,
+                TotalRecords = total,
+                TotalPages   = pageSize > 0 ? (int)Math.Ceiling(total / (double)pageSize) : 0,
+                Items        = items
+            };
+        }
+
+        public async Task<SystemLogEntry?> GetLogByIdAsync(int id)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                const string sql = @"
+                    SELECT Id, EventId, ServiceName, EventType, LogLevel, Message, StackTrace,
+                           Source, UserId, UserName, IpAddress, MachineName, CreatedAt, IsArchived
+                    FROM dbo.SystemLogs
+                    WHERE Id = @Id";
+
+                await using var cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+                return await reader.ReadAsync() ? MapToEntry(reader) : null;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[SystemLogService] GetLogByIdAsync hata: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<SystemLogEntry>> GetRecentLogsAsync(int count = 50)
+        {
+            count = Math.Clamp(count, 1, MaxPageSize);
+            var items = new List<SystemLogEntry>();
+
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                const string sql = @"
+                    SELECT TOP (@Count)
+                        Id, EventId, ServiceName, EventType, LogLevel, Message, StackTrace,
+                        Source, UserId, UserName, IpAddress, MachineName, CreatedAt, IsArchived
+                    FROM dbo.SystemLogs
+                    WHERE IsArchived = 0
+                    ORDER BY Id DESC";
+
+                await using var cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Count", count);
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                    items.Add(MapToEntry(reader));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[SystemLogService] GetRecentLogsAsync hata: {ex.Message}");
+            }
+
+            return items;
+        }
+
+        public async Task<bool> DeleteLogAsync(int id)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                const string sql = "DELETE FROM dbo.SystemLogs WHERE Id = @Id";
+                await using var cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                return await cmd.ExecuteNonQueryAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[SystemLogService] DeleteLogAsync hata: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>WHERE clause + parametre uygulayıcı üretir. Her çağrıda taze parametreler.</summary>
+        private static (string where, Action<SqlCommand> addParams) BuildFilterWhere(LogQuery query)
+        {
+            var conditions = new List<string>();
+
+            if (!query.IncludeArchived)
+                conditions.Add("IsArchived = 0");
+
+            if (!string.IsNullOrWhiteSpace(query.Level))
+                conditions.Add("LogLevel = @Level");
+
+            if (!string.IsNullOrWhiteSpace(query.Type))
+                conditions.Add("EventType = @Type");
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+                conditions.Add("(Message LIKE @Search OR ServiceName LIKE @Search OR UserName LIKE @Search)");
+
+            if (query.From.HasValue)
+                conditions.Add("CreatedAt >= @From");
+
+            if (query.To.HasValue)
+                conditions.Add("CreatedAt <= @To");
+
+            var where = conditions.Count > 0
+                ? string.Join(" AND ", conditions)
+                : "1=1";
+
+            void AddParams(SqlCommand cmd)
+            {
+                if (!string.IsNullOrWhiteSpace(query.Level))
+                    cmd.Parameters.AddWithValue("@Level", query.Level);
+                if (!string.IsNullOrWhiteSpace(query.Type))
+                    cmd.Parameters.AddWithValue("@Type", query.Type);
+                if (!string.IsNullOrWhiteSpace(query.Search))
+                    cmd.Parameters.AddWithValue("@Search", $"%{query.Search}%");
+                if (query.From.HasValue)
+                    cmd.Parameters.AddWithValue("@From", query.From.Value);
+                if (query.To.HasValue)
+                    cmd.Parameters.AddWithValue("@To", query.To.Value);
+            }
+
+            return (where, AddParams);
+        }
+
+        // ── AppLogs (dbo.Logs) ────────────────────────────────────────────────
+        public async Task<PagedResult<AppLogEntry>> GetAppLogsAsync(LogQuery query)
+        {
+            var page     = Math.Max(1, query.Page);
+            var pageSize = Math.Clamp(query.PageSize, 1, MaxPageSize);
+            var offset   = (page - 1) * pageSize;
+            var items    = new List<AppLogEntry>();
+            var total    = 0;
+
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                var (where, addParams) = BuildAppFilterWhere(query);
+
+                // COUNT
+                await using (var countCmd = new SqlCommand($"SELECT COUNT(1) FROM dbo.Logs WHERE {where}", conn))
+                {
+                    addParams(countCmd);
+                    total = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
+                }
+
+                // DATA
+                var dataSql = $@"
+                    SELECT Id, Level, Message, Source, CreatedAt, Type, UserId, UserName
+                    FROM dbo.Logs
+                    WHERE {where}
+                    ORDER BY Id DESC
+                    OFFSET {offset} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+
+                await using (var dataCmd = new SqlCommand(dataSql, conn))
+                {
+                    addParams(dataCmd);
+                    await using var reader = await dataCmd.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        items.Add(MapToAppEntry(reader));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[SystemLogService] GetAppLogsAsync hata: {ex.Message}");
+            }
+
+            return new PagedResult<AppLogEntry>
+            {
+                Page         = page,
+                PageSize     = pageSize,
+                TotalRecords = total,
+                TotalPages   = pageSize > 0 ? (int)Math.Ceiling(total / (double)pageSize) : 0,
+                Items        = items
+            };
+        }
+
+        public async Task<AppLogEntry?> GetAppLogByIdAsync(int id)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                const string sql = @"
+                    SELECT Id, Level, Message, Source, CreatedAt, Type, UserId, UserName
+                    FROM dbo.Logs
+                    WHERE Id = @Id";
+
+                await using var cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+                return await reader.ReadAsync() ? MapToAppEntry(reader) : null;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[SystemLogService] GetAppLogByIdAsync hata: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<bool> DeleteAppLogAsync(int id)
+        {
+            try
+            {
+                await using var conn = new SqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                const string sql = "DELETE FROM dbo.Logs WHERE Id = @Id";
+                await using var cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                return await cmd.ExecuteNonQueryAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[SystemLogService] DeleteAppLogAsync hata: {ex.Message}");
+                return false;
+            }
+        }
+
+        private static AppLogEntry MapToAppEntry(SqlDataReader reader)
+        {
+            return new AppLogEntry
+            {
+                Id = Convert.ToInt32(reader["Id"]),
+                Level = reader["Level"]?.ToString() ?? "INFO",
+                Message = reader["Message"]?.ToString() ?? "",
+                Source = reader["Source"]?.ToString(),
+                Type = reader["Type"]?.ToString() ?? "System",
+                UserId = reader["UserId"] != DBNull.Value ? Convert.ToInt32(reader["UserId"]) : null,
+                UserName = reader["UserName"]?.ToString(),
+                CreatedAt = reader["CreatedAt"] != DBNull.Value ? Convert.ToDateTime(reader["CreatedAt"]) : DateTime.Now
+            };
+        }
+
+        private static (string where, Action<SqlCommand> addParams) BuildAppFilterWhere(LogQuery query)
+        {
+            var conditions = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(query.Level))
+                conditions.Add("Level = @Level");
+
+            if (!string.IsNullOrWhiteSpace(query.Type))
+                conditions.Add("Type = @Type");
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+                conditions.Add("(Message LIKE @Search OR Source LIKE @Search OR UserName LIKE @Search)");
+
+            if (query.From.HasValue)
+                conditions.Add("CreatedAt >= @From");
+
+            if (query.To.HasValue)
+                conditions.Add("CreatedAt <= @To");
+
+            var where = conditions.Count > 0
+                ? string.Join(" AND ", conditions)
+                : "1=1";
+
+            void AddParams(SqlCommand cmd)
+            {
+                if (!string.IsNullOrWhiteSpace(query.Level))
+                    cmd.Parameters.AddWithValue("@Level", query.Level);
+                if (!string.IsNullOrWhiteSpace(query.Type))
+                    cmd.Parameters.AddWithValue("@Type", query.Type);
+                if (!string.IsNullOrWhiteSpace(query.Search))
+                    cmd.Parameters.AddWithValue("@Search", $"%{query.Search}%");
+                if (query.From.HasValue)
+                    cmd.Parameters.AddWithValue("@From", query.From.Value);
+                if (query.To.HasValue)
+                    cmd.Parameters.AddWithValue("@To", query.To.Value);
+            }
+
+            return (where, AddParams);
         }
     }
 }

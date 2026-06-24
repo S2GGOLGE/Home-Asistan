@@ -1,5 +1,6 @@
 using Api.Helpers;
 using Api.Hubs;
+using Api.Middleware;
 using Api.Services.LogServices;
 using Api.Services.SystemLogging;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,11 @@ DatabaseInitializer.Initialize(connStr);
 
 // ── Eski LogService (geriye uyumluluk) ────────────────────────────────────
 builder.Services.AddSingleton<LogService>(new LogService(connStr));
+
+// ── ILogService (yeni — LogsController için DI) ───────────────────────────
+// Lazy factory: AppState.SystemLog build sonrası set ediliyor, ilk istekte hazır.
+builder.Services.AddSingleton<Api.Services.ILogService>(
+    _ => AppState.SystemLog ?? throw new InvalidOperationException("Log servisi henüz başlatılmadı."));
 
 // ── SignalR ────────────────────────────────────────────────────────────────
 builder.Services.AddSignalR();
@@ -84,25 +90,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("HomeAsistan");
 
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        context.Response.ContentType = "application/json";
-
-        if (AppState.SystemLog is not null)
-        {
-            await AppState.SystemLog.LogApiErrorAsync(context.Request.Path, context.Response.StatusCode, ex.Message);
-        }
-
-        await context.Response.WriteAsJsonAsync(ApiResponse.Fail("Sunucu hatası oluştu."));
-    }
-});
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseAuthorization();
 

@@ -1,12 +1,11 @@
 const API_BASE = getApiBaseUrl();
-const HUB_BASE = API_BASE.replace(/\/api$/i, '');
 
-let logsList = [];
 let normalLogsList = [];
-let currentPage = 1;
-let pageSize = 100;
-let totalPages = 1;
-let signalRConnection = null;
+let currentAppPage = 1;
+let pageSize = 50;
+let totalAppPages = 1;
+let totalAppRecords = 0;
+let currentDateRange = '';
 
 function getApiBaseUrl() {
     const liveServerPorts = ['5500', '5501', '5502'];
@@ -25,7 +24,6 @@ function unwrapApiResponse(payload) {
         if (!payload.success) throw new Error(payload.error || 'API error');
         return payload.data;
     }
-
     return payload;
 }
 
@@ -43,32 +41,16 @@ async function fetchJson(url, options = {}) {
 }
 
 const el = {
-    dashTotal: document.getElementById('dash-total'),
-    dashCritical: document.getElementById('dash-critical'),
-    dashError: document.getElementById('dash-error'),
-    dashWarning: document.getElementById('dash-warning'),
-    dashCrash: document.getElementById('dash-crash'),
-    dashRestarts: document.getElementById('dash-restarts'),
-    logsTableBody: document.getElementById('logs-table-body'),
-    logsPagination: document.getElementById('logs-pagination'),
-    devicesTableBody: document.getElementById('devices-table-body'),
-    usersTableBody: document.getElementById('users-table-body'),
-    commandsTableBody: document.getElementById('commands-table-body'),
+    appLogsTableBody: document.getElementById('applogs-table-body'),
+    appLogsPagination: document.getElementById('applogs-pagination'),
     filterLogLevel: document.getElementById('filter-log-level'),
-    filterEventType: document.getElementById('filter-event-type'),
-    filterService: document.getElementById('filter-service'),
     filterFrom: document.getElementById('filter-from'),
     filterTo: document.getElementById('filter-to'),
-    filterArchived: document.getElementById('filter-archived'),
     searchInput: document.getElementById('search-input'),
-    liveDot: document.getElementById('live-dot'),
-    liveLabel: document.getElementById('live-label'),
     loaderOverlay: document.getElementById('loader-overlay'),
     loaderBar: document.getElementById('loader-bar'),
     loaderText: document.getElementById('loader-text'),
-    loaderPercentage: document.getElementById('loader-percentage'),
-    stackTraceModal: document.getElementById('stacktrace-modal'),
-    stackTraceContent: document.getElementById('stacktrace-content')
+    loaderPercentage: document.getElementById('loader-percentage')
 };
 
 function setText(node, value) {
@@ -78,99 +60,95 @@ function setText(node, value) {
 function normalizeLog(log) {
     return {
         id: log.id ?? log.Id ?? 0,
-        eventId: log.eventId ?? log.EventId ?? '',
-        serviceName: log.serviceName ?? log.ServiceName ?? '',
-        eventType: log.eventType ?? log.EventType ?? '',
         logLevel: log.logLevel ?? log.LogLevel ?? log.level ?? log.Level ?? 'Information',
         message: log.message ?? log.Message ?? '',
-        stackTrace: log.stackTrace ?? log.StackTrace ?? '',
         userId: log.userId ?? log.UserId ?? '',
-        ipAddress: log.ipAddress ?? log.IpAddress ?? '',
+        userName: log.userName ?? log.UserName ?? '',
+        source: log.source ?? log.Source ?? '',
         createdAt: log.createdAt ?? log.CreatedAt ?? ''
     };
 }
 
-async function fetchDashboardStats() {
-    try {
-        const stats = await fetchJson(`${API_BASE}/systemlogs/dashboard`);
-
-        setText(el.dashTotal, stats.totalLogs ?? stats.TotalLogs ?? 0);
-        setText(el.dashCritical, stats.criticalCount ?? stats.CriticalCount ?? 0);
-        setText(el.dashError, stats.errorCount ?? stats.ErrorCount ?? 0);
-        setText(el.dashWarning, stats.warningCount ?? stats.WarningCount ?? 0);
-        setText(el.dashCrash, stats.crashCount ?? stats.CrashCount ?? 0);
-        setText(el.dashRestarts, stats.todayRestarts ?? stats.TodayRestarts ?? 0);
-    } catch (err) {
-        console.error('Dashboard error:', err);
-    }
-}
-
-async function fetchSystemLogs() {
+async function fetchAppLogs() {
+    if (!el.appLogsTableBody) return;
+    setTableLoading(el.appLogsTableBody, 6);
     try {
         const params = new URLSearchParams({
-            page: String(currentPage),
+            page: String(currentAppPage),
             pageSize: String(pageSize)
         });
 
-        if (el.filterLogLevel?.value) params.append('logLevel', el.filterLogLevel.value);
-        if (el.filterEventType?.value) params.append('eventType', el.filterEventType.value);
-        if (el.filterService?.value) params.append('serviceName', el.filterService.value);
+        const searchVal = (el.searchInput?.value || '').trim();
+        if (searchVal) params.append('search', searchVal);
+        if (el.filterLogLevel?.value) params.append('level', el.filterLogLevel.value);
         if (el.filterFrom?.value) params.append('from', el.filterFrom.value);
         if (el.filterTo?.value) params.append('to', el.filterTo.value);
-        if (el.filterArchived?.checked) params.append('includeArchived', 'true');
+        if (currentDateRange) params.append('dateRange', currentDateRange);
 
-        const result = await fetchJson(`${API_BASE}/systemlogs?${params.toString()}`);
+        const result = await fetchJson(`${API_BASE}/logs?${params.toString()}`);
         const items = Array.isArray(result) ? result : result.items ?? result.Items ?? [];
-        logsList = items.map(normalizeLog);
-        totalPages = Math.max(1, result.totalPages ?? result.TotalPages ?? 1);
+        normalLogsList = items.map(normalizeLog);
+        totalAppPages  = Math.max(1, result.totalPages   ?? result.TotalPages   ?? 1);
+        totalAppRecords = result.total ?? result.Total ?? result.totalRecords ?? result.TotalRecords ?? 0;
 
-        populateServiceFilter(logsList);
-        renderLogsTable();
-        renderPagination();
+        renderAppLogsTable();
+        renderAppPagination();
     } catch (err) {
-        console.error('System logs fetch error:', err);
-        renderTableMessage(el.logsTableBody, 8, 'Sistem logları yüklenemedi.');
+        console.error('App logs fetch error:', err);
+        renderTableError(el.appLogsTableBody, 6, 'Uygulama logları yüklenemedi. Sunucu bağlantısını kontrol edin.');
     }
 }
 
-async function fetchLogs() {
-    try {
-        const result = await fetchJson(`${API_BASE}/logs?page=1&pageSize=100`);
-        normalLogsList = (Array.isArray(result) ? result : result.items ?? []).map(normalizeLog);
-    } catch (err) {
-        console.error('Logs fetch error:', err);
-        normalLogsList = [];
+function renderAppLogsTable() {
+    if (!el.appLogsTableBody) return;
+
+    if (normalLogsList.length === 0) {
+        renderTableMessage(el.appLogsTableBody, 6, 'Kayıt bulunamadı.');
+        return;
     }
+
+    el.appLogsTableBody.innerHTML = normalLogsList.map(log => `
+        <tr>
+            <td>${log.id}</td>
+            <td><span class="level-badge ${getLevelClass(log.logLevel)}">${escapeHtml(log.logLevel)}</span></td>
+            <td>${escapeHtml(log.source || '-')}</td>
+            <td>${escapeHtml(log.message)}</td>
+            <td>${escapeHtml(log.userName || log.userId || '-')}</td>
+            <td>${formatDate(log.createdAt)}</td>
+        </tr>
+    `).join('');
 }
 
-async function fetchDevices() {
-    try {
-        const devices = await fetchJson(`${API_BASE}/Listing`);
-        renderDevices(Array.isArray(devices) ? devices : []);
-    } catch (err) {
-        console.error('Devices fetch error:', err);
-        renderTableMessage(el.devicesTableBody, 5, 'Cihazlar yüklenemedi.');
-    }
-}
+function renderAppPagination() {
+    if (!el.appLogsPagination) return;
 
-async function fetchUsers() {
-    try {
-        const users = await fetchJson(`${API_BASE}/Users`);
-        renderUsers(Array.isArray(users) ? users : []);
-    } catch (err) {
-        console.error('Users fetch error:', err);
-        renderTableMessage(el.usersTableBody, 5, 'Kullanıcılar yüklenemedi.');
-    }
-}
+    el.appLogsPagination.innerHTML = `
+        <span class="pagination-info">
+            Toplam <strong>${totalAppRecords.toLocaleString('tr-TR')}</strong> kayıt
+            &nbsp;·&nbsp;
+            Sayfa <strong>${currentAppPage}</strong> / <strong>${totalAppPages}</strong>
+        </span>
+        <button class="pagination-btn" ${currentAppPage <= 1 ? 'disabled' : ''} data-page="1" title="İlk Sayfa">
+            <i class="fas fa-angle-double-left"></i>
+        </button>
+        <button class="pagination-btn" ${currentAppPage <= 1 ? 'disabled' : ''} data-page="${currentAppPage - 1}" title="Önceki">
+            <i class="fas fa-angle-left"></i> Önceki
+        </button>
+        <button class="pagination-btn" ${currentAppPage >= totalAppPages ? 'disabled' : ''} data-page="${currentAppPage + 1}" title="Sonraki">
+            Sonraki <i class="fas fa-angle-right"></i>
+        </button>
+        <button class="pagination-btn" ${currentAppPage >= totalAppPages ? 'disabled' : ''} data-page="${totalAppPages}" title="Son Sayfa">
+            <i class="fas fa-angle-double-right"></i>
+        </button>
+    `;
 
-async function fetchCommands() {
-    try {
-        const commands = await fetchJson(`${API_BASE}/Commands`);
-        renderCommands(Array.isArray(commands) ? commands : []);
-    } catch (err) {
-        console.error('Commands fetch error:', err);
-        renderTableMessage(el.commandsTableBody, 6, 'Komut geçmişi yüklenemedi.');
-    }
+    el.appLogsPagination.querySelectorAll('.pagination-btn:not([disabled])').forEach(button => {
+        button.addEventListener('click', () => {
+            currentAppPage = Math.max(1, Math.min(totalAppPages, Number(button.dataset.page || '1')));
+            fetchAppLogs();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
 }
 
 function renderTableMessage(tbody, colspan, message) {
@@ -178,178 +156,25 @@ function renderTableMessage(tbody, colspan, message) {
     tbody.innerHTML = `<tr><td colspan="${colspan}" class="empty-row">${escapeHtml(message)}</td></tr>`;
 }
 
-function renderLogsTable() {
-    if (!el.logsTableBody) return;
-
-    const query = (el.searchInput?.value || '').toLowerCase().trim();
-    const filtered = logsList.filter(log => !query || log.message.toLowerCase().includes(query));
-
-    if (filtered.length === 0) {
-        renderTableMessage(el.logsTableBody, 8, 'Kayıt bulunamadı.');
-        return;
-    }
-
-    el.logsTableBody.innerHTML = filtered.map(log => `
-        <tr>
-            <td>${log.id}</td>
-            <td><span class="level-badge ${String(log.logLevel).toLowerCase()}">${escapeHtml(log.logLevel)}</span></td>
-            <td>${escapeHtml(log.eventType)}</td>
-            <td>${escapeHtml(log.serviceName)}</td>
-            <td>
-                <button class="message-link" data-stack="${escapeAttribute(log.stackTrace)}">${escapeHtml(log.message)}</button>
-            </td>
-            <td>${escapeHtml(log.userId || '-')}</td>
-            <td>${escapeHtml(log.ipAddress || '-')}</td>
-            <td>${formatDate(log.createdAt)}</td>
-        </tr>
-    `).join('');
-
-    el.logsTableBody.querySelectorAll('.message-link').forEach(button => {
-        button.addEventListener('click', () => showStackTrace(button.dataset.stack || 'Stack trace yok.'));
-    });
-}
-
-function renderDevices(devices) {
-    if (!el.devicesTableBody) return;
-    if (devices.length === 0) {
-        renderTableMessage(el.devicesTableBody, 5, 'Cihaz bulunamadı.');
-        return;
-    }
-
-    el.devicesTableBody.innerHTML = devices.map(device => `
-        <tr>
-            <td>${device.id ?? device.Id ?? '-'}</td>
-            <td>${escapeHtml(device.name ?? device.Name ?? device.deviceName ?? '-')}</td>
-            <td>${escapeHtml(device.type ?? device.Type ?? device.deviceVersion ?? '-')}</td>
-            <td>${formatStatus(device.status ?? device.Status)}</td>
-            <td>${formatDate(device.lastUpdated ?? device.LastUpdated ?? device.createdAt ?? device.CreatedAt)}</td>
-        </tr>
-    `).join('');
-}
-
-function renderUsers(users) {
-    if (!el.usersTableBody) return;
-    if (users.length === 0) {
-        renderTableMessage(el.usersTableBody, 5, 'Kullanıcı bulunamadı.');
-        return;
-    }
-
-    el.usersTableBody.innerHTML = users.map(user => `
-        <tr>
-            <td>${user.id ?? user.Id ?? '-'}</td>
-            <td>${escapeHtml(user.username ?? user.Username ?? '-')}</td>
-            <td>${escapeHtml(user.email ?? user.Email ?? '-')}</td>
-            <td>${escapeHtml(user.role ?? user.Role ?? '-')}</td>
-            <td>${formatDate(user.createdAt ?? user.CreatedAt)}</td>
-        </tr>
-    `).join('');
-}
-
-function renderCommands(commands) {
-    if (!el.commandsTableBody) return;
-    if (commands.length === 0) {
-        renderTableMessage(el.commandsTableBody, 6, 'Komut kaydı bulunamadı.');
-        return;
-    }
-
-    el.commandsTableBody.innerHTML = commands.map(command => `
-        <tr>
-            <td>${command.id ?? command.Id ?? '-'}</td>
-            <td>${command.userId ?? command.UserId ?? '-'}</td>
-            <td>${escapeHtml(command.commandText ?? command.CommandText ?? command.command ?? command.Command ?? '-')}</td>
-            <td>${escapeHtml(command.response ?? command.Response ?? '-')}</td>
-            <td>${escapeHtml(command.status ?? command.Status ?? '-')}</td>
-            <td>${formatDate(command.createdAt ?? command.CreatedAt)}</td>
-        </tr>
-    `).join('');
-}
-
-function renderPagination() {
-    if (!el.logsPagination) return;
-
-    el.logsPagination.innerHTML = `
-        <button class="page-btn" ${currentPage <= 1 ? 'disabled' : ''} data-page="${currentPage - 1}">Önceki</button>
-        <span class="page-info">${currentPage} / ${totalPages}</span>
-        <button class="page-btn" ${currentPage >= totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">Sonraki</button>
-    `;
-
-    el.logsPagination.querySelectorAll('.page-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            currentPage = Number(button.dataset.page || '1');
-            fetchSystemLogs();
-        });
-    });
-}
-
-function populateServiceFilter(logs) {
-    if (!el.filterService) return;
-    const current = el.filterService.value;
-    const services = [...new Set(logs.map(log => log.serviceName).filter(Boolean))].sort();
-
-    el.filterService.innerHTML = '<option value="">Tüm Servisler</option>'
-        + services.map(service => `<option value="${escapeAttribute(service)}">${escapeHtml(service)}</option>`).join('');
-    el.filterService.value = current;
-}
-
-function initializeSignalR() {
-    if (!window.signalR) {
-        updateLiveState(false, 'SignalR kütüphanesi yok');
-        return;
-    }
-
-    signalRConnection = new signalR.HubConnectionBuilder()
-        .withUrl(`${HUB_BASE}/hubs/logs`)
-        .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
-        .configureLogging(signalR.LogLevel.Warning)
-        .build();
-
-    const onLog = log => {
-        const normalized = normalizeLog(log);
-        logsList.unshift(normalized);
-        logsList = logsList.slice(0, pageSize);
-        renderLogsTable();
-        fetchDashboardStats();
+function getLevelClass(level) {
+    const map = {
+        'information': 'info',
+        'warning':     'warn',
+        'error':       'error',
+        'critical':    'critical',
+        'security':    'security'
     };
-
-    signalRConnection.on('SystemLogCreated', onLog);
-    signalRConnection.on('NewLog', onLog);
-
-    signalRConnection.onreconnecting(() => updateLiveState(false, 'Yeniden bağlanıyor...'));
-    signalRConnection.onreconnected(async () => {
-        updateLiveState(true, 'Canlı');
-        await signalRConnection.invoke('Subscribe');
-    });
-    signalRConnection.onclose(() => updateLiveState(false, 'Bağlantı kapandı'));
-
-    signalRConnection.start()
-        .then(async () => {
-            await signalRConnection.invoke('Subscribe');
-            updateLiveState(true, 'Canlı');
-        })
-        .catch(err => {
-            console.error('SignalR connection error:', err);
-            updateLiveState(false, 'Bağlantı yok');
-        });
+    return map[String(level).toLowerCase()] ?? 'info';
 }
 
-function updateLiveState(connected, label) {
-    if (el.liveDot) el.liveDot.classList.toggle('active', connected);
-    setText(el.liveLabel, label);
+function setTableLoading(tbody, colspan) {
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="${colspan}" class="empty-row"><i class="fas fa-circle-notch fa-spin"></i> Yükleniyor...</td></tr>`;
 }
 
-function showStackTrace(stackTrace) {
-    if (!el.stackTraceModal || !el.stackTraceContent) return;
-    el.stackTraceContent.textContent = stackTrace || 'Stack trace yok.';
-    el.stackTraceModal.classList.add('active');
-}
-
-function closeStackTrace() {
-    if (el.stackTraceModal) el.stackTraceModal.classList.remove('active');
-}
-
-function formatStatus(status) {
-    const online = status === true || status === 1 || status === '1' || String(status).toLowerCase() === 'online';
-    return `<span class="status-badge ${online ? 'online' : 'offline'}">${online ? 'Aktif' : 'Pasif'}</span>`;
+function renderTableError(tbody, colspan, message) {
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="${colspan}" class="empty-row error-state"><i class="fas fa-exclamation-circle"></i> ${escapeHtml(message)}</td></tr>`;
 }
 
 function formatDate(value) {
@@ -368,48 +193,44 @@ function escapeHtml(value) {
         .replaceAll("'", '&#039;');
 }
 
-function escapeAttribute(value) {
-    return escapeHtml(value).replaceAll('\n', '&#10;').replaceAll('\r', '');
-}
-
 function setupEvents() {
     document.getElementById('refresh-btn')?.addEventListener('click', initializeSystem);
     document.getElementById('apply-filters-btn')?.addEventListener('click', () => {
-        currentPage = 1;
-        fetchSystemLogs();
+        currentAppPage = 1;
+        fetchAppLogs();
     });
     document.getElementById('clear-filters-btn')?.addEventListener('click', () => {
-        [el.filterLogLevel, el.filterEventType, el.filterService, el.filterFrom, el.filterTo].forEach(input => {
+        [el.filterLogLevel, el.filterFrom, el.filterTo].forEach(input => {
             if (input) input.value = '';
         });
-        if (el.filterArchived) el.filterArchived.checked = false;
         if (el.searchInput) el.searchInput.value = '';
-        currentPage = 1;
-        fetchSystemLogs();
+        currentDateRange = '';
+        document.querySelectorAll('.date-shortcut-btn').forEach(b => b.classList.remove('active'));
+        currentAppPage = 1;
+        fetchAppLogs();
     });
-    document.getElementById('archive-btn')?.addEventListener('click', async () => {
-        await fetchJson(`${API_BASE}/systemlogs/archive`, { method: 'POST' });
-        await fetchSystemLogs();
-        await fetchDashboardStats();
-    });
-    document.getElementById('test-critical-btn')?.addEventListener('click', async () => {
-        await fetchJson(`${API_BASE}/systemlogs/test-critical`, { method: 'POST' });
-        await fetchSystemLogs();
-        await fetchDashboardStats();
-    });
-    document.getElementById('close-stacktrace')?.addEventListener('click', closeStackTrace);
-    el.stackTraceModal?.addEventListener('click', event => {
-        if (event.target === el.stackTraceModal) closeStackTrace();
-    });
-    el.searchInput?.addEventListener('input', renderLogsTable);
 
-    document.querySelectorAll('.tab-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const tab = button.dataset.tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn === button));
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.toggle('active', content.id === `${tab}-tab`);
-            });
+    let _searchTimer = null;
+    el.searchInput?.addEventListener('input', () => {
+        clearTimeout(_searchTimer);
+        _searchTimer = setTimeout(() => {
+            currentAppPage = 1;
+            fetchAppLogs();
+        }, 400);
+    });
+
+    document.querySelectorAll('.date-shortcut-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const range = btn.dataset.range;
+            currentDateRange = (currentDateRange === range) ? '' : range;
+            document.querySelectorAll('.date-shortcut-btn').forEach(b =>
+                b.classList.toggle('active', b.dataset.range === currentDateRange));
+            if (currentDateRange) {
+                if (el.filterFrom) el.filterFrom.value = '';
+                if (el.filterTo)   el.filterTo.value   = '';
+            }
+            currentAppPage = 1;
+            fetchAppLogs();
         });
     });
 }
@@ -426,17 +247,11 @@ function finishLoader() {
 }
 
 function initializeSystem() {
-    fetchDashboardStats();
-    fetchSystemLogs();
-    fetchLogs();
-    fetchDevices();
-    fetchUsers();
-    fetchCommands();
+    fetchAppLogs();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     setupEvents();
     initializeSystem();
-    initializeSignalR();
     finishLoader();
 });

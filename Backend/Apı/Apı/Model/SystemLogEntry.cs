@@ -33,6 +33,9 @@ namespace Api.Model.Logging
         /// <summary>Olayı tetikleyen kullanıcı ID (opsiyonel)</summary>
         public int? UserId { get; set; }
 
+        /// <summary>Olayı tetikleyen kullanıcı adı (opsiyonel)</summary>
+        public string? UserName { get; set; }
+
         /// <summary>İstek kaynağı IP adresi</summary>
         public string? IpAddress { get; set; }
 
