@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ── Bağlantı dizesi ────────────────────────────────────────────────────────
 var connStr = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
+    ?? "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=HOMEOS;Integrated Security=True;Multiple Active Result Sets=True";
 
 // ── Veritabanı başlatma (tablolar + seed) ─────────────────────────────────
 DatabaseInitializer.Initialize(connStr);

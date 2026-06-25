@@ -21,7 +21,7 @@ public class DeviceListingController : ControllerBase
     {
         List<DevisListingModel> devices = new();
 
-        string connectionString = "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
+        string connectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=HOMEOS;Integrated Security=True;Multiple Active Result Sets=True";
 
         _logService.AddLog("INFO", "Cihaz listesi isteği alındı.", "DeviceListing");
 

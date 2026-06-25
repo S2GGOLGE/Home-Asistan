@@ -22,7 +22,7 @@ namespace Api.Controllers.DeviceRegistration
                 return BadRequest(validationError);
 
             var connectionString =
-                "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False;";
+                "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=HOMEOS;Integrated Security=True;Multiple Active Result Sets=True";
 
             var logService = new LogService(connectionString);
 

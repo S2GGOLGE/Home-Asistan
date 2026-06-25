@@ -9,7 +9,7 @@ namespace Api.Controllers
     [Route("api/[controller]")]
     public class RoomsController : ControllerBase
     {
-        private readonly string _connectionString = "Data Source=Emree;Initial Catalog=Home;Integrated Security=True;Multiple Active Result Sets=True;Encrypt=False";
+        private readonly string _connectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=HOMEOS;Integrated Security=True;Multiple Active Result Sets=True";
 
         // GET /api/Rooms
         [HttpGet]

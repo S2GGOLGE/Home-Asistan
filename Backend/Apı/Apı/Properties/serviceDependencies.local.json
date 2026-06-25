@@ -6,7 +6,8 @@
     "mssql1": {
       "secretStore": "LocalSecretsFile",
       "type": "mssql.local",
-      "connectionId": "ConnectionStrings:DatabaseConnection"
+      "connectionId": "ConnectionStrings:DatabaseConnection",
+      "dynamicId": null
     }
   }
 }
