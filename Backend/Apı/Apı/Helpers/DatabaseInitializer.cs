@@ -182,7 +182,29 @@ BEGIN
         LastRun DATETIME NULL,
         CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
     );
+END;
+
+IF OBJECT_ID('dbo.Devices', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.Devices (
+        Id INT IDENTITY(1,1) PRIMARY KEY,
+        Name NVARCHAR(100) NOT NULL,
+        Type NVARCHAR(50) NULL,
+        Status BIT NOT NULL DEFAULT 0,
+        UserId INT NULL,
+        CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+        Room NVARCHAR(100) NULL,
+        Feature NVARCHAR(255) NULL,
+        CONSTRAINT FK_Devices_Users FOREIGN KEY (UserId) REFERENCES dbo.Users(Id)
+    );
 END;");
+
+            if (TableExists(connection, "Automations"))
+            {
+                EnsureColumn(connection, "Automations", "TriggerCondition", "NVARCHAR(500) NULL");
+                EnsureColumn(connection, "Automations", "ActionDescription", "NVARCHAR(500) NULL");
+                EnsureColumn(connection, "Automations", "IsActive", "BIT NOT NULL DEFAULT 1");
+            }
 
             if (TableExists(connection, "Devices"))
             {

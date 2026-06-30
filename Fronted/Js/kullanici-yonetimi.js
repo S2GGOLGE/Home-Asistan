@@ -121,6 +121,7 @@ function getApiBaseUrl() {
 
             usersTableBody.appendChild(tr);
         });
+        updateStatCards(users);
     }
 
     function populateModalUserSelect() {
@@ -253,12 +254,7 @@ function getApiBaseUrl() {
         if (memberEl) memberEl.textContent = members;
     }
 
-    // Patch renderUsersTable to also update stats
-    const _originalRender = renderUsersTable;
-    function renderUsersTable(users) {
-        _originalRender(users);
-        updateStatCards(users);
-    }
+
 
     // Load users on startup
     fetchUsers().then(() => updateStatCards(allUsers));

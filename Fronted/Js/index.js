@@ -90,6 +90,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ══════════════════════════════
+    //  API TABANLI YARDIMCI FONKSİYONLAR
+    // ══════════════════════════════
+    function getApiBaseUrl() {
+        const liveServerPorts = ['5500', '5501', '5502'];
+        const isLiveServer = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+            && liveServerPorts.includes(window.location.port);
+
+        if (window.location.protocol === 'file:' || isLiveServer) {
+            return 'https://localhost:7201/api';
+        }
+
+        return `${window.location.origin}/api`;
+    }
+
+    const API_BASE_URL = getApiBaseUrl();
+
+    // ══════════════════════════════
     //  SİSTEM SAĞLIK & BULUT BAĞLANTI DURUMU DİNAMİK KONTROLÜ
     // ══════════════════════════════
     async function checkServices() {
@@ -99,19 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Backend Servisi (C# API on Port 7201)
         let backendOk = false;
         try {
-const backendUrl = `${getApiBaseUrl()}/Listing`;
-
-function getApiBaseUrl() {
-    const liveServerPorts = ['5500', '5501', '5502'];
-    const isLiveServer = ['localhost', '127.0.0.1'].includes(window.location.hostname)
-        && liveServerPorts.includes(window.location.port);
-
-    if (window.location.protocol === 'file:' || isLiveServer) {
-        return 'https://localhost:7201/api';
-    }
-
-    return `${window.location.origin}/api`;
-}
+            const backendUrl = `${API_BASE_URL}/Listing`;
             const res = await fetch(backendUrl);
             backendOk = res.ok;
         } catch (e) {
@@ -281,40 +286,67 @@ function getApiBaseUrl() {
     }
 
     // ══════════════════════════════
-    //  CANLI LOG SİSTEMİ
+    //  GERÇEK VERİTABANI LOG VE AKTİVİTE SİSTEMİ
     // ══════════════════════════════
-    const logMessages = [
-        "[BİLGİ] Backend başlatıldı",
-        "[BİLGİ] SignalR bağlantısı kuruldu",
-        "[BİLGİ] Jarvis çekirdeği hazır",
-        "[BİLGİ] MQTT bağlantısı kuruldu",
-        "[BİLGİ] Cihaz izleyici aktif",
-        "[BİLGİ] Sesli komut alındı",
-        "[BİLGİ] Otomasyon tetiklendi"
-    ];
+    let displayedLogIds = new Set();
 
-    let logIndex = 0;
-
-    function addLog() {
+    async function fetchAndRenderRealLogs() {
         if (!logContainer) return;
-        
-        const div = document.createElement("div");
-        div.classList.add("log");
-        div.textContent = logMessages[logIndex % logMessages.length];
-        logContainer.prepend(div);
-        logIndex++;
+        try {
+            const res = await fetch(`${API_BASE_URL}/SystemLogs/recent?count=40`);
+            if (!res.ok) throw new Error();
+            const payload = await res.json();
+            const logs = payload.data || [];
 
-        // Ram koruması: Log listesi aşırı büyürse eski elementleri siler
-        if (logContainer.children.length > 40) {
-            logContainer.lastChild.remove();
+            if (logs.length === 0) {
+                logContainer.innerHTML = '<div class="log" style="color:var(--text-secondary)">Sistemde henüz kayıtlı log bulunmamaktadır.</div>';
+                return;
+            }
+
+            // Yeni logları ters sırada ekliyoruz ki yeni gelen en üstte olsun
+            const reversedLogs = [...logs].reverse();
+            reversedLogs.forEach(log => {
+                if (!displayedLogIds.has(log.id)) {
+                    displayedLogIds.add(log.id);
+                    const div = document.createElement("div");
+                    div.classList.add("log");
+                    const dateStr = log.createdAt ? new Date(log.createdAt).toLocaleTimeString('tr-TR') : '';
+                    div.textContent = `[${dateStr}] [${log.logLevel || 'Information'}] (${log.serviceName || 'System'}): ${log.message}`;
+                    logContainer.prepend(div);
+                }
+            });
+
+            // Ram koruması
+            while (logContainer.children.length > 40) {
+                logContainer.lastChild.remove();
+            }
+
+            // Son Aktiviteler listesini güncelle
+            updateRecentActivities(logs.slice(0, 5));
+
+        } catch (e) {
+            console.error("Loglar veritabanından çekilemedi:", e);
+            if (logContainer.children.length === 0) {
+                logContainer.innerHTML = '<div class="log" style="color:var(--color-error)">Veritabanı loglarına erişilemedi.</div>';
+            }
         }
     }
 
-    // İlk 5 logu hemen göster
-    for (let i = 0; i < 5; i++) {
-        addLog();
+    function updateRecentActivities(recentLogs) {
+        const activityList = document.querySelector('.activity-list');
+        if (!activityList) return;
+
+        if (recentLogs.length === 0) {
+            activityList.innerHTML = '<li style="border-left-color:var(--color-error)">Kayıtlı aktivite bulunamadı.</li>';
+            return;
+        }
+
+        activityList.innerHTML = recentLogs.map(log => {
+            return `<li>${log.message || 'Bilinmeyen işlem'}</li>`;
+        }).join('');
     }
 
-    // Sonrasında her 2 saniyede bir yeni log ekle
-    setInterval(addLog, 2000);
+    // İlk yüklemede logları çek ve ardından periyodik olarak güncelle
+    fetchAndRenderRealLogs();
+    setInterval(fetchAndRenderRealLogs, 3000);
 });

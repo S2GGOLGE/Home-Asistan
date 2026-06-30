@@ -9,7 +9,7 @@ namespace Api.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly string _connectionString = "DataData Source=(localdb)\\mssqllocaldb;Initial Catalog=HOMEOS;Integrated Security=True;Multiple Active Result Sets=True";
+        private readonly string _connectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=HOMEOS;Integrated Security=True;Multiple Active Result Sets=True";
 
         [HttpGet]
         public IActionResult GetUsers()
